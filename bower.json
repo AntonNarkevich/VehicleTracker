@@ -1,0 +1,26 @@
+{
+  "name": "VehicleTracker",
+  "version": "0.0.1",
+  "authors": [
+    "AntonNarkevich <17140th@gmail.com>"
+  ],
+  "description": "Vehicle Tracking System",
+  "main": "app.js",
+  "keywords": [
+    "gmaps",
+    "node",
+    "mssql",
+    "gps"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jQuery": "~2.1.0"
+  }
+}

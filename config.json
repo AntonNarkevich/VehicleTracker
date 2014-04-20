@@ -1,0 +1,5 @@
+{
+	"msSqlServer": "localhost",
+	"msSqlPort": "1434",
+	"appPort": 300
+}
