@@ -1,3 +1,4 @@
+var rekuire = require('rekuire');
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -8,6 +9,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var positions = require('./routes/positions');
+var init = require('./routes/init');
 
 var app = express();
 
@@ -27,6 +29,7 @@ app.use('/bower_components', express.static(path.join(__dirname, 'bower_componen
 app.use('/', routes);
 app.use('/users', users);
 app.use('/positions', positions);
+app.use('/init', init);
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {

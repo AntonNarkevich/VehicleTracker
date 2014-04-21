@@ -1,15 +1,21 @@
 #!/usr/bin/env node
-
 var rekuire = require('rekuire');
 
 var config = rekuire('config');
 var debug = require('debug')('my-application');
-var app = rekuire('app');
 
-app.set('port', process.env.PORT || config.appPort);
+var repository = rekuire('repository');
 
-var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
+repository.establishConnection(function() {
+
+	var app = rekuire('app');
+	app.set('port', process.env.PORT || config.appPort);
+
+	var server = app.listen(app.get('port'), function() {
+		debug('Express server listening on port ' + server.address().port);
+	});
+
+	console.log('Listening on port %d', config.appPort);
+
 });
 
-console.log('Listening on port %d', config.appPort);
