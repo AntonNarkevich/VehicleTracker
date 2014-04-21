@@ -1,6 +1,6 @@
-var keys = require('../keys.json');
+var rekuire = require('rekuire');
 
-console.log(keys);
+var keys = rekuire('keys');
 
 var express = require('express');
 var router = express.Router();

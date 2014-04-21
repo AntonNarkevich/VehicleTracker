@@ -3,12 +3,11 @@ html
 	head
 		meta(name='viewport', content='initial-scale=1.0, user-scalable=no')
 		title= title
+		link(rel="stylesheet", href="/bower_components/bootstrap/dist/bootstrap.min.css")
 		link(rel='stylesheet', href='/stylesheets/style.css')
 
 	body
 		block content
 
-		script(src="/jQuery/dist/jquery.min.js")
-		script(src='http://maps.googleapis.com/maps/api/js?key=#{keys.googleMapsKey}&sensor=false')
-
+		script(src="/bower_components/jQuery/dist/jquery.min.js")
 		block scripts
