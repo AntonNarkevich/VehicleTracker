@@ -14,7 +14,12 @@
 		var marker = new google.maps.Marker({
 			position: map.getCenter(),
 			map: map,
-			title: 'Click to zoom'
+			title: 'Click to zoom',
+			icon: {
+				path: google.maps.SymbolPath.CIRCLE,
+				scale: 10,
+				strokeWeight: 2
+			}
 		});
 
 		google.maps.event.addListener(map, 'click', function (event) {
@@ -34,6 +39,27 @@
 				}
 			);
 		});
+
+
+		var poly = new google.maps.Polyline({
+			strokeColor: '#000000',
+			strokeOpacity: 1.0,
+			strokeWeight: 3,
+			editable: true
+		});
+
+		poly.setMap(map);
+
+		function addLngLatToPolyline(event) {
+			var path = poly.getPath();
+
+			path.push(event.latLng);
+		}
+
+		google.maps.event.addListener(map, 'click', addLngLatToPolyline);
+
+		var drawingManager = new google.maps.drawing.DrawingManager();
+		drawingManager.setMap(map);
 	}
 
 	$(initGoogleMaps);
