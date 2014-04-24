@@ -2,6 +2,7 @@
 var rekuire = require('rekuire');
 
 var config = rekuire('config');
+var logger = rekuire('logger');
 var debug = require('debug')('my-application');
 
 var repository = rekuire('repository');
@@ -15,7 +16,7 @@ repository.establishConnection(function() {
 		debug('Express server listening on port ' + server.address().port);
 	});
 
-	console.log('Listening on port %d', config.appPort);
+	logger.info('Listening on port %d', config.appPort);
 
 });
 

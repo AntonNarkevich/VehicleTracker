@@ -1,4 +1,4 @@
-/*global jQuery*/
+/*global jQuery, VT*/
 (function initPage($) {
 	'use strict';
 

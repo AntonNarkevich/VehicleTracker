@@ -1,5 +1,9 @@
 {
 	"msSqlServer": "localhost",
 	"msSqlPort": "1434",
-	"appPort": 300
+	"appPort": 3000,
+	"logLevel": "ALL",
+	"isFileLoggingEnabled": true,
+	"isConsoleLoggingEnabled": true,
+	"logFileName": "logs/vt.log"
 }

@@ -3,6 +3,7 @@
 var rekuire = require('rekuire');
 var config = rekuire('config');
 var keys = rekuire('keys');
+var logger = rekuire('logger');
 
 var tedious = require('tedious');
 var Connection = tedious.Connection;
@@ -22,13 +23,13 @@ var connection = new Connection(dbConnectionConfig);
 var isConnected = false;
 
 function establishConnection(dbConnectedCallback) {
-	console.log('Establishing connection to database.');
+	logger.trace('Establishing connection to database.');
 
 	connection.on('connect', function (err) {
 			if (err) {
-				console.log('Db connection error ' + err);
+				logger.fatal('Db connection error ' + err);
 			} else {
-				console.log('Db connection has been established');
+				logger.info('Db connection has been established');
 				isConnected = true;
 			}
 
@@ -46,15 +47,15 @@ module.exports = {
 //function executeStatement() {
 //	var request = new Request("SELECT * FROM [dbo].[Vehicle]", function (err, rowCount) {
 //		if (err) {
-//			console.log(err);
+//			logger.error(err);
 //		} else {
-//			console.log(rowCount + ' rows');
+//			logger.info(rowCount + ' rows');
 //		}
 //	});
 //
 //	request.on('row', function (columns) {
 //		columns.forEach(function (column) {
-//			console.log("%s: %s", column.metadata.colName, column.value);
+//			logger.info("%s: %s", column.metadata.colName, column.value);
 //		});
 //	});
 //
