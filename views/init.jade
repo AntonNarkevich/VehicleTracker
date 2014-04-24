@@ -5,10 +5,20 @@ block content
 
 	div.container
 		div.row
-			h1= title
-			p
-				| Please enter 
-				strong admin
-				|  credentials
-		div.row
-			p #{dbData}
+			div.col-md-12
+				h1 DB will be initialized in a moment
+
+		div.vt-init-registration-block
+			div.row
+				div.col-md-6.col-md-offset-3
+					div.row
+						div.col-sm-9.col-sm-offset-3
+							h3
+								| Please, enter#{" "}
+								strong admin
+								| #{" "}credentials
+					include partials/registration
+
+	block scripts
+		script(src="javascripts/jquery.centrizeVertically.js")
+		script(src="javascripts/initPage.js")

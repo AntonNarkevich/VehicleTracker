@@ -14,7 +14,7 @@ router.get('/', function (req, res) {
 			console.log(err);
 		} else {
 			console.log(rowCount + ' rows');
-			res.render('init', { title: 'DB will be initialized in a moment', dbData: JSON.stringify(rows) });
+			res.render('init', { title: 'DB will be initialized in a moment', dbData: JSON.stringify(rows), registrationFormAction: '/register/admin' });
 		}
 	});
 
