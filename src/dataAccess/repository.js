@@ -1,8 +1,8 @@
 'use strict';
 
 var rekuire = require('rekuire');
-var config = rekuire('config');
-var keys = rekuire('keys');
+var config = rekuire('app.config');
+var keys = rekuire('keys.config');
 var logger = rekuire('logger');
 
 var tedious = require('tedious');

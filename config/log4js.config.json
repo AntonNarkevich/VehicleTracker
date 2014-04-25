@@ -1,0 +1,16 @@
+{
+	"levels": {
+		"[default]": "ALL"
+	},
+	"appenders": [
+		{
+			"type": "console"
+		},
+		{
+			"type": "file",
+			"filename": "vt.log",
+			"maxLogSize": 1024,
+			"category": "disabled"
+		}
+	]
+}

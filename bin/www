@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var rekuire = require('rekuire');
 
-var config = rekuire('config');
+var config = rekuire('app.config');
 var logger = rekuire('logger');
 var debug = require('debug')('my-application');
 

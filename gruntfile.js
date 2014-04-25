@@ -68,7 +68,7 @@ module.exports = function (grunt) {
 		},
 		csscomb: {
 			options: {
-				config: 'csscomb.config.json'
+				config: 'config/csscomb.config.json'
 			},
 			dev: {
 				files: [

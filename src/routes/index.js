@@ -2,7 +2,7 @@
 
 var rekuire = require('rekuire');
 
-var keys = rekuire('keys');
+var keys = rekuire('keys.config');
 
 var express = require('express');
 var router = express.Router();

@@ -1,27 +1,17 @@
 /**
- * Configures and exports log4js logger
- * Enables or disabled console/file logging
- * as it's specified in config.json 
+ * Configures and exports logger.
+ * Category "[default]".
+ * Other categories are ignored.
  */
+'use strict';
+
 var rekuire = require('rekuire');
-var config = rekuire('config');
+
+var config = rekuire('app.config');
+var log4jsConfig = rekuire('log4js.config');
 var log4js = require('log4js');
 
 log4js.clearAppenders();
+log4js.configure(log4jsConfig);
 
-if (config.isConsoleLoggingEnabled) {
-	log4js.loadAppender('console');
-	var consoleAppender = log4js.appenders.console();
-	log4js.addAppender(consoleAppender);
-}
-
-if (config.isFileLoggingEnabled) {
-	log4js.loadAppender('file');
-	var fileAppender = log4js.appenders.file(config.logFileName);
-	log4js.addAppender(fileAppender);
-}
-
-var logger = log4js.getLogger();
-logger.setLevel(config.logLevel);
-
-module.exports = logger;
+module.exports = log4js.getLogger();
