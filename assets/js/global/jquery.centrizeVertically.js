@@ -1,12 +1,12 @@
-/*global jQuery*/
-(function centrizeVertically($, undefined) {
+/*global jQuery, console*/
+(function centrizeVertically($) {
 	'use strict';
 
 	/**
 	 * Changes margin-top of given element.
 	 * to make the element centrized relatively to window
 	 * @param {Object} options - Options.
-	 * @param {boolean} options.isNegativeMarginAllowed - 
+	 * @param {boolean} options.isNegativeMarginAllowed -
 	 * If true negative margins can be used for centrizing
 	 * else if negative margin is needed for centrizing
 	 * centrizeVertically will set marginTop to 0.
@@ -19,14 +19,14 @@
 			isNegativeMarginAllowed: false,
 			isLoggingEnabled: false
 		};
-		
+
 		var settings = $.extend(defaults, options);
-		
+
 		function log() {
 			if (!settings.isLoggingEnabled) {
 				return;
 			}
-			
+
 			if (console === undefined) {
 				return;
 			}
@@ -36,8 +36,8 @@
 
 			console.log.apply(console, args);
 		}
-		
-		return this.each(function() {
+
+		return this.each(function () {
 			var $element = $(this);
 			var $window = $(window);
 
@@ -59,7 +59,7 @@
 			log('marginChange value is: ' + marginChange);
 
 			var newMarginTop = marginTop + marginChange;
-			
+
 			if (newMarginTop < 0 && !settings.isNegativeMarginAllowed) {
 				log('Negative marginTop value. Setting 0.');
 				newMarginTop = 0;

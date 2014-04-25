@@ -1,6 +1,6 @@
 {
   "name": "VehicleTracker",
-  "version": "0.0.1",
+  "version": "0.0.1-0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -16,6 +16,18 @@
     "less-middleware": "0.1.15",
     "tedious": "~0.2.3",
     "rekuire": "~0.1.5",
-    "log4js": "~0.6.14"
+    "log4js": "~0.6.14",
+    "grunt": "~0.4.4",
+    "grunt-jslint": "~1.1.8",
+    "grunt-contrib-uglify": "^0.4.0",
+    "underscore": "^1.6.0",
+    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-less": "^0.11.0",
+    "grunt-csscomb": "^2.0.1",
+    "grunt-contrib-csslint": "^0.2.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-bump": "0.0.13"
   }
 }

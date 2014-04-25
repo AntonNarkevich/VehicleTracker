@@ -3,14 +3,10 @@ html
 	head
 		meta(name='viewport', content='initial-scale=1.0, user-scalable=no')
 		title= title
-		link(rel="stylesheet", href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
-		link(rel='stylesheet', href='/stylesheets/style.css')
+		link(rel='stylesheet', href='/css/styles.css')
 
 	body
 		block content
 
-		script(src="/bower_components/jQuery/dist/jquery.min.js")
-		script(src="/bower_components/log4javascript/log4javascript.js")
-		script(src="/javascripts/log4javascript.config.js")
-
+		script(src="/js/global/globalScripts.js")
 		block scripts

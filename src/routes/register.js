@@ -1,3 +1,5 @@
+'use strict';
+
 var rekuire = require('rekuire');
 var repository = rekuire('repository');
 var Request = require('tedious').Request;

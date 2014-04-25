@@ -1,3 +1,5 @@
+'use strict';
+
 var rekuire = require('rekuire');
 var express = require('express');
 var path = require('path');
@@ -6,11 +8,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var positions = require('./routes/positions');
-var init = require('./routes/init');
-var register = require('./routes/register');
+var routes = require('./src/routes/index');
+var users = require('./src/routes/users');
+var positions = require('./src/routes/positions');
+var init = require('./src/routes/init');
+var register = require('./src/routes/register');
 
 var app = express();
 

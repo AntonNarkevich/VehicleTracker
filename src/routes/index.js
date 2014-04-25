@@ -1,3 +1,5 @@
+'use strict';
+
 var rekuire = require('rekuire');
 
 var keys = rekuire('keys');

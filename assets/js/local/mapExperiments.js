@@ -1,4 +1,4 @@
-/*global google, jQuery*/
+/*global google, jQuery, VT*/
 (function ($, google) {
 	'use strict';
 
@@ -9,33 +9,29 @@
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
 
-		var map = new google.maps.Map($('.google-map')[0], mapOptions);
+		var map = new google.maps.Map($('.vt-google-map')[0], mapOptions);
 
-		var marker = new google.maps.Marker({
-			position: map.getCenter(),
-			map: map,
-			title: 'Click to zoom',
-			icon: {
-				path: google.maps.SymbolPath.CIRCLE,
-				scale: 10,
-				strokeWeight: 2
-			}
-		});
+//		var marker = new google.maps.Marker({
+//			position: map.getCenter(),
+//			map: map,
+//			title: 'Click to zoom',
+//			icon: {
+//				path: google.maps.SymbolPath.CIRCLE,
+//				scale: 10,
+//				strokeWeight: 2
+//			}
+//		});
 
 		google.maps.event.addListener(map, 'click', function (event) {
-			console.log('Sending to the server' + event.latLng);
+			VT.logger.trace('Sending to the server', event.latLng);
 
 			var mapPointData = {
 				lat: event.latLng.k,
 				lng: event.latLng.A
 			};
 
-			console.log(JSON.stringify(event));
-			console.log(mapPointData);
-
 			$.post('/positions', mapPointData, function (data) {
-					console.log('POST has been completed');
-					console.log(data);
+					VT.logger.trace('POST has been completed', data);
 				}
 			);
 		});

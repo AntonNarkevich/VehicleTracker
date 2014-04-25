@@ -4,3 +4,6 @@ bower_components
 .idea
 *.css
 *.log
+temp
+public/css
+public/js
