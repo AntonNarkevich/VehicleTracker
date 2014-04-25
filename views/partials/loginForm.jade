@@ -1,0 +1,12 @@
+form.form-horizontal(role="form", method="POST" action="#{loginFormAction}")
+	div.form-group
+		label.control-label.col-sm-3(for="userEmail") Email address
+		div.col-sm-9
+			input#userEmail.form-control(type="email", placeholder="Enter email")
+	div.form-group
+		label.control-label.col-sm-3(for="userPassword") Password
+		div.col-sm-9
+			input#userPassword.form-control(type="password", placeholder="Password")
+	div.form-group
+		div.col-sm-offset-3.col-sm-9
+			button.btn.btn-default.btn-primary(type="submit") Submit

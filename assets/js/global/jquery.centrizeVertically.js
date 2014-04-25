@@ -68,4 +68,15 @@
 			$element.css('margin-top', newMarginTop);
 		});
 	};
+
+	/**
+	 * Keeps all .centrized-vertically elements centrized.
+	 */
+	var $elementsToCentrize = $('.centrized-vertically');
+	$elementsToCentrize.centrizeVertically();
+
+	$(window).resize(function() {
+		$elementsToCentrize.centrizeVertically();
+	});
+
 }(jQuery));
