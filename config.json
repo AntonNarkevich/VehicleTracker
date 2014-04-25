@@ -3,7 +3,7 @@
 	"msSqlPort": "1434",
 	"appPort": 3000,
 	"logLevel": "ALL",
-	"isFileLoggingEnabled": true,
+	"isFileLoggingEnabled": false,
 	"isConsoleLoggingEnabled": true,
-	"logFileName": "logs/vt.log"
+	"logFileName": "vt.log"
 }
