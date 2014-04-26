@@ -165,6 +165,11 @@ module.exports = function (grunt) {
 		watch: {
 			files: ['assets/**', 'src/**/*.js', '*.js', 'bin/**/*.js', 'routes/**/*.js'],
 			tasks: ['lint']
+		},
+		shell: {
+			run: {
+				command: 'npm start'
+			}
 		}
 	});
 
@@ -178,6 +183,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-bump');
+	grunt.loadNpmTasks('grunt-shell');
 
 	/**
 	 * CssComb less. Linting js and css.
@@ -191,13 +197,13 @@ module.exports = function (grunt) {
 	 * Compiles less. Concatenates all css files without minification to public/css/styles.css.
 	 * v0.0.0-0 => 0.0.1-0
 	 */
-	grunt.registerTask('dev', ['lint', 'clean', 'concat:devGlobalScripts', 'copy:localScripts', 'less:dev', 'concat:devCss', 'bump:patch']);
+	grunt.registerTask('dev', ['lint', 'clean', 'concat:devGlobalScripts', 'copy:localScripts', 'less:dev', 'concat:devCss', 'bump:patch', 'shell:run']);
 
 	/**
 	 * Same as 'dev' + js uglification, css minification.
 	 * v0.0.0-0 => 0.1.0-0
 	 */
-	grunt.registerTask('prod', ['lint', 'clean', 'uglify', 'concat:prodGlobalScripts', 'less:prod', 'concat:prodCss', 'bump:minor']);
+	grunt.registerTask('prod', ['lint', 'clean', 'uglify', 'concat:prodGlobalScripts', 'less:prod', 'concat:prodCss', 'bump:minor', 'shell:run']);
 
 	grunt.registerTask('default', 'watch');
 };
