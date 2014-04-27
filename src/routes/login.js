@@ -1,14 +1,20 @@
 'use strict';
 
-var rekuire = require('rekuire');
+var passport = require('passport');
 var router = require('express').Router();
 
 router.get('/', function (req, res) {
 	res.render('login', { loginFormAction: '/login' });
 });
 
-router.post('/', function (req, res) {
-	res.end('You have POSTed credentials');
-});
+router.post('/',
+	passport.authenticate('local', {
+			failureRedirect: '/login'
+		}),
+		function (req, res) {
+			res.redirect(req.session.returnTo || '/');
+			delete req.session.returnTo;
+		}
+);
 
 module.exports = router;

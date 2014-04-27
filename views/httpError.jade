@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	.http-error.container.centrized-vertically
+		.row
+			.col-lg-8.col-lg-offset-2
+				h1.http-error-heading Oops! Error #{code} occured!
+				.http-error-reason
+					h2.http-error-sedative Don't panic. It's because:
+					p.http-error-message #{message}
+		.row
+			.http-error-buttons.col-lg-8.col-lg-offset-2
+				a(href="/").btn.btn-primary.btn-lg.http-error-home-button Home
+				a(href="/").btn.btn-default.btn-lg.http-error-home-button Go Back

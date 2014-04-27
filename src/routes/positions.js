@@ -3,14 +3,17 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function (req, res) {
-	res.end('What is love');
+var rekuire = require('rekuire');
+var logger = rekuire('logger');
+var role = rekuire('roleStrategy');
 
+router.get('/', function (req, res) {
+	res.render('index');
 });
 
 router.post('/', function (req, res) {
-	console.log(req.body);
-	console.log('AJAX POST has been handled');
+	logger.debug('Posistions page. Ajax post has been handled. Request body:');
+	logger.debug(req.body);
 
 	res.end('Response to AJAX POST');
 });

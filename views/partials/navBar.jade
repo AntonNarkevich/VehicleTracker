@@ -1,0 +1,24 @@
+nav.navbar.navbar-default(role="navigation")
+	.container-fluid
+		.navbar-header
+			button.navbar-toggle(type="button", data-toggle="collapse", data-target="#vt-navbar-collapse")
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(href="/") Vehicle Tracker
+
+		// Navbar content. Links etc.
+		#vt-navbar-collapse.collapse.navbar-collapse
+
+			if isAuthenticated()
+				.navbar-right
+					p.navbar-text Signed in as#{" "}
+						a.navbar-link(href="/profile") #{user.name}
+					a.btn.btn-default.navbar-btn(href="/logout") Sign out
+			else
+				ul.nav.navbar-nav.navbar-right
+					li
+						a(href="/register") Register
+					li
+						a(href="/login") Sign in

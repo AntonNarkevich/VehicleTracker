@@ -1,11 +1,10 @@
 'use strict';
 
-var rekuire = require('rekuire');
-
-var keys = rekuire('keys.config');
-
 var express = require('express');
 var router = express.Router();
+
+var rekuire = require('rekuire');
+var keys = rekuire('keys.config');
 
 /* GET home page. */
 router.get('/', function (req, res) {

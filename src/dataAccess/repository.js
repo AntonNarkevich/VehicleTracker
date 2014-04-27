@@ -1,14 +1,13 @@
 'use strict';
 
-var rekuire = require('rekuire');
-var config = rekuire('app.config');
-var keys = rekuire('keys.config');
-var logger = rekuire('logger');
-
 var tedious = require('tedious');
 var Connection = tedious.Connection;
 var Request = tedious.Request;
 
+var rekuire = require('rekuire');
+var config = rekuire('app.config');
+var keys = rekuire('keys.config');
+var logger = rekuire('logger');
 
 var dbConnectionConfig = {
 	userName: keys.msSqlUserName,

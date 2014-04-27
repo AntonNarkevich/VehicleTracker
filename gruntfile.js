@@ -10,7 +10,8 @@ module.exports = function (grunt) {
 					white: true,
 					vars: true,
 					nomen: true,
-					browser: true
+					browser: true,
+					todo: true
 				}
 			},
 			server: {
@@ -20,7 +21,8 @@ module.exports = function (grunt) {
 					vars: true,
 					nomen: true,
 					node: true,
-					unparam: true
+					unparam: true,
+					todo: true
 				}
 			}
 		},
@@ -45,13 +47,12 @@ module.exports = function (grunt) {
 					}
 				]
 			},
-			underscore: {
-				files: [
-					{
-						src: 'bower_components/underscore/underscore.js',
-						dest: 'bower_components/underscore/underscore.min.js'
-					}
-				]
+			vendorScripts: {
+				files: {
+					'bower_components/underscore/underscore.min.js': 'bower_components/underscore/underscore.js',
+					'bower_components/bootstrap/js/transition.min.js': 'bower_components/bootstrap/js/transition.js',
+					'bower_components/bootstrap/js/collapse.min.js': 'bower_components/bootstrap/js/collapse.js'
+				}
 			}
 		},
 		copy: {
@@ -114,7 +115,9 @@ module.exports = function (grunt) {
 		},
 		csslint: {
 			options: {
-				'box-sizing': false
+				'box-sizing': false,
+				'unique-headings': false,
+				'qualified-headings': false
 			},
 			temp: {
 				src: ['temp/assets/css/**/*.css']
@@ -125,6 +128,8 @@ module.exports = function (grunt) {
 				src: ['bower_components/jquery/dist/jquery.js',
 					'bower_components/log4javascript/log4javascript_uncompressed.js',
 					'bower_components/underscore/underscore.js',
+					'bower_components/bootstrap/js/transition.js',
+					'bower_components/bootstrap/js/collapse.js',
 					'assets/js/global/**/*.js'],
 				dest: 'public/js/global/globalScripts.js'
 			},
@@ -132,6 +137,8 @@ module.exports = function (grunt) {
 				src: ['bower_components/jquery/dist/jquery.min.js',
 					'bower_components/log4javascript/log4javascript.js',
 					'bower_components/underscore/underscore.min.js',
+					'bower_components/bootstrap/js/transition.min.js',
+					'bower_components/bootstrap/js/collapse.min.js',
 					'temp/assets/js/global/**/*.js'],
 				dest: 'public/js/global/globalScripts.js'
 			},
@@ -197,13 +204,13 @@ module.exports = function (grunt) {
 	 * Compiles less. Concatenates all css files without minification to public/css/styles.css.
 	 * v0.0.0-0 => 0.0.1-0
 	 */
-	grunt.registerTask('dev', ['lint', 'clean', 'concat:devGlobalScripts', 'copy:localScripts', 'less:dev', 'concat:devCss', 'bump:patch', 'shell:run']);
+	grunt.registerTask('dev', ['lint', 'clean', 'concat:devGlobalScripts', 'copy:localScripts', 'less:dev', 'concat:devCss', 'bump:patch']);
 
 	/**
 	 * Same as 'dev' + js uglification, css minification.
 	 * v0.0.0-0 => 0.1.0-0
 	 */
-	grunt.registerTask('prod', ['lint', 'clean', 'uglify', 'concat:prodGlobalScripts', 'less:prod', 'concat:prodCss', 'bump:minor', 'shell:run']);
+	grunt.registerTask('prod', ['lint', 'clean', 'uglify', 'concat:prodGlobalScripts', 'less:prod', 'concat:prodCss', 'bump:minor']);
 
 	grunt.registerTask('default', 'watch');
 };
