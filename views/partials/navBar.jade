@@ -14,7 +14,7 @@ nav.navbar.navbar-default(role="navigation")
 			if isAuthenticated()
 				.navbar-right
 					p.navbar-text Signed in as#{" "}
-						a.navbar-link(href="/profile") #{user.name}
+						a.navbar-link(href="/profile") #{user.displayName || user.email}
 					a.btn.btn-default.navbar-btn(href="/logout") Sign out
 			else
 				ul.nav.navbar-nav.navbar-right

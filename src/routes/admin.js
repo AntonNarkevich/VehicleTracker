@@ -16,7 +16,7 @@ router.get('/init', function (req, res) {
 				}
 			);
 		} else {
-			res.render('init');
+			res.render('init', { registrationFormAction: '/register/admin' });
 		}
 	});
 

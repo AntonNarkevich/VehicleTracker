@@ -1,3 +1,4 @@
+//TODO: Break into 2 modules. Write documentation.
 'use strict';
 
 var tedious = require('tedious');
@@ -48,6 +49,77 @@ function isAdminRegistered(done) {
 	connection.execSql(request);
 }
 
+function registerUser(email, passwordHash, role, registrationDone) {
+	var outputParameters = {};
+
+	var request = new Request("exec RegisterUser @email, @passwordHash, @role, @isSuccess output, @errMessage output",
+		function () {
+			registrationDone(outputParameters.isSuccess, outputParameters.errMessage);
+		});
+
+	request.addParameter('email', TYPES.NVarChar, email);
+	request.addParameter('passwordHash', TYPES.NVarChar, passwordHash);
+	request.addParameter('role', TYPES.NVarChar, role);
+	request.addOutputParameter('isSuccess', TYPES.Bit);
+	request.addOutputParameter('errMessage', TYPES.NVarChar);
+
+	request.on('returnValue', function (parameterName, value, metadata) {
+		logger.trace('Got %s from database: %', parameterName, value);
+		outputParameters[parameterName] = value;
+	});
+
+	connection.execSql(request);
+}
+
+function logInUser(email, passwordHash, logInDone) {
+	var outputParameters = {};
+
+	var execStatement = "exec LoginUser " +
+		"@email, " +
+		"@passwordHash, " +
+		"@isSuccess output, " +
+		"@errMessage output, " +
+		"@userId output, " +
+		"@displayName output";
+
+var request = new Request(execStatement, function () {
+		var user = {
+			id: outputParameters.userId,
+			email: email,
+			displayName: outputParameters.DriverIdValues,
+			roles: outputParameters.RoleNameValues,
+			driverIds: outputParameters.DriverIdValues
+		};
+
+		logInDone(outputParameters.isSuccess, outputParameters.errMessage, user);
+	});
+
+	request.addParameter('email', TYPES.NVarChar, email);
+	request.addParameter('passwordHash', TYPES.NVarChar, passwordHash);
+	request.addOutputParameter('isSuccess', TYPES.Bit);
+	request.addOutputParameter('errMessage', TYPES.NVarChar);
+	request.addOutputParameter('userId', TYPES.NVarChar);
+	request.addOutputParameter('displayName', TYPES.NVarChar);
+
+	request.on('returnValue', function (parameterName, value, metadata) {
+		logger.trace('Got %s from database: %s', parameterName, value);
+		outputParameters[parameterName] = value;
+	});
+
+	request.on('row', function(columns) {
+		columns.forEach(function(column) {
+			var colName = column.metadata.colName;
+
+			var outputArrayName = colName + 'Values';
+			outputParameters[outputArrayName] = outputParameters[outputArrayName] || [];
+
+			outputParameters[outputArrayName].push(column.value);
+		});
+	});
+
+	connection.execSql(request);
+}
+
 function testRequest() {
 	var request = new Request("SELECT * FROM [dbo].[Vehicle]", function (err, rowCount) {
 		if (err) {
@@ -88,5 +160,7 @@ module.exports = {
 	establishConnection: establishConnection,
 	connection: connection,
 	isConnected: isConnected,
-	isAdminRegistered: isAdminRegistered
+	isAdminRegistered: isAdminRegistered,
+	registerUser: registerUser,
+	logInUser: logInUser
 };

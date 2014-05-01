@@ -3,18 +3,24 @@
 var passport = require('passport');
 var router = require('express').Router();
 
+var  rekuire = require('rekuire');
+var logger = rekuire('logger');
+
 router.get('/', function (req, res) {
-	res.render('login', { loginFormAction: '/login' });
+	var params = { loginFormAction: '/login', message: req.flash('error') };
+
+	res.render('login', params);
 });
 
 router.post('/',
 	passport.authenticate('local', {
-			failureRedirect: '/login'
-		}),
-		function (req, res) {
-			res.redirect(req.session.returnTo || '/');
-			delete req.session.returnTo;
-		}
+		failureRedirect: '/login',
+		failureFlash: true
+	}),
+	function (req, res) {
+		res.redirect(req.session.returnTo || '/');
+		delete req.session.returnTo;
+	}
 );
 
 module.exports = router;

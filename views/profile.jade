@@ -1,5 +1,10 @@
 extends layout
 block content
 	div.container
-		p #{user.name}
-		p #{user.roles}
+		h1 Profile details
+		h2 #{user.email}
+		p #{user.id}
+		h2 Roles:
+		ul
+		each role in user.roles
+			li #{role}

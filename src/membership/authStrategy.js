@@ -1,3 +1,4 @@
+//TODO: Update comments
 /**
  * Configures Passport Local Strategy ('passport-local' module).
  * Also provides (de)serialization for Passport Session.
@@ -9,38 +10,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
-
-var admin = {
-	id: 1,
-	name: 'Admin id:1',
-	roles: ['admin']
-};
-
-var driver1 = {
-	id: 2,
-	name: 'Driver id:2',
-	roles: ['driver']
-};
-
-var driver2 = {
-	id: 3,
-	name: 'Driver id:3',
-	roles: ['driver']
-};
-
-var manager1 = {
-	id: 4,
-	name: 'Manager id:4',
-	roles: ['manager'],
-	driverIds: [2, 3]
-};
-
-var manager2 = {
-	id: 5,
-	name: 'Manager id:5',
-	roles: ['manager'],
-	driverIds: [2]
-};
+var repository = rekuire('repository');
 
 var passportStrategy = new LocalStrategy(
 	{
@@ -50,56 +20,32 @@ var passportStrategy = new LocalStrategy(
 	function (username, password, done) {
 		logger.trace('Attempt to login:', username, password);
 
-		switch (username) {
-			case '1@asdf':
-				done(null, admin);
-				break;
-			case '2@asdf':
-				done(null, driver1);
-				break;
-			case '3@asdf':
-				done(null, driver2);
-				break;
-			case '4@asdf':
-				done(null, manager1);
-				break;
-			case '5@asdf':
-				done(null, manager2);
-				break;
-			default:
-				done(null, admin);
-		}
+		repository.logInUser(username, password, function(isSuccess, errMessage, user) {
+			if(!isSuccess) {
+				done(null, false, { message: errMessage });
+				return;
+			}
+
+			done(null, user);
+		});
 	}
 );
 
 var serializeUser = function (user, done) {
-	done(null, user.id);
+	//TODO. Save only id inf session.
+	done(null, JSON.stringify(user));
 
-	logger.trace('Serialized user', user);
+	logger.trace('Serialized TO JSON user', user);
 };
 
 var deserializeUser = function (id, done) {
-	switch (id) {
-		case 1:
-			done(null, admin);
-			break;
-		case 2:
-			done(null, driver1);
-			break;
-		case 3:
-			done(null, driver2);
-			break;
-		case 4:
-			done(null, manager1);
-			break;
-		case 5:
-			done(null, manager2);
-			break;
-		default:
-			done(null, admin);
-	}
+	//TODO: Write a stored procedure to get info from DB. Not from JSON.
+	var user = JSON.parse(id);
 
-	logger.trace('Deserializing user', id);
+	logger.trace('Deserializing FROM JSON user', id);
+	logger.debug(user);
+
+	done(null, user);
 };
 
 /**

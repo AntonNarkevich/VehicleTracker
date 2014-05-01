@@ -1,3 +1,4 @@
+//TODO: Make comments up to date.
 /**
  * Exports an instance of ConnectRoles ('connect-roles' module).
  * Configures the following membership rules.
@@ -61,9 +62,16 @@ var connectRoles = new ConnectRoles({
 	}
 });
 
+
 connectRoles.use(function (req, action) {
 	if (!req.isAuthenticated()) {
 		return false;
+	}
+});
+
+connectRoles.use('signedIn', function(req) {
+	if (req.isAuthenticated()) {
+		return true;
 	}
 });
 

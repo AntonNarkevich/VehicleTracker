@@ -6,6 +6,7 @@ var favicon = require('static-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var flash = require('connect-flash');
 var less = require('less-middleware');
 var passport = require('passport');
 
@@ -37,6 +38,7 @@ app.use(session({
 	secret: keysConfig.cookieSessionSecret,
 	key: 'vt-session'
 }));
+app.use(flash());
 
 passport.use(authStrategy.passportStrategy);
 app.use(passport.initialize());

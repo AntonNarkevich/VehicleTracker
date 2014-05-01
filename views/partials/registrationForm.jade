@@ -1,16 +1,20 @@
-form.form-horizontal(role="form", action="#{registrationFormAction}")
+form.form-horizontal(role="form", method="post", action="#{registrationFormAction}")
 	div.form-group
-		label.control-label.col-sm-3(for="newUserEmail") Email address
+		label.control-label.col-sm-3(for="email") Email address
 		div.col-sm-9
-			input#newUserEmail.form-control(type="email", placeholder="Enter email")
+			input#email.form-control(name="email", type="email", placeholder="Enter email")
 	div.form-group
-		label.control-label.col-sm-3(for="newUserPassword") Password
+		label.control-label.col-sm-3(for="password") Password
 		div.col-sm-9
-			input#newUserPassword.form-control(type="password", placeholder="Password")
+			input#password.form-control(name="password", type="password", placeholder="Password")
 	div.form-group
-		label.control-label.col-sm-3(for="newUserConfirmPassword") Repeat Password
+		label.control-label.col-sm-3(for="passwordAgain") Repeat Password
 		div.col-sm-9
-			input#newUserConfirmPassword.form-control(type="password", placeholder="Password")
+			input#passwordAgain.form-control(name="passwordAgain", type="password", placeholder="Password")
+	if message && message.length !== 0
+		div.form-group
+			div.col-sm-9.col-sm-offset-3
+				span.bg-danger.message #{message}
 	div.form-group
 		div.col-sm-offset-3.col-sm-9
 			button.btn.btn-default.btn-primary(type="submit") Submit
