@@ -1,0 +1,9 @@
+extends ../layout
+block content
+	.centrized-vertically
+		.row
+			.col-lg-8.col-lg-offset-2
+				h1 Confirmation has been sent!
+				p Now you can see this driver at#{" "}
+					a(href="/m/#{user.id}/employees") your employees page.
+				p.pull-right *management is art

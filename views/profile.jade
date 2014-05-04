@@ -2,9 +2,8 @@ extends layout
 block content
 	div.container
 		h1 Profile details
-		h2 #{user.email}
-		p #{user.id}
-		h2 Roles:
+		h3 #{profileInfo.Email}
+		p ID: #{profileInfo.Id}
+		h3 Roles:
 		ul
-		each role in user.roles
-			li #{role}
+			li #{profileInfo.Role}

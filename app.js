@@ -23,6 +23,8 @@ var register = require('./src/routes/register');
 var login = require('./src/routes/login');
 var logout = require('./src/routes/logout');
 var profile = require('./src/routes/profile');
+var manager = require('./src/routes/manager');
+var driver = require('./src/routes/driver');
 var membershipTest = require('./src/membership/membershipTestRoute');
 
 var app = express();
@@ -63,7 +65,9 @@ app.use('/register', register);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/profile', profile);
-app.use('/m', membershipTest);
+app.use('/a', membershipTest);
+app.use('/m', manager);
+app.use('/d', driver);
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {

@@ -1,4 +1,5 @@
 //TODO: Make comments up to date.
+//TODO: Make documentation for managerOwers and managers.
 /**
  * Exports an instance of ConnectRoles ('connect-roles' module).
  * Configures the following membership rules.
@@ -77,16 +78,24 @@ connectRoles.use('signedIn', function(req) {
 
 connectRoles.use('driver', function (req) {
 	var curUser = req.user;
-	var driverId = parseInt(req.param('driverId'), 10);
+
+	if (_(curUser).is('driver')) {
+		return true;
+	}
+});
+
+connectRoles.use('driverOwner', function (req) {
+	var curUser = req.user;
+	var driverId = req.param('ownerId');
 
 	if (_(curUser).is('driver') && curUser.id === driverId) {
 		return true;
 	}
 });
 
-connectRoles.use('driver', function (req) {
+connectRoles.use('driverOwner', function (req) {
 	var curUser = req.user;
-	var driverId = parseInt(req.param('driverId'), 10);
+	var driverId = req.param('ownerId');
 
 	if (_(curUser).is('manager') && _(curUser).isBossFor(driverId)) {
 		return true;
@@ -95,7 +104,15 @@ connectRoles.use('driver', function (req) {
 
 connectRoles.use('manager', function (req) {
 	var curUser = req.user;
-	var managerId = parseInt(req.param('managerId'), 10);
+
+	if (_(curUser).is('manager')) {
+		return true;
+	}
+});
+
+connectRoles.use('managerOwner', function (req) {
+	var curUser = req.user;
+	var managerId = req.param('ownerId');
 
 	if (_(curUser).is('manager') && curUser.id === managerId) {
 		return true;

@@ -56,7 +56,16 @@ router.get('/driver', function (req, res) {
 });
 
 router.post('/driver', function (req, res) {
-	res.end('register driver');
+	var email = req.param('email');
+	var password = req.param('password');
+
+	repository.registerUser(email, password, 'driver', function(isSuccess, errMessage) {
+		if (isSuccess) {
+			res.render('register/success');
+		} else {
+			res.render('register/driver', { registrationFormAction: '/register/driver', message: errMessage });
+		}
+	});
 });
 
 module.exports = router;

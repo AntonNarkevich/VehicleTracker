@@ -10,11 +10,22 @@ nav.navbar.navbar-default(role="navigation")
 
 		// Navbar content. Links etc.
 		#vt-navbar-collapse.collapse.navbar-collapse
-
 			if isAuthenticated()
+				if user.roles[0] === 'manager'
+					p.navbar-text
+						a.navbar-link(href="/m/#{user.id}/employees") Employees
+					p.navbar-text
+						a.navbar-link(href="/m/unemployed") Find drivers!
+					p.navbar-text
+						a.navbar-link(href="/m/vehicle/create") Vehicles
+
+				if user.roles[0] === 'driver'
+					p.navbar-text
+						a.navbar-link(href="/d/#{user.id}") Drive
+
 				.navbar-right
 					p.navbar-text Signed in as#{" "}
-						a.navbar-link(href="/profile") #{user.displayName || user.email}
+						a.navbar-link(href="/profile/#{user.id}/") #{user.email}
 					a.btn.btn-default.navbar-btn(href="/logout") Sign out
 			else
 				ul.nav.navbar-nav.navbar-right

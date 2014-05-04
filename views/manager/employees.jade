@@ -1,0 +1,26 @@
+extends ../layout
+block content
+	.container
+		.row
+			.col-md-12
+				h1 Here is a list of your employees
+		.row
+			.col-md-12
+				table.table.table-condensed
+					thead
+						tr
+							th #
+							th Email
+							th Id
+							th Status
+							th Actions
+					tbody
+						each driver, index in driversInfo
+							tr
+								td #{index + 1}
+								td
+									a(href="/profile/#{driver.Id}") #{driver.Email}
+								td #{driver.Id}
+								td #{driver.EmploymentStatus}
+								td
+									a.btn.btn-sm.btn-danger(type='button') Fire

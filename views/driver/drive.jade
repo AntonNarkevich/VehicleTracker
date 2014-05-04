@@ -1,0 +1,17 @@
+extends ../layout
+block content
+	.container
+		.row
+			.col-md-12
+				h1 Drive!
+				p Your vehicle is #{vehicleInfo.LicensePlate}. Id (#{vehicleInfo.Id}).
+				input(type="hidden", id="vehicle-id", value="#{vehicleInfo.Id}")
+				p Click the map to drive. Be careful! You are tracked and#{" "}
+					span.label.label-warning it can't be undone.
+		.row
+
+			.vt-google-map
+
+block scripts
+	script(src='http://maps.googleapis.com/maps/api/js?key=#{keys.googleMapsKey}&sensor=false&libraries=drawing ')
+	script(src='/js/local/drive.js')

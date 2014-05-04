@@ -1,11 +1,17 @@
 extends layout
 
 block content
-	h1= title
-	p Welcome to #{title}
+	.container.centrized-vertically
 
-	div.vt-google-map
+				.jumbotron
+					.row
+						.col-sm-7
+							h1 Vehicle tracker
+							p You are very welcome!
+							p
+								a.btn.btn-primary.btn-lg(role='button') Learn more
+						.col-sm-5
+							img.pull-right.vt-logo(src="/images/vehicle#{Math.round(Math.random() + 1)}.svg" alt="Vehicle")
 
 block scripts
 	script(src='http://maps.googleapis.com/maps/api/js?key=#{keys.googleMapsKey}&sensor=false&libraries=drawing ')
-	script(src='js/local/mapExperiments.js')
