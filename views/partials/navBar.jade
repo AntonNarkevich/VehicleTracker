@@ -17,7 +17,9 @@ nav.navbar.navbar-default(role="navigation")
 					p.navbar-text
 						a.navbar-link(href="/m/unemployed") Find drivers!
 					p.navbar-text
-						a.navbar-link(href="/m/vehicle/create") Vehicles
+						a.navbar-link(href="/m/vehicle/create") Create Vehicle
+					p.navbar-text
+						a.navbar-link(href="/m/#{user.id}/track") Track
 
 				if user.roles[0] === 'driver'
 					p.navbar-text

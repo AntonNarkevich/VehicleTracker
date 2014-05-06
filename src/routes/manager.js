@@ -64,4 +64,26 @@ router.post('/vehicle/create', role.is('manager'), function (req, res) {
 	});
 });
 
+router.get('/:ownerId/track', role.is('managerOwner'), function (req, res) {
+	var managerId = req.user.id;
+
+	res.render('manager/track', {keys: keys, managerId: managerId});
+});
+
+router.get('/:ownerId/trackData', role.is('managerOwner'), function (req, res) {
+	var managerId = req.user.id;
+
+	repository.getVehicleTrackInfos(managerId, function (err, vehicleTrackInfos) {
+		if (err) {
+			res.json(err);
+			return;
+		}
+
+		res.json(vehicleTrackInfos);
+	});
+});
+
+
+
+
 module.exports = router;

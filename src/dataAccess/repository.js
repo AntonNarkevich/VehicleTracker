@@ -6,6 +6,7 @@ var Connection = tedious.Connection;
 var Request = tedious.Request;
 var TYPES = tedious.TYPES;
 var util = require('util');
+var _ = require('underscore');
 
 var rekuire = require('rekuire');
 var config = rekuire('app.config');
@@ -333,6 +334,53 @@ function setVehiclePosition(vehicleId, longitude, latitude, done) {
 	connection.execSql(request);
 }
 
+//exec getVehicleTrackInfos '54b030f0-6b22-49b8-9ed2-177e5b0d9001'
+
+function getVehicleTrackInfos(managerId, done) {
+	var vehicleTrackInfoRows = [];
+
+	var sqlStatement = util.format("exec dbo.GetVehicleTrackInfos '%s'", managerId);
+
+	var request = new Request(sqlStatement, function (err, rowCount) {
+		if (err) {
+			logger.error('getVehicleTrackInfos ' + err);
+			done(err, null);
+		} else {
+			//!!Process it here
+			var vehicleTrackInfos = _.chain(vehicleTrackInfoRows)
+				.map(function(vehicleTrackInfoRow) {
+					return {
+						vehicleId: vehicleTrackInfoRow.Id,
+						date: vehicleTrackInfoRow.Date,
+						positionInfo: {
+							Longitude: vehicleTrackInfoRow.Longitude,
+							Latitude: vehicleTrackInfoRow.Latitude
+						}
+					};
+				})
+				.groupBy('vehicleId')
+				.values()
+				.value();
+
+			done(null, vehicleTrackInfos);
+			logger.info('getVehicleTrackInfos completed.');
+		}
+	});
+
+	request.on('row', function (columns) {
+		var vehicleTrackInfoRow = {};
+		columns.forEach(function (column) {
+			var colName = column.metadata.colName;
+
+			vehicleTrackInfoRow[colName] = column.value;
+		});
+
+		vehicleTrackInfoRows.push(vehicleTrackInfoRow);
+	});
+
+	connection.execSql(request);
+}
+
 
 function establishConnection(dbConnectedCallback) {
 	logger.trace('Establishing connection to database.');
@@ -365,5 +413,6 @@ module.exports = {
 	createVehicle: createVehicle,
 	getVehicle: getVehicle,
 	getVehiclePositions: getVehiclePositions,
-	setVehiclePosition: setVehiclePosition
+	setVehiclePosition: setVehiclePosition,
+	getVehicleTrackInfos: getVehicleTrackInfos
 };

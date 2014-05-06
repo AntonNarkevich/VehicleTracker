@@ -1,0 +1,14 @@
+extends ../layout
+block content
+	.container
+		.row
+			.col-md-12
+				h1 All your vehicle movements are displayed here:
+				p (try zooming)
+				input(type="hidden", id="manager-id", value="#{managerId}")
+		.row
+			.col-md-12
+				.vt-google-map
+block scripts
+	script(src='http://maps.googleapis.com/maps/api/js?key=#{keys.googleMapsKey}&sensor=false')
+	script(src='/js/local/track.js')
