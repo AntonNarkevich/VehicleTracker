@@ -11,6 +11,10 @@ nav.navbar.navbar-default(role="navigation")
 		// Navbar content. Links etc.
 		#vt-navbar-collapse.collapse.navbar-collapse
 			if isAuthenticated()
+				if user.roles[0] === 'admin'
+					p.navbar-text
+						a.navbar-link(href="/admin/export") Export Database
+
 				if user.roles[0] === 'manager'
 					p.navbar-text
 						a.navbar-link(href="/m/#{user.id}/employees") Employees
