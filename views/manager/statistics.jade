@@ -1,0 +1,27 @@
+extends ../layout
+block content
+	.container
+		.row
+			.col-md-12
+				h1 Drive statistics
+		.row
+			.col-md-12
+				each vehicleStatistics in statistics
+					h2 Vehicle #{vehicleStatistics.vehicleId}
+					if vehicleStatistics.statistics.length === 0
+						p No statistics for now.
+					else
+						for dayStatistics, date in vehicleStatistics.statistics
+							h3 Date: #{date}
+							table.table.table-bordered
+								thead
+									tr
+										th Start
+										th End
+										th Distance (meters)
+								tbody
+									for movementInfo in dayStatistics
+										tr
+											td (#{movementInfo.StartLongitude.toFixed(2)}, #{movementInfo.StartLatitude.toFixed(2)})
+											td (#{movementInfo.EndLongitude.toFixed(2)}, #{movementInfo.EndLatitude.toFixed(2)})
+											td #{movementInfo.Distance.toFixed(2)}

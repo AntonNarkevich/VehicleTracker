@@ -381,6 +381,64 @@ function getVehicleTrackInfos(managerId, done) {
 	connection.execSql(request);
 }
 
+function getStatistics(vehicleId, done) {
+	var movementInfos = [];
+
+	var sqlStatement = util.format("exec dbo.GetStatistics '%s'", vehicleId);
+
+	var request = new Request(sqlStatement, function (err, rowCount) {
+		if (err) {
+			logger.error('GetStatistics ' + err);
+			done(err, null);
+		} else {
+
+			done(null, movementInfos);
+			logger.info('GetStatistics completed.');
+		}
+	});
+
+	request.on('row', function (columns) {
+		var movementInfo = {};
+		columns.forEach(function (column) {
+			var colName = column.metadata.colName;
+
+			movementInfo[colName] = column.value;
+		});
+
+		movementInfos.push(movementInfo);
+	});
+
+	connection.execSql(request);
+}
+
+//TODO: Write a stored procedure that returns statistics for manager. Nor for vehicle.
+function getVehicleIds(managerId, done) {
+	var vehicleIds = [];
+
+	var sqlStatement = util.format("exec dbo.GetVehicleIds '%s'", managerId);
+
+	var request = new Request(sqlStatement, function (err, rowCount) {
+		if (err) {
+			logger.error('GetVehicleIds ' + err);
+			done(err, null);
+		} else {
+
+			done(null, vehicleIds);
+			logger.info('GetVehicleIds completed.');
+		}
+	});
+
+	request.on('row', function (columns) {
+		if (columns[0].metadata.colName !== 'Id') {
+			logger.error('Stored procedure returned wrong value');
+		}
+
+		vehicleIds.push(columns[0].value);
+	});
+
+	connection.execSql(request);
+}
+
 
 function establishConnection(dbConnectedCallback) {
 	logger.trace('Establishing connection to database.');
@@ -414,5 +472,7 @@ module.exports = {
 	getVehicle: getVehicle,
 	getVehiclePositions: getVehiclePositions,
 	setVehiclePosition: setVehiclePosition,
-	getVehicleTrackInfos: getVehicleTrackInfos
+	getVehicleTrackInfos: getVehicleTrackInfos,
+	getStatistics: getStatistics,
+	getVehicleIds: getVehicleIds
 };

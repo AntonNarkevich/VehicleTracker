@@ -24,6 +24,10 @@ nav.navbar.navbar-default(role="navigation")
 						a.navbar-link(href="/m/vehicle/create") Create Vehicle
 					p.navbar-text
 						a.navbar-link(href="/m/#{user.id}/track") Track
+					p.navbar-text
+						a.navbar-link(href="/m/#{user.id}/statistics") Statistics
+					p.navbar-text
+						a.navbar-link(href="/m/#{user.id}/toJSON") to JSON
 
 				if user.roles[0] === 'driver'
 					p.navbar-text
