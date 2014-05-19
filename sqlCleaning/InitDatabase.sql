@@ -3,7 +3,7 @@
 :r $(path)\CreateTableseAndViews.sql
 GO
 
-:setvar path "D:\Projects\VehicleTracker\sqlCleaning\CrudStoredProcedures"
+:setvar path "D:\Projects\VehicleTracker\sqlCleaning\GeneratedStoredProcedures"
 
 :r $(path)\JobOfferCRUD.ssmstp.sql
 :r $(path)\MessageCRUD.ssmstp.sql
