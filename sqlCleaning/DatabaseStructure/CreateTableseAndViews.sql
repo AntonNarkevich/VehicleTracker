@@ -8,9 +8,9 @@ IF EXISTS(SELECT *
           WHERE  name = 'VehicleTrackerDBCleaning') 
   BEGIN 
       DROP DATABASE VehicleTrackerDBCleaning 
-
-      CREATE DATABASE VehicleTrackerDBCleaning 
   END 
+
+  CREATE DATABASE VehicleTrackerDBCleaning 
 
 GO
 --#endregion 
@@ -84,7 +84,7 @@ CREATE TABLE Vehicles
      Info      NVARCHAR(600) 
   ) 
 
-CREATE TABLE VehicleXPositions 
+CREATE TABLE Positions 
   ( 
      Id           INT PRIMARY KEY IDENTITY, 
      VehicleId    INT FOREIGN KEY REFERENCES Vehicles(Id) NOT NULL, 
@@ -104,16 +104,12 @@ GO
 --#region Create Views
 CREATE VIEW [VW_UserRoles] 
 AS 
-  SELECT Users.Id Id, 
+  SELECT Users.Id as UserId, 
          Email, 
-         Roles.Name 
-  FROM   Roles 
-         INNER JOIN Users 
-                 ON Roles.Id = Users.Id 
-         INNER JOIN UsersXRoles 
-                 ON Roles.Id = UsersXRoles.RoleId 
-                    AND Users.Id = UsersXRoles.UserId 
-
+         Roles.Name as RoleName
+  FROM   Roles INNER JOIN
+         UsersXRoles ON Roles.Id = UsersXRoles.RoleId INNER JOIN
+         Users ON UsersXRoles.UserId = Users.Id
 GO
 
 CREATE VIEW [VW_ManagerDrivers] 

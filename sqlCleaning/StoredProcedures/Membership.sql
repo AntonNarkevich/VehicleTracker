@@ -33,10 +33,10 @@ GO
 CREATE PROC [dbo].[usp_MBSP_User_GetRolesById] 
 	@Id INT
 AS
-SELECT Name
+SELECT RoleName
   FROM VW_UserRoles
   WHERE
-	Id = @Id
+	UserId = @Id
 GO
 
 -------------------------------------------------------------------------------
