@@ -1,5 +1,4 @@
 {
 	"msSqlServer": "localhost",
-	"msSqlPort": "1434",
-	"msSqlInstanceName": "SQLEXPRESS"
+	"msSqlInstanceName": "MSSQLSERVER"
 }
