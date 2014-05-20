@@ -10,18 +10,9 @@ var repository = rekuire('repository');
 var logger = rekuire('logger');
 
 function formStoredProcedureRequest(procedureName, parameters, callback) {
-
-	//parameters => @param1, @param2, @param3
-	var parameterNames = _(parameters).map(function (parameter) {
-		return '@' + parameter.name;
-	}).join(', ');
-
-	//TODO: How to protect this from sql injection?
-	var sqlStatement = 'exec ' + procedureName + ' ' + parameterNames;
-
 	var returnedRows = [];
 
-	var request = new Request(sqlStatement, function (err, rowCount) {
+	var request = new Request(procedureName, function (err, rowCount) {
 		if (err) {
 			logger.error('Some error occured while executing stored procedure' + procedureName, err);
 			callback(err, null);
@@ -55,11 +46,10 @@ function formStoredProcedureRequest(procedureName, parameters, callback) {
 }
 
 
-
 repository.establishConnection(function (err, connection) {
 
 	var uspUserSelect = function (id, callback) {
-		var dbRequest = formStoredProcedureRequest(
+		var request = formStoredProcedureRequest(
 			'usp_User_Select',
 			[
 				{name: 'Id', type: TYPES.Int, value: id}
@@ -67,10 +57,10 @@ repository.establishConnection(function (err, connection) {
 			callback
 		);
 
-		connection.execSql(dbRequest);
+		connection.callProcedure(request);
 	};
 
-	uspUserSelect(8, function(err, users) {
+	uspUserSelect(undefined, function(err, users) {
 		console.log(users);
 	});
 });
