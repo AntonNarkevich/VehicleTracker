@@ -18,7 +18,7 @@ var dbConnectionConfig = {
 	password: keys.msSqlPassword,
 	server: config.msSqlServer,
 	options: {
-		port: config.msSqlPort
+		instanceName: config.msSqlInstanceName
 	}
 };
 
@@ -449,9 +449,8 @@ function establishConnection(dbConnectedCallback) {
 			} else {
 				logger.info('Db connection has been established');
 				isConnected = true;
+				dbConnectedCallback(err, connection);
 			}
-
-			dbConnectedCallback(err, connection);
 		}
 	);
 }
