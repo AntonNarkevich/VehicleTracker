@@ -1,4 +1,4 @@
-USE VehicleTrackerDB
+USE VehicleTrackerDBCleaning
 GO
 
 :setvar path "D:\Projects\VehicleTracker\sqlCleaning\FakeData"
