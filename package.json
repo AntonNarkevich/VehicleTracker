@@ -1,6 +1,6 @@
 {
   "name": "VehicleTracker",
-  "version": "0.3.154-0",
+  "version": "0.3.168-0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -37,6 +37,7 @@
     "adm-zip": "~0.4.4",
     "mime": "~1.2.11",
     "async": "~0.8.0",
-    "ejs": "~1.0.0"
+    "ejs": "~1.0.0",
+    "underscore.string": "^2.3.3"
   }
 }

@@ -16,7 +16,7 @@ var _ = require('underscore');
 var _s = require('underscore.string');
 
 var FILENAME = path.normalize('databaseApi.ejs');
-var OUTPUT_FILENAME = path.normalize('databaseApi.js');
+var OUTPUT_FILENAME = path.normalize('../database.js');
 
 var getStoredProcedures = function (callback) {
 	var request = getInvoker('usp_UTIL_GetStoredProcedures', [], callback);
