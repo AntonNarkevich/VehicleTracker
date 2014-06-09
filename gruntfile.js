@@ -127,6 +127,7 @@ module.exports = function (grunt) {
 			devGlobalScripts: {
 				src: ['bower_components/jquery/dist/jquery.js',
 					'bower_components/log4javascript/log4javascript_uncompressed.js',
+					'bower_components/parsleyjs/dist/parsley.min.js',
 					'bower_components/underscore/underscore.js',
 					'bower_components/bootstrap/js/transition.js',
 					'bower_components/bootstrap/js/collapse.js',
@@ -136,6 +137,7 @@ module.exports = function (grunt) {
 			prodGlobalScripts: {
 				src: ['bower_components/jquery/dist/jquery.min.js',
 					'bower_components/log4javascript/log4javascript.js',
+					'bower_components/parsleyjs/dist/parsley.js',
 					'bower_components/underscore/underscore.min.js',
 					'bower_components/bootstrap/js/transition.min.js',
 					'bower_components/bootstrap/js/collapse.min.js',
@@ -144,11 +146,13 @@ module.exports = function (grunt) {
 			},
 			devCss: {
 				src: ['bower_components/bootstrap/dist/css/bootstrap.css',
+					'bower_components/parsleyjs/src/parsley.css',
 					'temp/assets/**/*.css'],
 				dest: 'public/css/styles.css'
 			},
 			prodCss: {
 				src: ['bower_components/bootstrap/dist/css/bootstrap.min.css',
+					'bower_components/parsleyjs/src/parsley.css',
 					'temp/assets/**/*.css'],
 				dest: 'public/css/styles.css'
 			}

@@ -1,22 +1,44 @@
-form.form-horizontal(role="form", method="post", action="#{registrationFormAction}")
+form.registerForm.form-horizontal(role="form", method="post", action="#{registrationFormAction}", data-parsley-validate)
 	div.form-group
 		label.control-label.col-sm-3(for="email") Email address
 		div.col-sm-9
-			input#email.form-control(name="email", type="email", placeholder="Enter email")
+			input#email.form-control(
+			name="email",
+			type="email",
+			placeholder="Email",
+			data-parsley-required,
+			data-parsley-required-message="Email is required")
+
 	div.form-group
 		label.control-label.col-sm-3(for="password") Password
 		div.col-sm-9
-			input#password.form-control(name="password", type="password", placeholder="Password")
+			input#password.form-control(
+			name="password",
+			type="password",
+			placeholder="Password",
+			data-parsley-required,
+			data-parsley-minlength="6"
+			data-parsley-required-message="Password is required",
+			data-parsley-trigger="keyup")
+
 	div.form-group
 		label.control-label.col-sm-3(for="passwordAgain") Repeat Password
 		div.col-sm-9
-			input#passwordAgain.form-control(name="passwordAgain", type="password", placeholder="Password")
+			input#passwordAgain.form-control(
+			name="passwordAgain",
+			type="password",
+			placeholder="Password",
+			data-parsley-required,
+			data-parsley-required-message="Please, retype the password",
+			data-parsley-equalto-message="Passwords should match",
+			data-parsley-equalto="#password",
+			data-parsley-trigger="keyup")
+
 	if message && message.length !== 0
 		div.form-group
 			div.col-sm-9.col-sm-offset-3
-				span.bg-danger.message #{message}
+				.server-error-message.col-xs-12.alert.alert-danger #{message}
+
 	div.form-group
 		div.col-sm-offset-3.col-sm-9
 			button.btn.btn-default.btn-primary(type="submit") Submit
-			//button.btn.btn-default.btn-success(type="submit") Submit
-			//button.btn.btn-default.btn-danger(type="submit") Submit
