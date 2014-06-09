@@ -1,9 +1,11 @@
 'use strict';
 
 var router = require('express').Router();
+var bcrypt = require('bcrypt');
 
 var rekuire = require('rekuire');
 var repository = rekuire('repository');
+var logger = rekuire('logger');
 
 router.get('/', function(req,res) {
 	res.render('register');
@@ -35,6 +37,18 @@ router.get('/manager', function (req, res) {
 router.post('/manager', function (req, res) {
 	var email = req.param('email');
 	var password = req.param('password');
+
+	//Validation goes here.
+
+	bcrypt.hash(password, 10, function (err, hash) {
+		if (err) {
+			logger.log(err);
+			throw err;
+		}
+		//TODO: I need BINARY(40) to store it
+		console.log(hash);
+	});
+
 	//TODO: Use crypto and salt here.
 	//TODO: add validation here.
 	//var passwordAgain = req.param('passwordAgain');
