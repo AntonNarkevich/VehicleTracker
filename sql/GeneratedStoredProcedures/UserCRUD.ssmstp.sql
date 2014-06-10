@@ -14,7 +14,7 @@ AS
 
 	BEGIN TRAN
 
-	SELECT [Id], [Name], [Email], [PasswordHash], [Salt], [IsBlocked]
+	SELECT [Id], [Name], [Email], [PasswordHash], [IsBlocked]
 	FROM   [dbo].[Users]
 	WHERE  ([Id] = @Id OR @Id IS NULL)
 
@@ -28,8 +28,7 @@ GO
 CREATE PROC [dbo].[usp_User_Insert]
     @Name nvarchar(20),
     @Email varchar(320),
-    @PasswordHash varchar(20),
-    @Salt varchar(20),
+    @PasswordHash varchar(60),
     @IsBlocked bit
 AS
 	SET NOCOUNT ON
@@ -37,11 +36,11 @@ AS
 
 	BEGIN TRAN
 
-	INSERT INTO [dbo].[Users] ([Name], [Email], [PasswordHash], [Salt], [IsBlocked])
-	SELECT @Name, @Email, @PasswordHash, @Salt, @IsBlocked
+	INSERT INTO [dbo].[Users] ([Name], [Email], [PasswordHash], [IsBlocked])
+	SELECT @Name, @Email, @PasswordHash, @IsBlocked
 
 	-- Begin Return Select <- do not remove
-	SELECT [Id], [Name], [Email], [PasswordHash], [Salt], [IsBlocked]
+	SELECT [Id], [Name], [Email], [PasswordHash], [IsBlocked]
 	FROM   [dbo].[Users]
 	WHERE  [Id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
@@ -57,8 +56,7 @@ CREATE PROC [dbo].[usp_User_Update]
     @Id int,
     @Name nvarchar(20),
     @Email varchar(320),
-    @PasswordHash varchar(20),
-    @Salt varchar(20),
+    @PasswordHash varchar(60),
     @IsBlocked bit
 AS
 	SET NOCOUNT ON
@@ -67,11 +65,11 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[Users]
-	SET    [Name] = @Name, [Email] = @Email, [PasswordHash] = @PasswordHash, [Salt] = @Salt, [IsBlocked] = @IsBlocked
+	SET    [Name] = @Name, [Email] = @Email, [PasswordHash] = @PasswordHash, [IsBlocked] = @IsBlocked
 	WHERE  [Id] = @Id
 
 	-- Begin Return Select <- do not remove
-	SELECT [Id], [Name], [Email], [PasswordHash], [Salt], [IsBlocked]
+	SELECT [Id], [Name], [Email], [PasswordHash], [IsBlocked]
 	FROM   [dbo].[Users]
 	WHERE  [Id] = @Id
 	-- End Return Select <- do not remove

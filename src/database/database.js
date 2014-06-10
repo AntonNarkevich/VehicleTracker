@@ -294,14 +294,13 @@ module.exports = {
 		connection.callProcedure(request);
 	},
 
-	uspUserInsert: function (Name, Email, PasswordHash, Salt, IsBlocked,  callback) {
+	uspUserInsert: function (Name, Email, PasswordHash, IsBlocked,  callback) {
 		var request = getInvoker(
 			'usp_User_Insert',
 			[
 				{name: 'Name', type: TYPES.NVarChar, value: Name},
 				{name: 'Email', type: TYPES.VarChar, value: Email},
-				{name: 'PasswordHash', type: TYPES.VarChar, value: PasswordHash},
-				{name: 'Salt', type: TYPES.VarChar, value: Salt},
+				{name: 'PasswordHash', type: undefined, value: PasswordHash},
 				{name: 'IsBlocked', type: TYPES.Bit, value: IsBlocked}
 			],
 			callback
@@ -322,15 +321,14 @@ module.exports = {
 		connection.callProcedure(request);
 	},
 
-	uspUserUpdate: function (Id, Name, Email, PasswordHash, Salt, IsBlocked,  callback) {
+	uspUserUpdate: function (Id, Name, Email, PasswordHash, IsBlocked,  callback) {
 		var request = getInvoker(
 			'usp_User_Update',
 			[
 				{name: 'Id', type: TYPES.Int, value: Id},
 				{name: 'Name', type: TYPES.NVarChar, value: Name},
 				{name: 'Email', type: TYPES.VarChar, value: Email},
-				{name: 'PasswordHash', type: TYPES.VarChar, value: PasswordHash},
-				{name: 'Salt', type: TYPES.VarChar, value: Salt},
+				{name: 'PasswordHash', type: undefined, value: PasswordHash},
 				{name: 'IsBlocked', type: TYPES.Bit, value: IsBlocked}
 			],
 			callback

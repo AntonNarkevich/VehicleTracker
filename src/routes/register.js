@@ -5,6 +5,8 @@ var bcrypt = require('bcrypt');
 
 var rekuire = require('rekuire');
 var repository = rekuire('repository');
+
+var database = rekuire('database');
 var logger = rekuire('logger');
 
 router.get('/', function(req,res) {
@@ -45,9 +47,15 @@ router.post('/manager', function (req, res) {
 			logger.log(err);
 			throw err;
 		}
+
+		database.
+
 		//TODO: I need BINARY(40) to store it
 		console.log(hash);
 	});
+
+
+
 
 	//TODO: Use crypto and salt here.
 	//TODO: add validation here.

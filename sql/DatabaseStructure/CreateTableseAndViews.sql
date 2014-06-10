@@ -25,8 +25,7 @@ CREATE TABLE Users
      Id           INT PRIMARY KEY IDENTITY,
      Name         NVARCHAR(20),
      Email        VARCHAR(320) UNIQUE NOT NULL,
-     PasswordHash VARCHAR(20) NOT NULL,
-     Salt         VARCHAR(20) NOT NULL,
+     PasswordHash BINARY(60) NOT NULL,
      --TODO: Set porper types for PasswordHash and Salt
      IsBlocked    BIT DEFAULT 'false' NOT NULL
   )

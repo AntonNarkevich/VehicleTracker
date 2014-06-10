@@ -112,3 +112,28 @@ BEGIN TRAN
 COMMIT
 
 GO
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+IF OBJECT_ID('[dbo].[usp_MBSP_User_Register]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_MBSP_User_Register] 
+END 
+GO
+
+CREATE PROC [dbo].[usp_MBSP_User_Register]
+    @Email varchar(320),
+    @PasswordHash binary(60)
+AS
+
+BEGIN TRAN
+
+	select * from Users
+	where Email = @Email
+
+	select 1
+
+COMMIT
+
+GO
