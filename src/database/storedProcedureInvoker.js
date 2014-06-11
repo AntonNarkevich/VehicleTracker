@@ -12,7 +12,7 @@ function getInvoker(procedureName, parameters, callback) {
 	var request = new Request(procedureName, function (err, rowCount) {
 		if (err) {
 			logger.error('Some error occured while executing stored procedure ' + procedureName, err);
-			callback(err, null);
+			callback(err, returnedRows);
 
 			return;
 		}

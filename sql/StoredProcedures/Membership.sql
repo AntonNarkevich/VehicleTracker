@@ -42,6 +42,22 @@ GO
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
+IF OBJECT_ID('[dbo].[usp_MBSP_User_GetWithRoles]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_MBSP_User_GetWithRoles] 
+END 
+GO
+
+CREATE PROC [dbo].[usp_MBSP_User_GetWithRoles] 
+	@Id INT
+AS
+	exec usp_User_Select @Id
+	exec usp_MBSP_User_GetRolesById @Id
+GO
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
 IF OBJECT_ID('[dbo].[usp_MBSP_Role_GetIdByName]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_MBSP_Role_GetIdByName] 
@@ -116,24 +132,64 @@ GO
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-IF OBJECT_ID('[dbo].[usp_MBSP_User_Register]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_MBSP_User_Register] 
-END 
-GO
+USE VehicleTrackerDb 
 
-CREATE PROC [dbo].[usp_MBSP_User_Register]
-    @Email varchar(320),
-    @PasswordHash binary(60)
-AS
+GO 
 
-BEGIN TRAN
+IF OBJECT_ID('[dbo].[usp_MBSP_User_Register]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_User_Register] 
+  END 
 
-	select * from Users
-	where Email = @Email
+GO 
 
-	select 1
+CREATE PROC [dbo].[usp_MBSP_User_Register] @Email        VARCHAR(320), 
+                                           @PasswordHash VARCHAR(60), 
+                                           @Role         VARCHAR(20) 
+AS 
+    DECLARE @error_number   INT, 
+            @error_severity INT, 
+            @error_state    INT, 
+            @id             INT 
 
-COMMIT
+  BEGIN TRY 
+      EXEC [dbo].[usp_User_Insert] 
+        NULL, 
+        @Email, 
+        @PasswordHash, 
+        'FALSE' 
 
-GO
+      SET @id = @@IDENTITY
+  END TRY 
+
+  BEGIN CATCH 
+      SELECT @error_number = ERROR_NUMBER(), 
+             @error_severity = ERROR_SEVERITY(), 
+             @error_state = ERROR_STATE() 
+
+      -- check unique key violation (Email is duplicated)     
+      IF @error_number = 2627 
+        BEGIN 
+            SELECT cast('FALSE' AS BIT)                  AS IsSuccess, 
+                   'User with such email already exist.' AS [Message] 
+
+            RETURN 
+        END 
+      -- other errors 
+      ELSE 
+        BEGIN 
+            RAISERROR(@error_number,@error_severity,@error_state) 
+        END 
+  END CATCH 
+
+    IF @Role IN ( 'manager', 'driver' ) 
+      BEGIN 
+          EXEC usp_MBSP_User_AddRole 
+            @id, 
+            @Role 
+      END 
+
+    SELECT cast('TRUE' AS BIT)        AS IsSuccess, 
+           'Successfully registered.' AS [Message] 
+
+GO 

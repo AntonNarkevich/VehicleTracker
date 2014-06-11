@@ -34,10 +34,14 @@ form.registerForm.form-horizontal(role="form", method="post", action="#{registra
 			data-parsley-equalto="#password",
 			data-parsley-trigger="keyup")
 
-	if message && message.length !== 0
+	if (errorMessage || validationErrors)
 		div.form-group
 			div.col-sm-9.col-sm-offset-3
-				.server-error-message.col-xs-12.alert.alert-danger #{message}
+				.server-error-message.col-xs-12.alert.alert-danger
+					if validationErrors
+						each err in validationErrors
+							p #{err}
+					p #{errorMessage}
 
 	div.form-group
 		div.col-sm-offset-3.col-sm-9

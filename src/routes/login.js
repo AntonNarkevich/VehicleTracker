@@ -3,8 +3,9 @@
 var passport = require('passport');
 var router = require('express').Router();
 
-var  rekuire = require('rekuire');
+var rekuire = require('rekuire');
 var logger = rekuire('logger');
+var formValidator = rekuire('formValidator');
 
 router.get('/', function (req, res) {
 	var params = { loginFormAction: '/login', message: req.flash('error') };
@@ -13,6 +14,24 @@ router.get('/', function (req, res) {
 });
 
 router.post('/',
+	function(req, res, next) {
+		var email = req.param('email');
+		var password = req.param('password');
+
+		var validationResult = formValidator.validate({
+			email: email,
+			password: password
+		});
+
+		if (!validationResult.isValid) {
+			var params = { loginFormAction: '/login', validationErrors: validationResult.errorMsgs };
+			res.render('login', params);
+
+			return;
+		}
+
+		next();
+	},
 	passport.authenticate('local', {
 		failureRedirect: '/login',
 		failureFlash: true

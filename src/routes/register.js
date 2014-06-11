@@ -2,12 +2,14 @@
 
 var router = require('express').Router();
 var bcrypt = require('bcrypt');
+var validator = require('validator');
 
 var rekuire = require('rekuire');
 var repository = rekuire('repository');
 
 var database = rekuire('database');
 var logger = rekuire('logger');
+var formValidator = rekuire('formValidator');
 
 router.get('/', function(req,res) {
 	res.render('register');
@@ -39,34 +41,47 @@ router.get('/manager', function (req, res) {
 router.post('/manager', function (req, res) {
 	var email = req.param('email');
 	var password = req.param('password');
+	var passwordAgain = req.param('passwordAgain');
 
-	//Validation goes here.
+	//Validation
+	var validationResult = formValidator.validate({
+		email: email,
+		password: password,
+		passwordAgain: passwordAgain
+	});
 
+	if (!validationResult.isValid) {
+		res.render('register/manager', { registrationFormAction: '/register/manager', validationErrors: validationResult.errorMsgs });
+
+		return;
+	}
+
+	//Validation is passed. Registring.
 	bcrypt.hash(password, 10, function (err, hash) {
 		if (err) {
-			logger.log(err);
+			logger.error(err);
+
 			throw err;
 		}
 
-		database.
+		logger.trace('Registered user with hash: ', hash);
 
-		//TODO: I need BINARY(40) to store it
-		console.log(hash);
-	});
+		database.uspMBSPUserRegister(email, hash, 'manager', function (err, data) {
+			//Last data element contains info about uspMBSPUserRegister execution
+			var execInfo = data[data.length - 1];
 
+			if (execInfo === undefined && err) {
+				logger.error('Unexpected error at uspMBSPUserRegister: ', err);
 
+				throw err;
+			}
 
-
-	//TODO: Use crypto and salt here.
-	//TODO: add validation here.
-	//var passwordAgain = req.param('passwordAgain');
-
-	repository.registerUser(email, password, 'manager', function(isSuccess, errMessage) {
-		if (isSuccess) {
-			res.render('register/success');
-		} else {
-			res.render('register/manager', { registrationFormAction: '/register/manager', message: errMessage });
-		}
+			if (execInfo.IsSuccess) {
+				res.render('register/success');
+			} else {
+				res.render('register/manager', { registrationFormAction: '/register/manager', errorMessage: execInfo.Message });
+			}
+		});
 	});
 });
 

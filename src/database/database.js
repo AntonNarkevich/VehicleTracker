@@ -214,6 +214,32 @@ module.exports = {
 		connection.callProcedure(request);
 	},
 
+	uspMBSPUserGetWithRoles: function (Id,  callback) {
+		var request = getInvoker(
+			'usp_MBSP_User_GetWithRoles',
+			[
+				{name: 'Id', type: TYPES.Int, value: Id}
+			],
+			callback
+		);
+
+		connection.callProcedure(request);
+	},
+
+	uspMBSPUserRegister: function (Email, PasswordHash, Role,  callback) {
+		var request = getInvoker(
+			'usp_MBSP_User_Register',
+			[
+				{name: 'Email', type: TYPES.VarChar, value: Email},
+				{name: 'PasswordHash', type: TYPES.VarChar, value: PasswordHash},
+				{name: 'Role', type: TYPES.VarChar, value: Role}
+			],
+			callback
+		);
+
+		connection.callProcedure(request);
+	},
+
 	uspMBSPUserRemoveRole: function (userId, roleName,  callback) {
 		var request = getInvoker(
 			'usp_MBSP_User_RemoveRole',
@@ -300,7 +326,7 @@ module.exports = {
 			[
 				{name: 'Name', type: TYPES.NVarChar, value: Name},
 				{name: 'Email', type: TYPES.VarChar, value: Email},
-				{name: 'PasswordHash', type: undefined, value: PasswordHash},
+				{name: 'PasswordHash', type: TYPES.VarChar, value: PasswordHash},
 				{name: 'IsBlocked', type: TYPES.Bit, value: IsBlocked}
 			],
 			callback
@@ -328,7 +354,7 @@ module.exports = {
 				{name: 'Id', type: TYPES.Int, value: Id},
 				{name: 'Name', type: TYPES.NVarChar, value: Name},
 				{name: 'Email', type: TYPES.VarChar, value: Email},
-				{name: 'PasswordHash', type: undefined, value: PasswordHash},
+				{name: 'PasswordHash', type: TYPES.VarChar, value: PasswordHash},
 				{name: 'IsBlocked', type: TYPES.Bit, value: IsBlocked}
 			],
 			callback

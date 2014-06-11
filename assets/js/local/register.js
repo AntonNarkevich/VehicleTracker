@@ -1,8 +1,8 @@
 /*global jQuery*/
-(function register($) {
+(function removeServerErrMsg($) {
 	'use strict';
 
-	function validateRegisterFormHandler(formInstance) {
+	function validateFormHandler(formInstance) {
 
 		if(formInstance.isValid()) {
 			return;
@@ -15,7 +15,7 @@
 	}
 
 	$(function () {
-		$('.registerForm').parsley().subscribe('parsley:form:validate', validateRegisterFormHandler);
+		$('form[data-parsley-validate]').parsley().subscribe('parsley:form:validate', validateFormHandler);
 	});
 
 }(jQuery));

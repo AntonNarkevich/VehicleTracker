@@ -11,11 +11,11 @@ nav.navbar.navbar-default(role="navigation")
 		// Navbar content. Links etc.
 		#vt-navbar-collapse.collapse.navbar-collapse
 			if isAuthenticated()
-				if user.roles[0] === 'admin'
+				if (user.roles.indexOf('admin') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/admin/export") Export Database
 
-				if user.roles[0] === 'manager'
+				if (user.roles.indexOf('manager') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/m/#{user.id}/employees") Employees
 					p.navbar-text
@@ -29,13 +29,13 @@ nav.navbar.navbar-default(role="navigation")
 					p.navbar-text
 						a.navbar-link(href="/m/#{user.id}/toJSON") to JSON
 
-				if user.roles[0] === 'driver'
+				if (user.roles.indexOf('driver') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/d/#{user.id}") Drive
 
 				.navbar-right
 					p.navbar-text Signed in as#{" "}
-						a.navbar-link(href="/profile/#{user.id}/") #{user.email}
+						a.navbar-link(href="/profile/#{user.id}/") #{user.Email}
 					a.btn.btn-default.navbar-btn(href="/logout") Sign out
 			else
 				ul.nav.navbar-nav.navbar-right

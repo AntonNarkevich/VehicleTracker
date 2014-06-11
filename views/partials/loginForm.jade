@@ -1,16 +1,37 @@
-form.form-horizontal(role="form", method="POST" action="#{loginFormAction}")
+form.form-horizontal(role="form", method="POST" action="#{loginFormAction}", data-parsley-validate)
 	div.form-group
 		label.control-label.col-sm-3(for="email") Email address
 		div.col-sm-9
-			input#email.form-control(name="email", type="email", placeholder="Enter email")
+			input#email.form-control(
+			name="email",
+			type="email",
+			placeholder="Enter email"
+			data-parsley-required,
+			data-parsley-required-message="Email is required")
+
 	div.form-group
 		label.control-label.col-sm-3(for="password") Password
 		div.col-sm-9
-			input#password.form-control(name="password", type="password", placeholder="Password")
-	if message && message.length !== 0
+			input#password.form-control(
+			name="password",
+			type="password",
+			placeholder="Password"
+			data-parsley-required,
+			data-parsley-required-message="Password is required",
+			data-parsley-minlength="6"
+			data-parsley-trigger="keyup")
+
+	if (message && message.length || validationErrors)
 		div.form-group
 			div.col-sm-9.col-sm-offset-3
-				span.bg-danger.message #{message}
+				.server-error-message.col-xs-12.alert.alert-danger
+					if validationErrors
+						each err in validationErrors
+							p #{err}
+
+					if message && message.length
+						p #{message}
+
 	div.form-group
 		div.col-sm-offset-3.col-sm-9
 			button.btn.btn-default.btn-primary(type="submit") Submit
