@@ -1,6 +1,6 @@
 {
   "name": "VehicleTracker",
-  "version": "0.3.215-0",
+  "version": "0.3.218-0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"

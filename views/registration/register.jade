@@ -3,14 +3,16 @@ block content
 	.container
 		.row
 			.col-md-12
-				h1 To be a driver? Great choice!
+				h1 We want you to be a #{role} too.
 		.row.centrized-vertically
 			.col-md-6.col-md-offset-3
 				.row
 					.col-sm-9.col-sm-offset-3
 						h3
 							| Each #{" "}
-							strong driver#{" "}
-							| needs credentials
-
+							strong #{role + " "}
+							| needs credentials!
 				include ../partials/registrationForm
+
+block scripts
+	script(src='/js/local/register.js')

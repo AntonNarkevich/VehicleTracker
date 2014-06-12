@@ -5,40 +5,25 @@ var bcrypt = require('bcrypt');
 var validator = require('validator');
 
 var rekuire = require('rekuire');
-var repository = rekuire('repository');
-
 var database = rekuire('database');
 var logger = rekuire('logger');
 var formValidator = rekuire('formValidator');
 
-router.get('/', function(req,res) {
-	res.render('register');
+router.get('/', function (req, res) {
+	res.render('registration/roleChoice');
 });
 
-/**
- * No 'get' route. Should be registered during initializtion. /admin/init.
- */
-router.post('/admin', function (req, res) {
-	res.end('register admin');
+router.get('/:role(driver|manager)', function (req, res) {
+	var role = req.param('role');
 
-	var email = 'your@new.admin';
-	var passwordHash = 'whatislove';
-	var role = 'admin';
-
-	repository.registerUser(email, passwordHash, role, function(isSuccess, errMessage) {
-		res.write('isSuccess ' + isSuccess);
-		res.end('errMessage ' + errMessage);
+	res.render('registration/register', {
+		role: role,
+		registrationFormAction: '/register/' + role
 	});
 });
 
-/**
- * Manager registration.
- */
-router.get('/manager', function (req, res) {
-	res.render('register/manager', { registrationFormAction: '/register/manager' });
-});
-
-router.post('/manager', function (req, res) {
+router.post('/:role(manager|driver)', function (req, res) {
+	var role = req.param('role');
 	var email = req.param('email');
 	var password = req.param('password');
 	var passwordAgain = req.param('passwordAgain');
@@ -51,7 +36,11 @@ router.post('/manager', function (req, res) {
 	});
 
 	if (!validationResult.isValid) {
-		res.render('register/manager', { registrationFormAction: '/register/manager', validationErrors: validationResult.errorMsgs });
+		res.render('registration/register', {
+			role: role,
+			registrationFormAction: '/register/' + role,
+			validationErrors: validationResult.errorMsgs
+		});
 
 		return;
 	}
@@ -64,9 +53,9 @@ router.post('/manager', function (req, res) {
 			throw err;
 		}
 
-		logger.trace('Registered user with hash: ', hash);
+		logger.trace('Registring ' + role + ' with hash: ', hash);
 
-		database.uspMBSPUserRegister(email, hash, 'manager', function (err, data) {
+		database.uspMBSPUserRegister(email, hash, role, function (err, data) {
 			//Last data element contains info about uspMBSPUserRegister execution
 			var execInfo = data[data.length - 1];
 
@@ -77,31 +66,15 @@ router.post('/manager', function (req, res) {
 			}
 
 			if (execInfo.IsSuccess) {
-				res.render('register/success');
+				res.render('registration/success');
 			} else {
-				res.render('register/manager', { registrationFormAction: '/register/manager', errorMessage: execInfo.Message });
+				res.render('registration/register', {
+					role: role,
+					registrationFormAction: '/register/' + role,
+					errorMessage: execInfo.Message
+				});
 			}
 		});
-	});
-});
-
-/**
- * Driver registration.
- */
-router.get('/driver', function (req, res) {
-	res.render('register/driver', { registrationFormAction: '/register/driver' });
-});
-
-router.post('/driver', function (req, res) {
-	var email = req.param('email');
-	var password = req.param('password');
-
-	repository.registerUser(email, password, 'driver', function(isSuccess, errMessage) {
-		if (isSuccess) {
-			res.render('register/success');
-		} else {
-			res.render('register/driver', { registrationFormAction: '/register/driver', message: errMessage });
-		}
 	});
 });
 
