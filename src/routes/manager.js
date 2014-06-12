@@ -12,6 +12,7 @@ var mime = require('mime');
 
 var logger = rekuire('logger');
 var repository = rekuire('repository');
+var database = rekuire('database');
 var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');
 
@@ -19,7 +20,7 @@ var keys = rekuire('keys.config');
 router.get('/:ownerId/employees', role.is('managerOwner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	repository.getDriversInfo(managerId, function (driversInfo) {
+	database.getDriversInfo(managerId, function (driversInfo) {
 		res.render('manager/employees', {driversInfo: driversInfo});
 	});
 });
