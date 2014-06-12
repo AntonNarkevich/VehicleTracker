@@ -2,6 +2,7 @@
 
 var router = require('express').Router();
 
+var _ = require('underscore');
 var rekuire = require('rekuire');
 var role = rekuire('roleStrategy');
 var logger = rekuire('logger');
@@ -12,7 +13,7 @@ var database = rekuire('database');
 router.get('/:ownerId', role.is('signedIn'), function (req, res) {
 	var ownerId = req.param('ownerId');
 
-	database.uspUserSelect(ownerId, function (err, data) {
+	database.uspMBSPUserGetWithRoles(ownerId, function (err, data) {
 		if (err) {
 			logger.error(err);
 
@@ -20,6 +21,10 @@ router.get('/:ownerId', role.is('signedIn'), function (req, res) {
 		}
 
 		var profileInfo = data[0];
+
+		profileInfo.roles = _.chain(data).tail().map(function (roleInfo) {
+			return roleInfo.RoleName;
+		}).value();
 
 		res.render('profile', { profileInfo: profileInfo });
 	});

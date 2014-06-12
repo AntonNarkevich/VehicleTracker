@@ -17,3 +17,7 @@ block content
 			tr
 				td Is blocked
 				td #{profileInfo.IsBlocked ? 'Yes' : 'No'}
+			if profileInfo.roles.length !== 0
+				tr
+					td Roles
+					td #{profileInfo.roles.join(', ')}
