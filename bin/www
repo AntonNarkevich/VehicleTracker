@@ -5,13 +5,9 @@ var config = rekuire('app.config');
 var logger = rekuire('logger');
 var debug = require('debug')('my-application');
 
-var repository = rekuire('repository');
+var app = rekuire('app');
+app.set('port', process.env.PORT || config.appPort);
 
-repository.establishConnection(function() {
-	var app = rekuire('app');
-	app.set('port', process.env.PORT || config.appPort);
-
-	var server = app.listen(app.get('port'), function() {
-		logger.info('Express server listening on port ' + server.address().port);
-	});
+var server = app.listen(app.get('port'), function() {
+	logger.info('Express server listening on port ' + server.address().port);
 });

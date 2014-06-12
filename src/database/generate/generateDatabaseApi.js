@@ -3,7 +3,7 @@
 var TYPES = require('tedious').TYPES;
 
 var rekuire = require('rekuire');
-var getInvoker = rekuire('storedProcedureInvoker').getInvoker;
+var invoker = rekuire('storedProcedureInvoker');
 var connector = rekuire('connector');
 var connection = rekuire('connector').connection;
 
@@ -19,66 +19,55 @@ var FILENAME = path.normalize('databaseApi.ejs');
 var OUTPUT_FILENAME = path.normalize('../database.js');
 
 var getStoredProcedures = function (callback) {
-	var request = getInvoker('usp_UTIL_GetStoredProcedures', [], callback);
-
-	connection.callProcedure(request);
+	invoker.invoke('usp_UTIL_GetStoredProcedures', [], callback);
 };
 
-connector.connect(function (err) {
-	if (err) {
-		throw err;
-	}
+getStoredProcedures(function (err, storedProcedures) {
+	var sqlToTedious = {
+		'int': 'TYPES.Int',
+		'nvarchar': 'TYPES.NVarChar',
+		'varchar': 'TYPES.VarChar',
+		'bit': 'TYPES.Bit'
+	};
 
-	getStoredProcedures(function (err, storedProcedures) {
-
-		var sqlToTedious = {
-			'int': 'TYPES.Int',
-			'nvarchar': 'TYPES.NVarChar',
-			'varchar': 'TYPES.VarChar',
-			'bit': 'TYPES.Bit'
-		};
-
-		var proceduresInfo = _.chain(storedProcedures)
-			.each(function(row) {
-				row.jsName = row.ParameterName.replace('@', '');
-				row.tediousType = sqlToTedious[row.ParameterType];
-			})
-			.groupBy('ProcedureName')
-			.map(function(args, procedureName) {
-				return {
-					sqlName: procedureName,
-					jsName: _s.camelize(procedureName),
-					args: args
-				};
-			})
-			.each(function(procInfo) {
-				procInfo.jsArgsString = _(procInfo.args)
-					.map(function(arg) {
-						return arg.jsName + ', ';
-					})
-					.join('');
-			});
-
-		fs.readFile(FILENAME, function (err, data) {
-			if (err) {
-				console.error(err);
-			}
-
-			var jsApi = ejs.render(data.toString(), { procedures: proceduresInfo });
-
-			console.log('Compiled');
-
-			fs.writeFile(OUTPUT_FILENAME, jsApi, function (err) {
-				if (err) {
-					throw err;
-				}
-
-				console.log('Written to %s', OUTPUT_FILENAME);
-			});
+	var proceduresInfo = _.chain(storedProcedures)
+		.each(function (row) {
+			row.jsName = row.ParameterName.replace('@', '');
+			row.tediousType = sqlToTedious[row.ParameterType];
+		})
+		.groupBy('ProcedureName')
+		.map(function (args, procedureName) {
+			return {
+				sqlName: procedureName,
+				jsName: _s.camelize(procedureName),
+				args: args
+			};
+		})
+		.each(function (procInfo) {
+			procInfo.jsArgsString = _(procInfo.args)
+				.map(function (arg) {
+					return arg.jsName + ', ';
+				})
+				.join('');
 		});
 
+	fs.readFile(FILENAME, function (err, data) {
+		if (err) {
+			console.error(err);
+		}
 
-		console.log(storedProcedures);
+		var jsApi = ejs.render(data.toString(), { procedures: proceduresInfo });
+
+		console.log('Compiled');
+
+		fs.writeFile(OUTPUT_FILENAME, jsApi, function (err) {
+			if (err) {
+				throw err;
+			}
+
+			console.log('Written to %s', OUTPUT_FILENAME);
+		});
 	});
-});
 
+	console.log(storedProcedures);
+});

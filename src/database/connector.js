@@ -2,11 +2,13 @@
 
 var tedious = require('tedious');
 var Connection = tedious.Connection;
+var ConnectionPool = require('tedious-connection-pool');
 
 var rekuire = require('rekuire');
 var config = rekuire('app.config');
 var keys = rekuire('keys.config');
 var logger = rekuire('logger');
+
 
 var dbConnectionConfig = {
 	userName: keys.msSqlUserName,
@@ -17,30 +19,16 @@ var dbConnectionConfig = {
 	}
 };
 
-var connection = new Connection(dbConnectionConfig);
-var isConnected = false;
+var pool = new ConnectionPool({}, dbConnectionConfig);
 
-function connect(dbConnectedCallback) {
-	logger.trace('Establishing connection to database.');
+function getConnection(dbConnectedCallback) {
+	pool.requestConnection(function (err, connection) {
+		logger.trace('Getting connection from the pool.');
 
-	connection.on('connect', function (err) {
-			if (err) {
-				logger.fatal('Db connection error: ', err);
-				dbConnectedCallback(err, null);
-
-				return;
-			}
-
-			isConnected = true;
-			logger.info('Db connection has been established');
-
-			dbConnectedCallback(null, connection);
-		}
-	);
+		dbConnectedCallback(null, connection);
+	});
 }
 
 module.exports = {
-	connection: connection,
-	isConnected: isConnected,
-	connect: connect
+	getConnection: getConnection
 };

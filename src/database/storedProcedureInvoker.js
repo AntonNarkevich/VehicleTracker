@@ -2,10 +2,18 @@
 
 var Request = require('tedious').Request;
 var _ = require('underscore');
-
 var rekuire = require('rekuire');
-var logger = rekuire('logger');
 
+var logger = rekuire('logger');
+var connector = rekuire('connector');
+
+/**
+ * Creates Request (tedious) object for s.p. execution.
+ * @param procedureName
+ * @param parameters
+ * @param callback
+ * @returns {Request}
+ */
 function getInvoker(procedureName, parameters, callback) {
 	var returnedRows = [];
 
@@ -42,6 +50,42 @@ function getInvoker(procedureName, parameters, callback) {
 	return request;
 }
 
+/**
+ * Gets a connection from the pool.
+ * Executes s.p. on it.
+ * Returns the connection to the pool.
+ */
+function invoke(procedureName, parameters, callback) {
+	connector.getConnection(function (err, connection) {
+		if (err) {
+			logger.error('Error connecting to db: ', err);
+
+			//Dangerous err throwing.
+			throw err;
+		}
+
+		//Wrapping use defined callback to close the connection.
+		var request = getInvoker(procedureName, parameters, function(err, returnedRows) {
+			//Return connection to the pool.
+			logger.trace('Returing connection to the pool.');
+			connection.close();
+
+			callback(err, returnedRows);
+		});
+
+		connection.on('connect', function(err) {
+			if (err) {
+				logger.fatal('Db connection error: ', err);
+
+				throw err;
+			}
+
+			logger.trace('Connection established. Calling procedure.');
+			connection.callProcedure(request);
+		});
+	});
+}
+
 module.exports = {
-	getInvoker: getInvoker
+	invoke: invoke
 };

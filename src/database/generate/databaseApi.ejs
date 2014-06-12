@@ -4,18 +4,16 @@ var TYPES = require('tedious').TYPES;
 
 var rekuire = require('rekuire');
 var connection = rekuire('connector').connection;
-var getInvoker = rekuire('storedProcedureInvoker').getInvoker;
+var invoker = rekuire('storedProcedureInvoker');
 
 module.exports = {<% procedures.forEach(function(procedure, procIndex, procArray) { %>
 	<%= procedure.jsName %>: function (<%= procedure.jsArgsString %> callback) {
-		var request = getInvoker(
+		invoker.invoke(
 			'<%= procedure.sqlName %>',
 			[<% procedure.args.forEach(function(arg, argIndex, argsArray) { %>
 				{name: '<%= arg.jsName %>', type: <%= arg.tediousType %>, value: <%= arg.jsName %>}<% if(argIndex !== argsArray.length - 1) { %>,<% } %><% }); %>
 			],
 			callback
 		);
-
-		connection.callProcedure(request);
 	}<% if(procIndex !== procArray.length - 1) { %>,<% } %>
 <% }); %>};
