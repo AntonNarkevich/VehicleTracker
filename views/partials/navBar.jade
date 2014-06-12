@@ -17,25 +17,25 @@ nav.navbar.navbar-default(role="navigation")
 
 				if (user.roles.indexOf('manager') !== -1)
 					p.navbar-text
-						a.navbar-link(href="/m/#{user.id}/employees") Employees
+						a.navbar-link(href="/m/#{user.Id}/employees") Employees
 					p.navbar-text
 						a.navbar-link(href="/m/unemployed") Find drivers!
 					p.navbar-text
 						a.navbar-link(href="/m/vehicle/create") Create Vehicle
 					p.navbar-text
-						a.navbar-link(href="/m/#{user.id}/track") Track
+						a.navbar-link(href="/m/#{user.Id}/track") Track
 					p.navbar-text
-						a.navbar-link(href="/m/#{user.id}/statistics") Statistics
+						a.navbar-link(href="/m/#{user.Id}/statistics") Statistics
 					p.navbar-text
-						a.navbar-link(href="/m/#{user.id}/toJSON") to JSON
+						a.navbar-link(href="/m/#{user.Id}/toJSON") to JSON
 
 				if (user.roles.indexOf('driver') !== -1)
 					p.navbar-text
-						a.navbar-link(href="/d/#{user.id}") Drive
+						a.navbar-link(href="/d/#{user.Id}") Drive
 
 				.navbar-right
 					p.navbar-text Signed in as#{" "}
-						a.navbar-link(href="/profile/#{user.id}/") #{user.Email}
+						a.navbar-link(href="/profile/#{user.Id}/") #{user.Email}
 					a.btn.btn-default.navbar-btn(href="/logout") Sign out
 			else
 				ul.nav.navbar-nav.navbar-right

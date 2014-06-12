@@ -1,9 +1,19 @@
 extends layout
 block content
 	div.container
-		h1 Profile details
-		h3 #{profileInfo.Email}
-		p ID: #{profileInfo.Id}
-		h3 Roles:
-		ul
-			li #{profileInfo.Role}
+		h1 Profile #{profileInfo.Email}
+
+		table.table.table-bordered
+			if profileInfo.Name
+				tr
+					td Name
+					td #{profileInfo.Name}
+			tr
+				td Id
+				td #{profileInfo.Id}
+			tr
+				td Email
+				td #{profileInfo.Email}
+			tr
+				td Is blocked
+				td #{profileInfo.IsBlocked ? 'Yes' : 'No'}
