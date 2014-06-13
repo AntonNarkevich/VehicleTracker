@@ -1,0 +1,30 @@
+extends ../layout
+block content
+	.container
+		.row
+			.col-md-12
+				h1 Unemployed drivers
+		.row
+			.col-md-12
+				table.unemployed.table.table-condensed
+					thead
+						tr
+							th #
+							th Email
+							th Id
+							th Actions
+					tbody
+						each driver, index in unemployedInfo
+							tr
+								td #{index + 1}
+								td
+									a(href="/profile/#{driver.Id}") #{driver.Email}
+								td #{driver.Id}
+								td
+									if (driver.noOffers)
+										a(href="/m/#{user.Id}/offerJob/#{driver.Id}").unemployed-action-btn.btn.btn-sm.btn-primary Offer Job
+									if (driver.outgoingOffer)
+										span.unemployed-action-btn.btn.btn-sm.btn-default Offer sent.
+									if (driver.incommingOffer)
+										a(href="/m/#{user.Id}/accept/#{driver.Id}").unemployed-action-btn.btn.btn-sm.btn-success Accept
+										a(href="/m/#{user.Id}/reject/#{driver.Id}").unemployed-action-btn.btn.btn-sm.btn-danger Reject

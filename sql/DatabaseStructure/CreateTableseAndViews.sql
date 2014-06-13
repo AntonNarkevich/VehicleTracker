@@ -56,7 +56,7 @@ CREATE TABLE JobOffers
      RecieverId   INT FOREIGN KEY REFERENCES Users(Id),
      OfferStatus  VARCHAR(20) DEFAULT 'Pending' NOT NULL,
      OfferDate    DATETIME NOT NULL,
-     DecisionDate DATETIME NOT NULL,
+     DecisionDate DATETIME,
      PRIMARY KEY (SenderId, RecieverId)
   )
 

@@ -25,25 +25,85 @@ router.get('/:ownerId/employees', role.is('managerOwner'), function (req, res) {
 	});
 });
 
-router.get('/unemployed', role.is('manager'), function (req, res) {
-	repository.getUnemployedDrivers(function (unemployedInfo) {
-		res.render('manager/unemployed', {unemployedInfo: unemployedInfo});
+router.get('/:ownerId/findDrivers', role.is('manager'), function (req, res) {
+	var managerId = req.param('ownerId');
+
+	database.uspBLManagerGetUnemployedDrivers(managerId, function (err, data) {
+		var i, item, intManagerId, length = data.length;
+
+		for (i = 0; i < length; i += 1) {
+			item = data[i];
+
+			if (err) {
+				logger.error(err);
+
+				throw err;
+			}
+
+			//If an offer exist
+			if (item.OfferDate) {
+				intManagerId = parseInt(managerId, 10);
+
+				item.incommingOffer = (item.RecieverId === intManagerId);
+				item.outgoingOffer = (item.SenderId === intManagerId);
+			} else {
+				item.noOffers = true;
+			}
+		}
+
+		res.render('manager/findDrivers', {unemployedInfo: data});
 	});
 });
 
-router.get('/:ownerId/employ/:driverId', role.is('managerOwner'), function (req, res) {
-	var ownerId = req.param('ownerId');
+router.get('/:ownerId/offerJob/:driverId', role.is('manager'), function(req, res) {
+	var managerId = req.param('ownerId');
 	var driverId = req.param('driverId');
 
-	//TODO: Add some kind of protection, error handling.
-	repository.employ(ownerId, driverId, function (err, isSuccess) {
-		if (isSuccess) {
-			res.render('manager/employmentSuccess');
-		} else {
-			res.render('error', {error: err});
+	database.uspJobOfferOfferJob(managerId, driverId, function (err, data) {
+		if (err) {
+			logger.error(err);
+
+			throw err;
 		}
+
+		res.redirect('/m/' + managerId + '/findDrivers');
 	});
 });
+
+
+router.get('/:ownerId/accept/:driverId', role.is('manager'), function(req, res) {
+	var managerId = req.param('ownerId');
+	var driverId = req.param('driverId');
+
+	database.uspBLManagerEmployDriver(managerId, driverId, function (err, data) {
+		if (err) {
+			logger.error(err);
+
+			throw err;
+		}
+
+		res.redirect('/m/' + managerId + '/findDrivers');
+	});
+});
+
+
+router.get('/:ownerId/reject/:driverId', role.is('manager'), function(req, res) {
+	var managerId = req.param('ownerId');
+	var driverId = req.param('driverId');
+
+	database.uspJobOfferReject(driverId, managerId, function (err, data) {
+		if (err) {
+			logger.error(err);
+
+			throw err;
+		}
+
+		res.redirect('/m/' + managerId + '/findDrivers');
+	});
+});
+
+
+
 
 router.get('/vehicle/create', role.is('manager'), function (req, res) {
 	var managerId = req.user.id;

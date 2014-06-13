@@ -1,3 +1,20 @@
+IF OBJECT_ID('[dbo].[usp_JobOffer_OfferJob]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_JobOffer_OfferJob] 
+END 
+GO
+CREATE PROC [dbo].[usp_JobOffer_OfferJob] 
+    @senderId INT,
+	@recieverId INT
+AS 		
+	declare @offerDate datetime = GETDATE()
+	--TODO: Am I allowed to get current time this way?
+	exec [dbo].[usp_JobOffer_Insert] @senderId, @recieverId, 'Pending', @offerDate, null
+GO
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
 IF OBJECT_ID('[dbo].[usp_JobOffer_GetBySenderId]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_JobOffer_GetBySenderId] 

@@ -38,6 +38,16 @@ module.exports = {
 		);
 	},
 
+	uspBLManagerGetUnemployedDrivers: function (managerId,  callback) {
+		invoker.invoke(
+			'usp_BL_Manager_GetUnemployedDrivers',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId}
+			],
+			callback
+		);
+	},
+
 	uspBLManagerIsEmployerFor: function (managerId, driverId,  callback) {
 		invoker.invoke(
 			'usp_BL_Manager_IsEmployerFor',
@@ -100,6 +110,17 @@ module.exports = {
 				{name: 'OfferStatus', type: TYPES.VarChar, value: OfferStatus},
 				{name: 'OfferDate', type: undefined, value: OfferDate},
 				{name: 'DecisionDate', type: undefined, value: DecisionDate}
+			],
+			callback
+		);
+	},
+
+	uspJobOfferOfferJob: function (senderId, recieverId,  callback) {
+		invoker.invoke(
+			'usp_JobOffer_OfferJob',
+			[
+				{name: 'senderId', type: TYPES.Int, value: senderId},
+				{name: 'recieverId', type: TYPES.Int, value: recieverId}
 			],
 			callback
 		);

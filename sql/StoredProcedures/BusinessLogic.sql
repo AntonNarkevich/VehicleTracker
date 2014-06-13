@@ -108,3 +108,51 @@ AS
 	COMMIT
 
 GO
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
+IF Object_id('[dbo].[usp_BL_Manager_GetUnemployedDrivers]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_GetUnemployedDrivers] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[usp_BL_Manager_GetUnemployedDrivers] @managerId INT 
+AS 
+    BEGIN TRAN 
+
+    DECLARE @unemployedIds TABLE 
+      ( 
+         Id INT 
+      ) 
+
+    INSERT INTO @unemployedIds 
+    SELECT * 
+    FROM   ((SELECT Users.Id 
+             FROM   Roles 
+                    INNER JOIN UsersXRoles 
+                            ON Roles.Id = UsersXRoles.RoleId 
+                    INNER JOIN Users 
+                            ON UsersXRoles.UserId = Users.Id 
+             WHERE  Roles.Name = 'driver') 
+            EXCEPT 
+            (SELECT DriverId 
+             FROM   ManagerXDrivers)) AS UnemployedIds 
+
+    SELECT * 
+    FROM   (SELECT * 
+            FROM   Users 
+            WHERE  Id IN (SELECT * 
+                          FROM   @unemployedIds)) unemployedProfiles 
+           LEFT JOIN JobOffers 
+                  ON ( ( unemployedProfiles.Id = JobOffers.RecieverId 
+                         AND JobOffers.SenderId = @managerId ) 
+                        OR ( unemployedProfiles.Id = JobOffers.SenderId 
+                             AND JobOffers.RecieverId = @managerId ) ) 
+                     AND ( JobOffers.OfferStatus = 'Pending' ) 
+
+    COMMIT 
+
+GO 
