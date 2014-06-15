@@ -15,8 +15,9 @@ GO
 
 :r $(path)\JobOffer.sql
 :r $(path)\Vehicle.sql
-:r $(path)\Membership.sql
 :r $(path)\BusinessLogic.sql
+:r $(path)\Membership.sql
+
 GO
 
 :setvar path "D:\Projects\VehicleTracker\sql\Util"

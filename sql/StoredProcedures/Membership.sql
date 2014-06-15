@@ -42,17 +42,35 @@ GO
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-IF OBJECT_ID('[dbo].[usp_MBSP_User_GetWithRoles]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_MBSP_User_GetProfile]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_MBSP_User_GetWithRoles] 
+    DROP PROC [dbo].[usp_MBSP_User_GetProfile] 
 END 
 GO
 
-CREATE PROC [dbo].[usp_MBSP_User_GetWithRoles] 
+CREATE PROC [dbo].[usp_MBSP_User_GetProfile] 
 	@Id INT
 AS
+	--Output scalar user properties
 	exec usp_User_Select @Id
+
+	--Output roles 
+	declare @roles table(RoleName varchar(20))
+	insert into @roles
 	exec usp_MBSP_User_GetRolesById @Id
+	select * from @roles
+
+	--If manager
+	declare @managerRole varchar(20)
+	select @managerRole = RoleName
+	from @roles
+	where RoleName = 'manager'
+
+	IF (@managerRole is not null)
+	BEGIN
+		--Outuput employee ids
+		exec [dbo].[usp_BL_Manager_GetEmployees] @Id
+	END
 GO
 
 -------------------------------------------------------------------------------

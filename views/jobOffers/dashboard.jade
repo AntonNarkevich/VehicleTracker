@@ -1,0 +1,42 @@
+extends ../layout
+block content
+	.container
+		.row
+			.col-md-12
+				if isManagerMode
+					h1 Unemployed drivers
+				else if isDriverMode
+					h1 Managers
+		.row
+			.col-md-12
+				table.dashboard.table.table-condensed
+					thead
+						tr
+							th Email
+							th Id
+							th Actions
+					tbody
+						each offerableUserInfo, index in offerableUserInfos
+							tr
+								td
+									a(href="/profile/#{offerableUserInfo.Id}") #{offerableUserInfo.Email}
+
+								td #{offerableUserInfo.Id}
+								td
+									if (offerableUserInfo.HasNoOffers)
+										a(href="/jobOffers/#{user.Id}/offer/#{offerableUserInfo.Id}").dashboard-action-btn.btn.btn-sm.btn-primary
+											if isManagerMode
+												| Offer Job
+											else if isDriverMode
+												| Apply
+
+									if (offerableUserInfo.OutgoingOffer)
+										span.dashboard-action-btn.btn.btn-sm.btn-default
+											if isManagerMode
+												| Job Offered
+											else if isDriverMode
+												| Application Sent
+
+									if (offerableUserInfo.IncommingOffer)
+										a(href="/jobOffers/#{user.Id}/accept/#{offerableUserInfo.Id}").dashboard-action-btn.btn.btn-sm.btn-success Accept
+										a(href="/jobOffers/#{user.Id}/reject/#{offerableUserInfo.Id}").dashboard-action-btn.btn.btn-sm.btn-danger Reject

@@ -9,24 +9,21 @@ var logger = rekuire('logger');
 
 //TODO: Write to WebStorm about aout-requring/rekuiring.
 var database = rekuire('database');
+var interpreter = rekuire('dataInterpreter');
 
-router.get('/:ownerId', role.is('signedIn'), function (req, res) {
+router.get('/:ownerId', role.isAuthenticated(), function (req, res) {
 	var ownerId = req.param('ownerId');
 
-	database.uspMBSPUserGetWithRoles(ownerId, function (err, data) {
+	database.uspMBSPUserGetProfile(ownerId, function (err, data) {
 		if (err) {
 			logger.error(err);
 
 			throw err;
 		}
 
-		var profileInfo = data[0];
+		var profile = interpreter.interpretProfileData(data);
 
-		profileInfo.roles = _.chain(data).tail().map(function (roleInfo) {
-			return roleInfo.RoleName;
-		}).value();
-
-		res.render('profile', { profileInfo: profileInfo });
+		res.render('profile', { profileInfo: profile });
 	});
 });
 

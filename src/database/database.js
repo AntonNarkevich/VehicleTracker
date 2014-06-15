@@ -17,6 +17,17 @@ module.exports = {
 		);
 	},
 
+	uspBLGetOfferableUsers: function (userId, userRole,  callback) {
+		invoker.invoke(
+			'usp_BL_GetOfferableUsers',
+			[
+				{name: 'userId', type: TYPES.Int, value: userId},
+				{name: 'userRole', type: TYPES.VarChar, value: userRole}
+			],
+			callback
+		);
+	},
+
 	uspBLManagerEmployDriver: function (managerId, driverId,  callback) {
 		invoker.invoke(
 			'usp_BL_Manager_EmployDriver',
@@ -38,9 +49,9 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerGetUnemployedDrivers: function (managerId,  callback) {
+	uspBLManagerGetEmployees: function (managerId,  callback) {
 		invoker.invoke(
-			'usp_BL_Manager_GetUnemployedDrivers',
+			'usp_BL_Manager_GetEmployees',
 			[
 				{name: 'managerId', type: TYPES.Int, value: managerId}
 			],
@@ -48,9 +59,9 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerIsEmployerFor: function (managerId, driverId,  callback) {
+	uspBLManagerIsBossFor: function (managerId, driverId,  callback) {
 		invoker.invoke(
-			'usp_BL_Manager_IsEmployerFor',
+			'usp_BL_Manager_IsBossFor',
 			[
 				{name: 'managerId', type: TYPES.Int, value: managerId},
 				{name: 'driverId', type: TYPES.Int, value: driverId}
@@ -193,9 +204,9 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserGetRolesById: function (Id,  callback) {
+	uspMBSPUserGetProfile: function (Id,  callback) {
 		invoker.invoke(
-			'usp_MBSP_User_GetRolesById',
+			'usp_MBSP_User_GetProfile',
 			[
 				{name: 'Id', type: TYPES.Int, value: Id}
 			],
@@ -203,9 +214,9 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserGetWithRoles: function (Id,  callback) {
+	uspMBSPUserGetRolesById: function (Id,  callback) {
 		invoker.invoke(
-			'usp_MBSP_User_GetWithRoles',
+			'usp_MBSP_User_GetRolesById',
 			[
 				{name: 'Id', type: TYPES.Int, value: Id}
 			],

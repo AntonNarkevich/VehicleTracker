@@ -17,7 +17,13 @@ block content
 			tr
 				td Is blocked
 				td #{profileInfo.IsBlocked ? 'Yes' : 'No'}
-			if profileInfo.roles.length !== 0
+			if profileInfo.RoleNames
 				tr
 					td Roles
-					td #{profileInfo.roles.join(', ')}
+					td #{profileInfo.RoleNames.join(', ')}
+			if profileInfo.DriverInfos
+				tr
+					td Drivers
+					td
+						each driverProfile in profileInfo.DriverInfos
+							a(href="/profile/#{driverProfile.DriverId}") #{driverProfile.Email}

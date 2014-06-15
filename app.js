@@ -25,6 +25,7 @@ var logout = require('./src/routes/logout');
 var profile = require('./src/routes/profile');
 var manager = require('./src/routes/manager');
 var driver = require('./src/routes/driver');
+var jobOffers = require('./src/routes/jobOffers');
 var membershipTest = require('./src/membership/membershipTestRoute');
 
 var app = express();
@@ -68,6 +69,7 @@ app.use('/profile', profile);
 app.use('/a', membershipTest);
 app.use('/m', manager);
 app.use('/d', driver);
+app.use('/jobOffers', jobOffers);
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {

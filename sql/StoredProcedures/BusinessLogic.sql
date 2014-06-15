@@ -69,6 +69,28 @@ COMMIT
 
 GO
 
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
+--Gets employees for particular manager
+IF OBJECT_ID('[dbo].[usp_BL_Manager_GetEmployees]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_BL_Manager_GetEmployees]
+END
+GO
+
+CREATE PROC [dbo].[usp_BL_Manager_GetEmployees]
+	@managerId INT
+AS
+	SELECT DriverId, Email    
+	FROM ManagerXDrivers INNER JOIN
+	Users ON ManagerXDrivers.DriverId = Users.Id 
+	WHERE ManagerId = @managerId
+GO
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
 
 --TODO: "Fire" stored procedure. That in addition removes all vehicles.
 
@@ -76,13 +98,13 @@ GO
 -------------------------------------------------------------------------------------------------------
 
 --Checks whether the manager is employer for the driver
-IF OBJECT_ID('[dbo].[usp_BL_Manager_IsEmployerFor]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_BL_Manager_IsBossFor]') IS NOT NULL
 BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_IsEmployerFor]
+    DROP PROC [dbo].[usp_BL_Manager_IsBossFor]
 END
 GO
 
-CREATE PROC [dbo].[usp_BL_Manager_IsEmployerFor]
+CREATE PROC [dbo].[usp_BL_Manager_IsBossFor]
 	@managerId INT,
 	@driverId INT
 AS
@@ -98,11 +120,11 @@ AS
 	IF (EXISTS (SELECT * FROM @EmployedDrivers
 	WHERE DriverId = @driverId))
 	BEGIN
-		SELECT @managerId ManagerId, @driverId DriverId, 'TRUE' IsEmployer
+		SELECT @managerId ManagerId, @driverId DriverId, 'TRUE' IsBoss
 	END
 	ELSE
 	BEGIN
-		SELECT @managerId ManagerId, @driverId DriverId, 'FALSE' IsEmployer
+		SELECT @managerId ManagerId, @driverId DriverId, 'FALSE' IsBoss
 	END
 
 	COMMIT
@@ -112,23 +134,34 @@ GO
 -------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------
 
-IF Object_id('[dbo].[usp_BL_Manager_GetUnemployedDrivers]') IS NOT NULL 
+IF Object_id('[dbo].[usp_BL_GetOfferableUsers]') IS NOT NULL 
   BEGIN 
-      DROP PROC [dbo].[usp_BL_Manager_GetUnemployedDrivers] 
+      DROP PROC [dbo].[usp_BL_GetOfferableUsers] 
   END 
 
 GO 
 
-CREATE PROC [dbo].[usp_BL_Manager_GetUnemployedDrivers] @managerId INT 
+CREATE PROC [dbo].[usp_BL_GetOfferableUsers]
+	@userId INT,
+	@userRole varchar(20)
 AS 
     BEGIN TRAN 
 
-    DECLARE @unemployedIds TABLE 
+    DECLARE @offerableIUserIds TABLE 
       ( 
          Id INT 
       ) 
 
-    INSERT INTO @unemployedIds 
+	--Who user can employ.
+	--Driver for managers and vica versa
+	DECLARE @targerRole varchar(20) = 'driver' 
+
+	IF @userRole = 'driver'
+	BEGIN
+		SET @targerRole = 'manager'
+	END
+
+    INSERT INTO @offerableIUserIds 
     SELECT * 
     FROM   ((SELECT Users.Id 
              FROM   Roles 
@@ -136,23 +169,26 @@ AS
                             ON Roles.Id = UsersXRoles.RoleId 
                     INNER JOIN Users 
                             ON UsersXRoles.UserId = Users.Id 
-             WHERE  Roles.Name = 'driver') 
+             WHERE  Roles.Name = @targerRole) 
             EXCEPT 
             (SELECT DriverId 
              FROM   ManagerXDrivers)) AS UnemployedIds 
 
-    SELECT * 
+    SELECT *,
+	case when RecieverId = @userId then cast(1 as bit) else cast(0 as bit) end as IncommingOffer,
+	case when SenderId = @userId then cast(1 as bit) else cast(0 as bit) end as OutgoingOffer,
+	case when OfferDate is null then cast(1 as bit) else cast(0 as bit) end as HasNoOffers
     FROM   (SELECT * 
             FROM   Users 
             WHERE  Id IN (SELECT * 
-                          FROM   @unemployedIds)) unemployedProfiles 
+                          FROM   @offerableIUserIds)) offerableUserIds 
            LEFT JOIN JobOffers 
-                  ON ( ( unemployedProfiles.Id = JobOffers.RecieverId 
-                         AND JobOffers.SenderId = @managerId ) 
-                        OR ( unemployedProfiles.Id = JobOffers.SenderId 
-                             AND JobOffers.RecieverId = @managerId ) ) 
+                  ON ( ( offerableUserIds.Id = JobOffers.RecieverId 
+                         AND JobOffers.SenderId = @userId ) 
+                        OR ( offerableUserIds.Id = JobOffers.SenderId 
+                             AND JobOffers.RecieverId = @userId ) ) 
                      AND ( JobOffers.OfferStatus = 'Pending' ) 
 
     COMMIT 
 
-GO 
+GO

@@ -11,15 +11,15 @@ nav.navbar.navbar-default(role="navigation")
 		// Navbar content. Links etc.
 		#vt-navbar-collapse.collapse.navbar-collapse
 			if isAuthenticated()
-				if (user.roles.indexOf('admin') !== -1)
+				if (user.RoleNames.indexOf('admin') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/admin/export") Export Database
 
-				if (user.roles.indexOf('manager') !== -1)
+				if (user.RoleNames.indexOf('manager') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/m/#{user.Id}/employees") Employees
 					p.navbar-text
-						a.navbar-link(href="/m/#{user.Id}/findDrivers") Find drivers!
+						a.navbar-link(href="/jobOffers/#{user.Id}") Find drivers!
 					p.navbar-text
 						a.navbar-link(href="/m/vehicle/create") Create Vehicle
 					p.navbar-text
@@ -29,9 +29,11 @@ nav.navbar.navbar-default(role="navigation")
 					p.navbar-text
 						a.navbar-link(href="/m/#{user.Id}/toJSON") to JSON
 
-				if (user.roles.indexOf('driver') !== -1)
+				if (user.RoleNames.indexOf('driver') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/d/#{user.Id}") Drive
+					p.navbar-text
+						a.navbar-link(href="/jobOffers/#{user.Id}") Find Job!
 
 				.navbar-right
 					p.navbar-text Signed in as#{" "}

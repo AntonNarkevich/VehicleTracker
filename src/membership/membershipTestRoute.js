@@ -13,28 +13,36 @@ router.get('/session', function (req, res) {
 	res.end(util.inspect(req.session));
 });
 
-router.get('/auth', role.is('signedIn'), function (req, res) {
-	res.end('You are authenticated if you see this.\n');
-
+router.get('/public', function (req, res) {
+	res.end('This is public page.');
 });
 
-router.get('/driver/:driverId', role.is('driver'), function (req, res) {
-	var driverId = req.param('driverId');
-
-	res.write('You are driver ' + driverId + ' if you see this.\n');
-	res.write('Or his manager.\n');
-	res.end('Or admin.');
+router.get('/auth', role.isAuthenticated(), function (req, res) {
+	res.end('Authenticated.');
 });
 
-router.get('/manager/:managerId', role.is('manager'), function (req, res) {
-	var managerId = req.param('managerId');
-
-	res.write('You are manager ' + managerId + ' if you see this.\n');
-	res.end('Or admin.');
+router.get('/manager', role.is('manager'), function (req, res) {
+	res.end('Manager.');
 });
 
-router.get('/admin', role.is('admin'), function (req, res) {
-	res.end('You are admin if you see this.');
+router.get('/manager/:ownerId', role.isAllOf('manager', 'owner'), function (req, res) {
+	res.end('Manager owner.');
+});
+
+router.get('/driver', role.is('driver'), function (req, res) {
+	res.end('Driver.');
+});
+
+router.get('/driver/:ownerId', role.isAllOf('driver', 'owner'), function (req, res) {
+	res.end('Driver owner.');
+});
+
+router.get('/driverOrBoss/:ownerId', role.isOneOf('driver', 'boss'), function(req, res) {
+	res.end('Driver or his boss');
+});
+
+router.get('/admin', role.is('admin'), function(req, res) {
+	res.end('Admin.');
 });
 
 module.exports = router;

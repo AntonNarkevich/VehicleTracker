@@ -12,9 +12,9 @@ var rekuire = require('rekuire');
 var _ = require('underscore');
 var logger = rekuire('logger');
 var database = rekuire('database');
+var interpreter = rekuire('dataInterpreter');
 var bcrypt = require('bcrypt');
 var formValidator = rekuire('formValidator');
-
 
 
 var passportStrategy = new LocalStrategy(
@@ -65,20 +65,14 @@ var serializeUser = function (user, done) {
 };
 
 var deserializeUser = function (id, done) {
-	database.uspMBSPUserGetWithRoles(id, function (err, data) {
+	database.uspMBSPUserGetProfile(id, function (err, data) {
 		if (err) {
 			logger.error(err);
 
 			throw err;
 		}
 
-		//First element of data contains basic user info.
-		//Other elements contain role names.
-		var user = data[0];
-
-		user.roles = _.chain(data).tail().map(function (roleInfo) {
-			return roleInfo.RoleName;
-		}).value();
+		var user = interpreter.interpretProfileData(data);
 
 		done(null, user);
 

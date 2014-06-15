@@ -57,7 +57,7 @@ CREATE TABLE JobOffers
      OfferStatus  VARCHAR(20) DEFAULT 'Pending' NOT NULL,
      OfferDate    DATETIME NOT NULL,
      DecisionDate DATETIME,
-     PRIMARY KEY (SenderId, RecieverId)
+     PRIMARY KEY (SenderId, RecieverId, OfferStatus)
   )
 
 CREATE TABLE Messages
