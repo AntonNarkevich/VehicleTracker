@@ -27,7 +27,7 @@ router.get('/:ownerId', role.isOneOf('manager', 'driver'), function (req, res) {
 		isDriverMode: !isManager
 	};
 
-	database.uspBLManagerGetOfferableUsers(managerId, roleName, function (err, data) {
+	database.uspBLGetOfferableUsers(managerId, roleName, function (err, data) {
 		if (err) {
 			logger.error(err);
 
