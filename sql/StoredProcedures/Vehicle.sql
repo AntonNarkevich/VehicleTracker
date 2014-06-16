@@ -48,34 +48,80 @@ use [VehicleTrackerDb]
 go
 
 CREATE PROC [dbo].[usp_Vehicle_AssignToDriver]
+	@managerId int,
     @vehicleId INT,
 	@driverId INT
 	--TODO: Inconsitency can occure. A vehicle may be assgned to driver that is not employed.
 AS
-	declare @managerId int
+	begin transaction
 
-	select @managerId = ManagerId
-	from Vehicles
-	where Id = @vehicleId
+	declare @EmploymentInfo table (ManagerId int, DriverId int, IsBoss bit)
+	insert into @EmploymentInfo
+	exec usp_BL_Manager_IsBossFor @managerId, @driverId
+
+	declare @isBoss bit
+	select @isBoss = IsBoss
+	from @EmploymentInfo
+
+	
+	declare @ownershipInfo table(ManagerId int, DriverId int, IsOwner bit)
+	insert into @ownershipInfo
+	exec usp_BL_Manager_IsVehicleOwner @managerId, @vehicleId
+
+	declare @isVehicleOwner bit
+	select @isVehicleOwner = IsOwner
+	from @ownershipInfo
 
 
-	declare @EmployedDrivers table (
-		DriverId int
-	)
-
-	insert into @EmployedDrivers exec usp_BL_GetDrivers_Manager
-
-	IF (exists (select * from @EmployedDrivers
-	where DriverId = @driverId))
+	if (@isBoss = 1 and @isVehicleOwner = 1)
 	begin
 		insert into DriverXVehicle (DriverId, VehicleId)
-		values (@driverId, @vehicleId)
+		values (@driverId, @vehicleId)	
 	end
-	else
-	begin
+	else begin
 		--TODO: Remove this. Throw proper error.
-		RAISERROR (15600,-1,-1, 'Inconsitency can occure. A vehicle may be assgned to driver that is not employed.');
+		RAISERROR (15600,-1,-1, 'Inconsitency. Manager manipulates a vehicle he doesnt own. Or driver he is not a boss for.');
 	end
 
+	commit
+GO
 
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+IF OBJECT_ID('[dbo].[usp_Vehicle_TakeFromDriver]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_Vehicle_TakeFromDriver]
+END
+GO
+
+use [VehicleTrackerDb]
+go
+
+--Only one vehicle can be assigned to a driver. So VehicleId parameter is not required.
+CREATE PROC [dbo].[usp_Vehicle_TakeFromDriver]
+	@managerId int,
+    @driverId INT
+AS
+	begin transaction
+
+	declare @EmploymentInfo table (ManagerId int, DriverId int, IsBoss bit)
+	insert into @EmploymentInfo
+	exec usp_BL_Manager_IsBossFor @managerId, @driverId
+
+	declare @isBoss bit
+	select @isBoss = IsBoss
+	from @EmploymentInfo
+
+	if (@isBoss = 1)
+	begin
+		delete from DriverXVehicle
+		where DriverId = @driverId
+	end
+	else begin
+		--TODO: Remove this. Throw proper error.
+		RAISERROR (15600,-1,-1, 'Inconsitency. Manager manipulates a driver he is not a boss for.');
+	end
+
+	commit
 GO

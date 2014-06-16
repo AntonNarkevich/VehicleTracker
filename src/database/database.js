@@ -39,6 +39,17 @@ module.exports = {
 		);
 	},
 
+	uspBLManagerFireDriver: function (managerId, driverId,  callback) {
+		invoker.invoke(
+			'usp_BL_Manager_FireDriver',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId},
+				{name: 'driverId', type: TYPES.Int, value: driverId}
+			],
+			callback
+		);
+	},
+
 	uspBLManagerGetDriverIds: function (managerId,  callback) {
 		invoker.invoke(
 			'usp_BL_Manager_GetDriverIds',
@@ -65,6 +76,17 @@ module.exports = {
 			[
 				{name: 'managerId', type: TYPES.Int, value: managerId},
 				{name: 'driverId', type: TYPES.Int, value: driverId}
+			],
+			callback
+		);
+	},
+
+	uspBLManagerIsVehicleOwner: function (managerId, vehicleId,  callback) {
+		invoker.invoke(
+			'usp_BL_Manager_IsVehicleOwner',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId},
+				{name: 'vehicleId', type: TYPES.Int, value: vehicleId}
 			],
 			callback
 		);
@@ -351,10 +373,11 @@ module.exports = {
 		);
 	},
 
-	uspVehicleAssignToDriver: function (vehicleId, driverId,  callback) {
+	uspVehicleAssignToDriver: function (managerId, vehicleId, driverId,  callback) {
 		invoker.invoke(
 			'usp_Vehicle_AssignToDriver',
 			[
+				{name: 'managerId', type: TYPES.Int, value: managerId},
 				{name: 'vehicleId', type: TYPES.Int, value: vehicleId},
 				{name: 'driverId', type: TYPES.Int, value: driverId}
 			],
@@ -409,6 +432,17 @@ module.exports = {
 			'usp_Vehicle_Select',
 			[
 				{name: 'Id', type: TYPES.Int, value: Id}
+			],
+			callback
+		);
+	},
+
+	uspVehicleTakeFromDriver: function (managerId, driverId,  callback) {
+		invoker.invoke(
+			'usp_Vehicle_TakeFromDriver',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId},
+				{name: 'driverId', type: TYPES.Int, value: driverId}
 			],
 			callback
 		);

@@ -17,13 +17,39 @@ var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');
 
 //TODO: Add protection against SQL injection.
-router.get('/:ownerId/employees', role.is('managerOwner'), function (req, res) {
+router.get('/:ownerId/employees', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	database.getDriversInfo(managerId, function (driversInfo) {
-		res.render('manager/employees', {driversInfo: driversInfo});
+	database.uspBLManagerGetEmployees(managerId, function (err, data) {
+		if (err) {
+			logger.error(err);
+
+			throw err;
+		}
+
+		res.render('manager/employees', {employeeInfos: data});
 	});
 });
+
+router.get('/:ownerId/fire/:driverId', role.isAllOf('manager', 'owner'), function (req, res) {
+	var managerId = req.param('ownerId');
+	var driverId = req.param('driverId');
+
+	database.uspBLManagerFireDriver(managerId, driverId, function (err, data) {
+		if (err) {
+			logger.error(err);
+
+			throw err;
+		}
+
+		res.redirect('/m/' + managerId + '/employees');
+	});
+});
+
+
+
+
+
 
 router.get('/vehicle/create', role.is('manager'), function (req, res) {
 	var managerId = req.user.id;

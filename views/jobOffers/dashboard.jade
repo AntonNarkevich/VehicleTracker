@@ -9,7 +9,7 @@ block content
 					h1 Managers
 		.row
 			.col-md-12
-				table.dashboard.table.table-condensed
+				table.table.table-condensed
 					thead
 						tr
 							th Email
@@ -24,19 +24,19 @@ block content
 								td #{offerableUserInfo.Id}
 								td
 									if (offerableUserInfo.HasNoOffers)
-										a(href="/jobOffers/#{user.Id}/offer/#{offerableUserInfo.Id}").dashboard-action-btn.btn.btn-sm.btn-primary
+										a(href="/jobOffers/#{user.Id}/offer/#{offerableUserInfo.Id}").btn-action.btn.btn-sm.btn-primary
 											if isManagerMode
 												| Offer Job
 											else if isDriverMode
 												| Apply
 
 									if (offerableUserInfo.OutgoingOffer)
-										span.dashboard-action-btn.btn.btn-sm.btn-default
+										span.btn-action.btn.btn-sm.btn-default
 											if isManagerMode
 												| Job Offered
 											else if isDriverMode
 												| Application Sent
 
 									if (offerableUserInfo.IncommingOffer)
-										a(href="/jobOffers/#{user.Id}/accept/#{offerableUserInfo.Id}").dashboard-action-btn.btn.btn-sm.btn-success Accept
-										a(href="/jobOffers/#{user.Id}/reject/#{offerableUserInfo.Id}").dashboard-action-btn.btn.btn-sm.btn-danger Reject
+										a(href="/jobOffers/#{user.Id}/accept/#{offerableUserInfo.Id}").btn-action.btn.btn-sm.btn-success Accept
+										a(href="/jobOffers/#{user.Id}/reject/#{offerableUserInfo.Id}").btn-action.btn.btn-sm.btn-danger Reject

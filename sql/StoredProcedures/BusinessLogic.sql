@@ -72,6 +72,34 @@ GO
 -------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------
 
+--Takes a car from driver.
+--Removes from employee list.
+IF OBJECT_ID('[dbo].[usp_BL_Manager_FireDriver]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_BL_Manager_FireDriver]
+END
+GO
+
+CREATE PROC [dbo].[usp_BL_Manager_FireDriver]
+	@managerId INT,
+	@driverId INT
+AS
+
+BEGIN TRAN
+
+	exec usp_Vehicle_TakeFromDriver @managerId, @driverId
+
+	delete from ManagerXDrivers
+	where DriverId = @driverId
+	and ManagerId = @managerId
+
+COMMIT
+
+GO
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
 --Gets employees for particular manager
 IF OBJECT_ID('[dbo].[usp_BL_Manager_GetEmployees]') IS NOT NULL
 BEGIN
@@ -82,16 +110,11 @@ GO
 CREATE PROC [dbo].[usp_BL_Manager_GetEmployees]
 	@managerId INT
 AS
-	SELECT DriverId, Email    
+	SELECT DriverId as Id, Email, IsBlocked    
 	FROM ManagerXDrivers INNER JOIN
 	Users ON ManagerXDrivers.DriverId = Users.Id 
 	WHERE ManagerId = @managerId
 GO
-
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
-
---TODO: "Fire" stored procedure. That in addition removes all vehicles.
 
 -------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------
@@ -107,26 +130,52 @@ CREATE PROC [dbo].[usp_BL_Manager_IsBossFor]
 	@managerId INT,
 	@driverId INT
 AS
+	declare @ownershipInfo table (ManagerId int, DriverId int, IsBoss bit)
 
-	BEGIN TRAN
+	insert into @ownershipInfo
+	select ManagerId, DriverId, cast(1 as bit)
+	from ManagerXDrivers
+	where ManagerId = @managerId
+		and DriverId = @driverId
 
-	DECLARE @EmployedDrivers TABLE (
-		DriverId INT
-	)
 
-	INSERT INTO @EmployedDrivers EXEC usp_BL_Manager_GetDriverIds @managerId
+	if (@@ROWCOUNT = 0)
+	begin
+		insert into @ownershipInfo
+		values (@managerId, @managerId, cast(0 as bit))
+	end
 
-	IF (EXISTS (SELECT * FROM @EmployedDrivers
-	WHERE DriverId = @driverId))
-	BEGIN
-		SELECT @managerId ManagerId, @driverId DriverId, 'TRUE' IsBoss
-	END
-	ELSE
-	BEGIN
-		SELECT @managerId ManagerId, @driverId DriverId, 'FALSE' IsBoss
-	END
+	select * from @ownershipInfo
+GO
 
-	COMMIT
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
+IF OBJECT_ID('[dbo].[usp_BL_Manager_IsVehicleOwner]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_BL_Manager_IsVehicleOwner]
+END
+GO
+
+CREATE PROC [dbo].[usp_BL_Manager_IsVehicleOwner]
+	@managerId INT,
+	@vehicleId INT
+AS
+	declare @ownershipInfo table(ManagerId int, DriverId int, IsOwner bit)
+
+	insert into @ownershipInfo
+	select @managerId ManagerId, @vehicleId DriverId, cast(1 as bit) IsOwner
+	from Vehicles
+	where Vehicles.ManagerId = @managerId
+			and Vehicles.Id = @vehicleId
+
+	if (@@ROWCOUNT = 0)
+	begin
+		insert into @ownershipInfo
+		values (@managerId, @vehicleId, cast(0 as bit))
+	end
+
+	select * from @ownershipInfo
 
 GO
 

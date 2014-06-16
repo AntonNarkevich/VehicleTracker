@@ -1,5 +1,18 @@
 extends ../layout
 block content
+	.confirmation.modal.fade
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4.modal-title Modal title
+				.modal-body
+					p One fine body…
+				.modal-footer
+					button.btn.btn-default(type='button', data-dismiss='modal') Close
+					button.btn-confirm.btn.btn-primary(type='button') Delete
+
+
 	.container
 		.row
 			.col-md-12
@@ -9,18 +22,17 @@ block content
 				table.table.table-condensed
 					thead
 						tr
-							th #
 							th Email
 							th Id
-							th Status
 							th Actions
 					tbody
-						each driver, index in driversInfo
+						each employee in employeeInfos
 							tr
-								td #{index + 1}
 								td
-									a(href="/profile/#{driver.Id}") #{driver.Email}
-								td #{driver.Id}
-								td #{driver.EmploymentStatus}
+									a(href="/profile/#{employee.Id}") #{employee.Email}
+								td #{employee.Id}
 								td
-									a.btn.btn-sm.btn-danger(type='button') Fire
+									a(href="/m/#{user.Id}/fire/#{employee.Id}").btn-fire.btn-action.action-btn.btn.btn-sm.btn-danger Fire
+
+block scripts
+	script(src='/js/local/employees.js')

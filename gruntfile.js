@@ -51,7 +51,8 @@ module.exports = function (grunt) {
 				files: {
 					'bower_components/underscore/underscore.min.js': 'bower_components/underscore/underscore.js',
 					'bower_components/bootstrap/js/transition.min.js': 'bower_components/bootstrap/js/transition.js',
-					'bower_components/bootstrap/js/collapse.min.js': 'bower_components/bootstrap/js/collapse.js'
+					'bower_components/bootstrap/js/collapse.min.js': 'bower_components/bootstrap/js/collapse.js',
+					'bower_components/bootstrap/js/modal.min.js': 'bower_components/bootstrap/js/modal.js'
 				}
 			}
 		},
@@ -131,6 +132,7 @@ module.exports = function (grunt) {
 					'bower_components/underscore/underscore.js',
 					'bower_components/bootstrap/js/transition.js',
 					'bower_components/bootstrap/js/collapse.js',
+					'bower_components/bootstrap/js/modal.js',
 					'assets/js/global/**/*.js'],
 				dest: 'public/js/global/globalScripts.js'
 			},
@@ -141,6 +143,7 @@ module.exports = function (grunt) {
 					'bower_components/underscore/underscore.min.js',
 					'bower_components/bootstrap/js/transition.min.js',
 					'bower_components/bootstrap/js/collapse.min.js',
+					'bower_components/bootstrap/js/modal.min.js',
 					'temp/assets/js/global/**/*.js'],
 				dest: 'public/js/global/globalScripts.js'
 			},
