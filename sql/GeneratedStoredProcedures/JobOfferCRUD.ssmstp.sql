@@ -7,18 +7,16 @@ BEGIN
 END
 GO
 CREATE PROC [dbo].[usp_JobOffer_Select]
-    @SenderId INT,
-    @RecieverId INT
+    @Id INT
 AS
 	SET NOCOUNT ON
 	SET XACT_ABORT ON
 
 	BEGIN TRAN
 
-	SELECT [SenderId], [RecieverId], [OfferStatus], [OfferDate], [DecisionDate]
+	SELECT [Id], [SenderId], [RecieverId], [OfferStatus], [OfferDate], [DecisionDate]
 	FROM   [dbo].[JobOffers]
-	WHERE  ([SenderId] = @SenderId OR @SenderId IS NULL)
-	       AND ([RecieverId] = @RecieverId OR @RecieverId IS NULL)
+	WHERE  ([Id] = @Id OR @Id IS NULL)
 
 	COMMIT
 GO
@@ -43,10 +41,9 @@ AS
 	SELECT @SenderId, @RecieverId, @OfferStatus, @OfferDate, @DecisionDate
 
 	-- Begin Return Select <- do not remove
-	SELECT [SenderId], [RecieverId], [OfferStatus], [OfferDate], [DecisionDate]
+	SELECT [Id], [SenderId], [RecieverId], [OfferStatus], [OfferDate], [DecisionDate]
 	FROM   [dbo].[JobOffers]
-	WHERE  [SenderId] = @SenderId
-	       AND [RecieverId] = @RecieverId
+	WHERE  [Id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
 
 	COMMIT
@@ -57,6 +54,7 @@ BEGIN
 END
 GO
 CREATE PROC [dbo].[usp_JobOffer_Update]
+	@Id int,
     @SenderId int,
     @RecieverId int,
     @OfferStatus varchar(20),
@@ -70,14 +68,12 @@ AS
 
 	UPDATE [dbo].[JobOffers]
 	SET    [SenderId] = @SenderId, [RecieverId] = @RecieverId, [OfferStatus] = @OfferStatus, [OfferDate] = @OfferDate, [DecisionDate] = @DecisionDate
-	WHERE  [SenderId] = @SenderId
-	       AND [RecieverId] = @RecieverId
+	WHERE  [Id] = @Id
 
 	-- Begin Return Select <- do not remove
-	SELECT [SenderId], [RecieverId], [OfferStatus], [OfferDate], [DecisionDate]
+	SELECT [Id], [SenderId], [RecieverId], [OfferStatus], [OfferDate], [DecisionDate]
 	FROM   [dbo].[JobOffers]
-	WHERE  [SenderId] = @SenderId
-	       AND [RecieverId] = @RecieverId
+	WHERE  [Id] = @Id
 	-- End Return Select <- do not remove
 
 	COMMIT
@@ -88,8 +84,7 @@ BEGIN
 END
 GO
 CREATE PROC [dbo].[usp_JobOffer_Delete]
-    @SenderId int,
-    @RecieverId int
+	@Id int
 AS
 	SET NOCOUNT ON
 	SET XACT_ABORT ON
@@ -98,8 +93,7 @@ AS
 
 	DELETE
 	FROM   [dbo].[JobOffers]
-	WHERE  [SenderId] = @SenderId
-	       AND [RecieverId] = @RecieverId
+	WHERE  [Id] = @Id
 
 	COMMIT
 GO

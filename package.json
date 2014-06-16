@@ -1,6 +1,6 @@
 {
   "name": "VehicleTracker",
-  "version": "0.5.2-0",
+  "version": "0.5.5-0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -42,7 +42,6 @@
     "bcrypt": "^0.7.8",
     "validator": "^3.14.1",
     "tedious-connection-pool": "^0.1.1",
-    "inflection": "~1.3.6",
-    "promise": "~5.0.0"
+    "inflection": "~1.3.6"
   }
 }

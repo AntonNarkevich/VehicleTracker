@@ -81,12 +81,11 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferDelete: function (SenderId, RecieverId,  callback) {
+	uspJobOfferDelete: function (Id,  callback) {
 		invoker.invoke(
 			'usp_JobOffer_Delete',
 			[
-				{name: 'SenderId', type: TYPES.Int, value: SenderId},
-				{name: 'RecieverId', type: TYPES.Int, value: RecieverId}
+				{name: 'Id', type: TYPES.Int, value: Id}
 			],
 			callback
 		);
@@ -97,6 +96,17 @@ module.exports = {
 			'usp_JobOffer_GetByRecieverId',
 			[
 				{name: 'recieverId', type: TYPES.Int, value: recieverId}
+			],
+			callback
+		);
+	},
+
+	uspJobOfferGetBySenderAndReceiver: function (SenderId, RecieverId,  callback) {
+		invoker.invoke(
+			'usp_JobOffer_GetBySenderAndReceiver',
+			[
+				{name: 'SenderId', type: TYPES.Int, value: SenderId},
+				{name: 'RecieverId', type: TYPES.Int, value: RecieverId}
 			],
 			callback
 		);
@@ -126,9 +136,9 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferOfferJob: function (senderId, recieverId,  callback) {
+	uspJobOfferMakeOffer: function (senderId, recieverId,  callback) {
 		invoker.invoke(
-			'usp_JobOffer_OfferJob',
+			'usp_JobOffer_MakeOffer',
 			[
 				{name: 'senderId', type: TYPES.Int, value: senderId},
 				{name: 'recieverId', type: TYPES.Int, value: recieverId}
@@ -148,21 +158,21 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferSelect: function (SenderId, RecieverId,  callback) {
+	uspJobOfferSelect: function (Id,  callback) {
 		invoker.invoke(
 			'usp_JobOffer_Select',
 			[
-				{name: 'SenderId', type: TYPES.Int, value: SenderId},
-				{name: 'RecieverId', type: TYPES.Int, value: RecieverId}
+				{name: 'Id', type: TYPES.Int, value: Id}
 			],
 			callback
 		);
 	},
 
-	uspJobOfferUpdate: function (SenderId, RecieverId, OfferStatus, OfferDate, DecisionDate,  callback) {
+	uspJobOfferUpdate: function (Id, SenderId, RecieverId, OfferStatus, OfferDate, DecisionDate,  callback) {
 		invoker.invoke(
 			'usp_JobOffer_Update',
 			[
+				{name: 'Id', type: TYPES.Int, value: Id},
 				{name: 'SenderId', type: TYPES.Int, value: SenderId},
 				{name: 'RecieverId', type: TYPES.Int, value: RecieverId},
 				{name: 'OfferStatus', type: TYPES.VarChar, value: OfferStatus},

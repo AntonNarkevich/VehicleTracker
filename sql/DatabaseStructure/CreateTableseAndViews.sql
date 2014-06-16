@@ -52,12 +52,12 @@ CREATE TABLE UsersXRoles
 CREATE TABLE JobOffers
   (
      --TODO: Inconsistency. Manager offers a job. Driver applies for a job. This should cause autosubmit.
+	 Id           INT PRIMARY KEY IDENTITY,
      SenderId     INT FOREIGN KEY REFERENCES Users(Id),
      RecieverId   INT FOREIGN KEY REFERENCES Users(Id),
      OfferStatus  VARCHAR(20) DEFAULT 'Pending' NOT NULL,
      OfferDate    DATETIME NOT NULL,
-     DecisionDate DATETIME,
-     PRIMARY KEY (SenderId, RecieverId, OfferStatus)
+     DecisionDate DATETIME
   )
 
 CREATE TABLE Messages

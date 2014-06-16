@@ -91,7 +91,6 @@ GO
 -------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------
 
-
 --TODO: "Fire" stored procedure. That in addition removes all vehicles.
 
 -------------------------------------------------------------------------------------------------------
@@ -174,14 +173,15 @@ AS
             (SELECT DriverId 
              FROM   ManagerXDrivers)) AS UnemployedIds 
 
-    SELECT *,
+    SELECT offerableUserIds.Id as Id,
+		Name, Email, IsBlocked, JobOffers.Id as OfferId,
 	case when RecieverId = @userId then cast(1 as bit) else cast(0 as bit) end as IncommingOffer,
 	case when SenderId = @userId then cast(1 as bit) else cast(0 as bit) end as OutgoingOffer,
 	case when OfferDate is null then cast(1 as bit) else cast(0 as bit) end as HasNoOffers
     FROM   (SELECT * 
             FROM   Users 
             WHERE  Id IN (SELECT * 
-                          FROM   @offerableIUserIds)) offerableUserIds 
+                          FROM   @offerableIUserIds)) offerableUserIds
            LEFT JOIN JobOffers 
                   ON ( ( offerableUserIds.Id = JobOffers.RecieverId 
                          AND JobOffers.SenderId = @userId ) 

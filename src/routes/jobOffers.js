@@ -44,7 +44,7 @@ router.get('/:ownerId/offer/:receiverId', role.isOneOf('manager', 'driver'), rol
 	var managerId = req.param('ownerId');
 	var receiverId = req.param('receiverId');
 
-	database.uspJobOfferOfferJob(managerId, receiverId, function (err, data) {
+	database.uspJobOfferMakeOffer(managerId, receiverId, function (err, data) {
 		if (err) {
 			logger.error(err);
 

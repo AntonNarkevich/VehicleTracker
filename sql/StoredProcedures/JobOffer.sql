@@ -1,9 +1,30 @@
-IF OBJECT_ID('[dbo].[usp_JobOffer_OfferJob]') IS NOT NULL
+USE [VehicleTrackerDb];
+GO
+
+IF OBJECT_ID('[dbo].[usp_JobOffer_GetBySenderAndReceiver]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_JobOffer_GetBySenderAndReceiver]
+END
+GO
+CREATE PROC [dbo].[usp_JobOffer_GetBySenderAndReceiver]
+    @SenderId INT,
+    @RecieverId INT
+AS
+	SELECT *
+	FROM   [dbo].[JobOffers]
+	WHERE  ([SenderId] = @SenderId)
+	       AND ([RecieverId] = @RecieverId)
+GO
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+IF OBJECT_ID('[dbo].[usp_JobOffer_MakeOffer]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_JobOffer_OfferJob] 
+    DROP PROC [dbo].[usp_JobOffer_MakeOffer] 
 END 
 GO
-CREATE PROC [dbo].[usp_JobOffer_OfferJob] 
+CREATE PROC [dbo].[usp_JobOffer_MakeOffer] 
     @senderId INT,
 	@recieverId INT
 AS 		
@@ -62,6 +83,7 @@ AS
 		   [DecisionDate] = GETDATE()
 	WHERE  [SenderId] = @SenderId
 	       AND [RecieverId] = @RecieverId
+		   AND [OfferStatus] = 'Pending'
 GO
 
 -------------------------------------------------------------------------------
@@ -82,4 +104,5 @@ AS
 		   [DecisionDate] = GETDATE()
 	WHERE  [SenderId] = @SenderId
 	       AND [RecieverId] = @RecieverId
+		   AND [OfferStatus] = 'Pending'
 GO
