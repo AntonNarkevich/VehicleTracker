@@ -1,0 +1,11 @@
+.confirmation.modal.fade
+	.modal-dialog
+		.modal-content
+			.modal-header
+				button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+				h4.modal-title #{confirmationTitle || 'Confirmation required'}
+			.modal-body
+				p #{confirmationBody || 'Are you sure?'}
+			.modal-footer
+				button.btn.btn-default(type='button', data-dismiss='modal') No
+				button.btn-confirm.btn.btn-primary(type='button') #{confirmationConfirmText || 'Yes'}

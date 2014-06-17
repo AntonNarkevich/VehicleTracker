@@ -1,43 +1,26 @@
 /*global jQuery*/
-(function employees($) {
+(function( $) {
 	'use strict';
 
 	var $modal = $('.confirmation');
 	var $confirmButton = $modal.find('.btn-confirm');
 
-	function showConfirmModal($linkToConfirm) {
+	var modalConfirm = function (href) {
 		$confirmButton.off('click.confirm');
 		$confirmButton.on('click.confirm', function () {
-			$linkToConfirm.attr('data-is-confirmed', 'true');
-			$linkToConfirm[0].click();
+			window.location = href;
 		});
 
 		$modal.modal('show');
-	}
+	};
 
-	function hideConfirmModal() {
-		$modal.modal('hide');
-	}
+	var applyFireButtonsConfirmation = function() {
+		$('.btn-fire').on('click.confirm', function( e) {
+			e.preventDefault();
 
-	function applyFireButtonsConfirmation() {
-		var $fireButtons = $('.btn-fire');
-
-		$fireButtons.on('click.confirm', function(e) {
-			var $button = $(this);
-
-			if (!$button.attr('data-is-confirmed')) {
-				e.preventDefault();
-
-				showConfirmModal($button);
-
-				return;
-			}
-
-			$fireButtons.removeAttr('data-is-confirmed');
-			hideConfirmModal();
+			modalConfirm(this.href);
 		});
-
-	}
+	};
 
 	$(applyFireButtonsConfirmation);
 }(jQuery));

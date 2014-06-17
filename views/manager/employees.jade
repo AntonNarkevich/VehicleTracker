@@ -1,17 +1,9 @@
 extends ../layout
 block content
-	.confirmation.modal.fade
-		.modal-dialog
-			.modal-content
-				.modal-header
-					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-					h4.modal-title Modal title
-				.modal-body
-					p One fine body…
-				.modal-footer
-					button.btn.btn-default(type='button', data-dismiss='modal') Close
-					button.btn-confirm.btn.btn-primary(type='button') Delete
 
+	- var confirmationTitle = 'Confirm firing';
+	- var confirmationBody = 'Are you sure? This action can\'t be undone.';
+	include ../partials/confirmationModal
 
 	.container
 		.row
