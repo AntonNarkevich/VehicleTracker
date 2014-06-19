@@ -4,12 +4,12 @@ block content
 		.row
 			.col-md-12
 				h1 Drive!
-				p Your vehicle is #{vehicleInfo.LicensePlate}. Id (#{vehicleInfo.Id}).
+				p Your vehicle is "#{vehicleInfo.Name}". (Id #{vehicleInfo.Id}).
 				input(type="hidden", id="vehicle-id", value="#{vehicleInfo.Id}")
 				p Click the map to drive. Be careful! You are tracked and#{" "}
 					span.label.label-warning it can't be undone.
-		.row
 
+		.row
 			.vt-google-map
 
 block scripts

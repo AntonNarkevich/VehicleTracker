@@ -88,7 +88,7 @@ CREATE TABLE Positions
      Id           INT PRIMARY KEY IDENTITY,
      VehicleId    INT FOREIGN KEY REFERENCES Vehicles(Id) NOT NULL,
      CheckoutDate DATETIME NOT NULL,
-     POSITION     GEOGRAPHY NOT NULL
+     Position     GEOGRAPHY NOT NULL
   )
 
 CREATE TABLE DriverXVehicle

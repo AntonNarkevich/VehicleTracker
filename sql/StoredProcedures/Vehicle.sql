@@ -1,44 +1,3 @@
-IF OBJECT_ID('[dbo].[usp_Vehicle_Create]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_Create]
-END
-GO
-
-use [VehicleTrackerDb]
-go
-
-CREATE PROC [dbo].[usp_Vehicle_Create]
-							   @managerId    int, 
-                               @driverId     int, 
-                               @name NVARCHAR(30), 
-							   @info nvarchar(600),
-                               @longitude    NVARCHAR(20), 
-                               @latitude     NVARCHAR(20)
-AS
-
-	declare @SRID int = 4326
-
-	exec usp_Vehicle_Insert @managerId, @name, @info
-	declare @vehicleId int = @@IDENTITY
-
-    DECLARE @vehiclePositionWKT NVARCHAR(50)
-    SET @vehiclePositionWKT = 'POINT(' + @longitude + ' ' + @latitude + ')' 
-
-    DECLARE @vehiclePosition GEOGRAPHY
-    SET @vehiclePosition = geography::STGeomFromText(@vehiclePositionWKT, @SRID) 
-
-    INSERT INTO [dbo].[Positions] 
-                ([Position], 
-                 [VehicleId], 
-                 [CheckoutDate]) 
-    VALUES      (@vehiclePosition, 
-                 @vehicleId, 
-				 --TODO: How do we synchronize server and db time?
-                 GETDATE()) 
-
-	exec usp_Vehicle_AssignToDriver @managerId, @vehicleId, @driverId
-GO
-
 ----------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------
 
@@ -168,4 +127,89 @@ AS
 	end
 
 	commit
+GO
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetPositions]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_Vehicle_GetPositions]
+END
+GO
+
+use [VehicleTrackerDb]
+go
+
+CREATE PROC [dbo].[usp_Vehicle_GetPositions]
+	@vehicleId int
+AS
+	select VehicleId, Position.Long as 'Longitude', Position.Lat 'Latitude'
+	from Positions
+	where VehicleId = @vehicleId
+	order by CheckoutDate
+GO
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+IF OBJECT_ID('[dbo].[usp_Vehicle_SetPositions]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_Vehicle_SetPositions]
+END
+GO
+
+use [VehicleTrackerDb]
+go
+
+CREATE PROC [dbo].[usp_Vehicle_SetPositions]
+								    @vehicleId int, 
+                                    @longitude NVARCHAR(20), 
+                                    @latitude  NVARCHAR(20)
+AS
+	  declare @SRID      INT = 4326 
+      DECLARE @vehiclePositionWKT NVARCHAR(50) 
+
+      SET @vehiclePositionWKT = 'POINT(' + @longitude + ' ' + @latitude + ')' 
+
+      DECLARE @vehiclePosition GEOGRAPHY 
+
+      SET @vehiclePosition = geography::STGeomFromText(@vehiclePositionWKT, 
+                             @SRID) 
+
+      INSERT INTO [dbo].[Positions] 
+                  ([Position], 
+                   [VehicleId], 
+                   [CheckoutDate]) 
+      VALUES      (@vehiclePosition, 
+                   @vehicleId, 
+                   GETDATE()) 
+GO
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+IF OBJECT_ID('[dbo].[usp_Vehicle_Create]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_Vehicle_Create]
+END
+GO
+
+use [VehicleTrackerDb]
+go
+
+CREATE PROC [dbo].[usp_Vehicle_Create]
+							   @managerId    int, 
+                               @driverId     int, 
+                               @name NVARCHAR(30), 
+							   @info nvarchar(600),
+                               @longitude    NVARCHAR(20), 
+                               @latitude     NVARCHAR(20)
+AS
+	exec usp_Vehicle_Insert @managerId, @name, @info
+	declare @vehicleId int = @@IDENTITY
+
+	exec usp_Vehicle_SetPositions @vehicleId, @longitude, @latitude
+	exec usp_Vehicle_AssignToDriver @managerId, @vehicleId, @driverId
 GO

@@ -4,33 +4,35 @@ var router = require('express').Router();
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var repository = rekuire('repository');
+var database = rekuire('database');
 var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');
 
 //TODO: Add protection against SQL injection.
-router.get('/:ownerId', role.is('driverOwner'), function (req, res) {
+router.get('/:ownerId', role.isAllOf('driver', 'owner'), function (req, res) {
 	var driverId = req.param('ownerId');
 
-	repository.getVehicle(driverId, function (err, vehicleInfo) {
+	database.uspVehicleGetByDriverId(driverId, function (err, data) {
 		if (err) {
 			res.render('error', {error: err});
 			return;
 		}
 
-		if (!vehicleInfo.Id) {
-			res.render('driver/waitForAVehicle');
-			return;
-		}
+		var vehicleInfo = data[0];
 
-		res.render('driver/drive', {vehicleInfo: vehicleInfo, keys: keys });
+		if (!vehicleInfo.VehicleId) {
+			res.render('driver/waitForAVehicle');
+		} else {
+			res.render('driver/drive', {vehicleInfo: vehicleInfo, keys: keys });
+		}
 	});
 });
 
 //TODO: New memberhip rule. Only driver owner should have access to his vehicle. (+manager+admin)
-router.get('/:vehicleId/positions', role.is('driver'), function (req, res) {
+router.get('/:vehicleId/positions', role.isAllOf('driver'), function (req, res) {
 	var vehicleId = req.param('vehicleId');
 
-	repository.getVehiclePositions(vehicleId, function (err, vehiclePositions) {
+	database.uspVehicleGetPositions(vehicleId, function (err, vehiclePositions) {
 		if (err) {
 			//TODO: How should I treat the error here. (REST api).
 			res.json(err);
@@ -46,7 +48,7 @@ router.post('/:vehicleId/positions', role.is('driver'), function (req, res) {
 	var longitude = req.param('longitude');
 	var latitude = req.param('latitude');
 
-	repository.setVehiclePosition(vehicleId, longitude, latitude, function (err, vehiclePositions) {
+	database.uspVehicleSetPositions(vehicleId, longitude, latitude, function (err, vehiclePositions) {
 		if (err) {
 			res.json(err);
 			return;
@@ -56,7 +58,5 @@ router.post('/:vehicleId/positions', role.is('driver'), function (req, res) {
 		res.json({its:'ok'});
 	});
 });
-
-
 
 module.exports = router;

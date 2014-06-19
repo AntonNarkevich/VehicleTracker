@@ -18,6 +18,26 @@ module.exports = {
 		);
 	},
 
+	uspBLDriverGetPosition: function (driverId,  callback) {
+		invoker.invoke(
+			'usp_BL_Driver_GetPosition',
+			[
+				{name: 'driverId', type: TYPES.Int, value: driverId}
+			],
+			callback
+		);
+	},
+
+	uspBLDriverGetPositions: function (driverId,  callback) {
+		invoker.invoke(
+			'usp_BL_Driver_GetPositions',
+			[
+				{name: 'driverId', type: TYPES.Int, value: driverId}
+			],
+			callback
+		);
+	},
+
 	uspBLDriverRejectPendingJobOffers: function (driverId,  callback) {
 		invoker.invoke(
 			'usp_BL_Driver_RejectPendingJobOffers',
@@ -451,6 +471,16 @@ module.exports = {
 		);
 	},
 
+	uspVehicleGetPositions: function (vehicleId,  callback) {
+		invoker.invoke(
+			'usp_Vehicle_GetPositions',
+			[
+				{name: 'vehicleId', type: TYPES.Int, value: vehicleId}
+			],
+			callback
+		);
+	},
+
 	uspVehicleInsert: function (ManagerId, Name, Info,  callback) {
 		invoker.invoke(
 			'usp_Vehicle_Insert',
@@ -468,6 +498,18 @@ module.exports = {
 			'usp_Vehicle_Select',
 			[
 				{name: 'Id', type: TYPES.Int, value: Id}
+			],
+			callback
+		);
+	},
+
+	uspVehicleSetPositions: function (vehicleId, longitude, latitude,  callback) {
+		invoker.invoke(
+			'usp_Vehicle_SetPositions',
+			[
+				{name: 'vehicleId', type: TYPES.Int, value: vehicleId},
+				{name: 'longitude', type: TYPES.NVarChar, value: longitude},
+				{name: 'latitude', type: TYPES.NVarChar, value: latitude}
 			],
 			callback
 		);
