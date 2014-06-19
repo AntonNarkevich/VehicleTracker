@@ -30,15 +30,35 @@ module.exports = {
 			user.RoleNames = roleNames;
 		}
 
-		var driverInfos = _.chain(data)
-			.tail()
-			.filter(function (dataRow) {
-				return dataRow.DriverId;
-			})
-			.value();
+		//For managers
+		if (roleNames.indexOf('manager') !== -1) {
+			var driverInfos = _.chain(data)
+				.tail()
+				.filter(function (dataRow) {
+					return dataRow.DriverId;
+				})
+				.value();
 
-		if (driverInfos.length !== 0) {
-			user.DriverInfos = driverInfos;
+			if (driverInfos.length !== 0) {
+				user.DriverInfos = driverInfos;
+			}
+		}
+
+		//For drivers
+		if (roleNames.indexOf('driver') !== -1) {
+			var bossInfo = _.chain(data)
+				.tail()
+				.find(function (dataRow) {
+					return dataRow.BossId;
+				})
+				.value();
+
+			user.isEmployed = bossInfo.length !== 0;
+
+			if (user.isEmployed) {
+				user.BossId = bossInfo.BossId;
+				user.BossEmail = bossInfo.BossEmail;
+			}
 		}
 
 		return user;

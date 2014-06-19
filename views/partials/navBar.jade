@@ -21,7 +21,7 @@ nav.navbar.navbar-default(role="navigation")
 					p.navbar-text
 						a.navbar-link(href="/jobOffers/#{user.Id}") Find drivers!
 					p.navbar-text
-						a.navbar-link(href="/m/vehicle/create") Create Vehicle
+						a.navbar-link(href="/v/create/#{user.Id}") Create Vehicle
 					p.navbar-text
 						a.navbar-link(href="/m/#{user.Id}/track") Track
 					p.navbar-text
@@ -32,8 +32,9 @@ nav.navbar.navbar-default(role="navigation")
 				if (user.RoleNames.indexOf('driver') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/d/#{user.Id}") Drive
-					p.navbar-text
-						a.navbar-link(href="/jobOffers/#{user.Id}") Find Job!
+					if !user.isEmployed
+						p.navbar-text
+							a.navbar-link(href="/jobOffers/#{user.Id}") Find Job!
 
 				.navbar-right
 					p.navbar-text Signed in as#{" "}

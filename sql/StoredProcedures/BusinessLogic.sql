@@ -119,6 +119,47 @@ GO
 -------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------
 
+--Gets employees for particular manager
+IF OBJECT_ID('[dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle]
+END
+GO
+
+CREATE PROC [dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle]
+	@managerId INT
+AS
+	SELECT Id, Email, IsBlocked
+	FROM (ManagerXDrivers INNER JOIN
+	Users ON ManagerXDrivers.DriverId = Users.Id)
+	WHERE ManagerId = @managerId
+	and not exists (select * from DriverXVehicle
+						where DriverId = Users.Id)
+
+GO
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
+--Gets employees for particular manager
+IF OBJECT_ID('[dbo].[usp_BL_Driver_GetBoss]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_BL_Driver_GetBoss]
+END
+GO
+
+CREATE PROC [dbo].[usp_BL_Driver_GetBoss]
+	@driverId INT
+AS
+	SELECT ManagerId as BossId, Email as BossEmail
+	FROM ManagerXDrivers INNER JOIN
+	Users ON ManagerXDrivers.ManagerId = Users.Id 
+	WHERE DriverId = @driverId
+GO
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
 --Checks whether the manager is employer for the driver
 IF OBJECT_ID('[dbo].[usp_BL_Manager_IsBossFor]') IS NOT NULL
 BEGIN

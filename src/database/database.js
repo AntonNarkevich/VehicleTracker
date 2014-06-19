@@ -7,6 +7,17 @@ var connection = rekuire('connector').connection;
 var invoker = rekuire('storedProcedureInvoker');
 
 module.exports = {
+
+	uspBLDriverGetBoss: function (driverId,  callback) {
+		invoker.invoke(
+			'usp_BL_Driver_GetBoss',
+			[
+				{name: 'driverId', type: TYPES.Int, value: driverId}
+			],
+			callback
+		);
+	},
+
 	uspBLDriverRejectPendingJobOffers: function (driverId,  callback) {
 		invoker.invoke(
 			'usp_BL_Driver_RejectPendingJobOffers',
@@ -63,6 +74,16 @@ module.exports = {
 	uspBLManagerGetEmployees: function (managerId,  callback) {
 		invoker.invoke(
 			'usp_BL_Manager_GetEmployees',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId}
+			],
+			callback
+		);
+	},
+
+	uspBLManagerGetEmployeesWithoutVehicle: function (managerId,  callback) {
+		invoker.invoke(
+			'usp_BL_Manager_GetEmployeesWithoutVehicle',
 			[
 				{name: 'managerId', type: TYPES.Int, value: managerId}
 			],
@@ -380,6 +401,21 @@ module.exports = {
 				{name: 'managerId', type: TYPES.Int, value: managerId},
 				{name: 'vehicleId', type: TYPES.Int, value: vehicleId},
 				{name: 'driverId', type: TYPES.Int, value: driverId}
+			],
+			callback
+		);
+	},
+
+	uspVehicleCreate: function (managerId, driverId, name, info, longitude, latitude,  callback) {
+		invoker.invoke(
+			'usp_Vehicle_Create',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId},
+				{name: 'driverId', type: TYPES.Int, value: driverId},
+				{name: 'name', type: TYPES.NVarChar, value: name},
+				{name: 'info', type: TYPES.NVarChar, value: info},
+				{name: 'longitude', type: TYPES.NVarChar, value: longitude},
+				{name: 'latitude', type: TYPES.NVarChar, value: latitude}
 			],
 			callback
 		);

@@ -12,19 +12,30 @@ block content
 				.vt-google-map
 		.row
 			.col-md-6.col-md-offset-3
-				form.form-horizontal(role="form", method="post", action="/m/vehicle/create")
+				form.form-horizontal(role="form", method="post", action="/v/create/#{user.Id}", data-parsley-validate)
 					input#vehicle-longitude(type="hidden", name="longitude")
 					input#vehicle-latitude(type="hidden", name="latitude")
 					.form-group
-						label.control-label.col-sm-3(for="email") License plate
+						label.control-label.col-sm-3(for="license-plate") Name
 						.col-sm-9
-							input#license-plate.form-control(name="licensePlate", type="text", placeholder="License plate", required)
+							input#license-plate.form-control(
+							name="name",
+							type="text",
+							placeholder="Batmobile",
+							data-parsley-required,
+							data-parsley-required-message="Vehicle name is required",
+							data-parsley-maxlength="20")
 					.form-group
-						label.control-label.col-sm-3(for="email") Assign to
+						label.control-label.col-sm-3(for="info") Info
 						.col-sm-9
-							select(name="driverId").form-control
-								each driver in driversInfo
-									option(value="#{driver.Id}") #{driver.Email}
+							textarea#info.textarea-vertical.form-control(name="info", placeholder="Batman's car was created to...", data-parsley-maxlength="600")
+					if driversInfo && driversInfo.length !== 0
+						.form-group
+							label.control-label.col-sm-3(for="email") Assign to
+							.col-sm-9
+								select(name="driverId").form-control
+									each driver in driversInfo
+										option(value="#{driver.Id}") #{driver.Email}
 					.form-group
 						.col-sm-offset-3.col-sm-9
 							button.btn.btn-default.btn-primary(type="submit") Create

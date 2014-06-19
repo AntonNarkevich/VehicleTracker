@@ -49,36 +49,6 @@ router.get('/:ownerId/fire/:driverId', role.isAllOf('manager', 'owner'), functio
 
 
 
-
-
-router.get('/vehicle/create', role.is('manager'), function (req, res) {
-	var managerId = req.user.id;
-
-	repository.getDriversInfo(managerId, function (driversInfo) {
-		res.render('vehicle/create', {keys: keys, driversInfo: driversInfo});
-	});
-
-});
-
-router.post('/vehicle/create', role.is('manager'), function (req, res) {
-	var licensePlate = req.param('licensePlate');
-	var driverId = req.param('driverId');
-	var managerId = req.user.id;
-	var longitude = req.param('longitude');
-	var latitude = req.param('latitude');
-
-	//function createVehicle(managerId, driverId, licensePlate, longitude, latitude, done) {
-
-	repository.createVehicle(managerId, driverId, licensePlate, longitude, latitude, function (err) {
-		if (err) {
-			res.render('error', {error: err});
-			return;
-		}
-
-		res.render('manager/createVehicleSuccess');
-	});
-});
-
 router.get('/:ownerId/track', role.is('managerOwner'), function (req, res) {
 	var managerId = req.user.id;
 

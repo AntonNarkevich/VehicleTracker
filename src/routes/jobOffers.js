@@ -16,7 +16,7 @@ var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');
 
 //TODO: Create 'unemployed' role
-router.get('/:ownerId', role.isOneOf('manager', 'driver'), function (req, res) {
+router.get('/:ownerId', role.isOneOf('manager', 'driver'), role.is('owner'), role.isNot('employed'), function (req, res) {
 	var managerId = parseInt(req.param('ownerId'), 10);
 
 	var isManager = req.userIs('manager');

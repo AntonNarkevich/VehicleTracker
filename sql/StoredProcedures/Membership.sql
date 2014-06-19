@@ -61,16 +61,20 @@ AS
 	select * from @roles
 
 	--If manager
-	declare @managerRole varchar(20)
-	select @managerRole = RoleName
-	from @roles
-	where RoleName = 'manager'
-
-	IF (@managerRole is not null)
+	IF (exists (select RoleName from @roles where RoleName = 'manager'))
 	BEGIN
 		--Outuput employee ids
 		exec [dbo].[usp_BL_Manager_GetEmployees] @Id
 	END
+	
+	--If driver
+	IF (exists (select RoleName from @roles where RoleName = 'driver'))
+	BEGIN
+		--Outuput employee ids
+		exec [dbo].[usp_BL_Driver_GetBoss] @Id
+	END
+
+
 GO
 
 -------------------------------------------------------------------------------

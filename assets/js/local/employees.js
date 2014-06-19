@@ -1,26 +1,21 @@
-/*global jQuery*/
-(function( $) {
+/*global jQuery, bootbox*/
+(function($, bootbox) {
 	'use strict';
-
-	var $modal = $('.confirmation');
-	var $confirmButton = $modal.find('.btn-confirm');
-
-	var modalConfirm = function (href) {
-		$confirmButton.off('click.confirm');
-		$confirmButton.on('click.confirm', function () {
-			window.location = href;
-		});
-
-		$modal.modal('show');
-	};
 
 	var applyFireButtonsConfirmation = function() {
 		$('.btn-fire').on('click.confirm', function( e) {
 			e.preventDefault();
 
-			modalConfirm(this.href);
+			var confirmMessage = this.getAttribute('data-confirm-message');
+			var href = this.href;
+
+			bootbox.confirm(confirmMessage, function (isConfirmed) {
+				if (isConfirmed) {
+					window.location = href;
+				}
+			});
 		});
 	};
 
 	$(applyFireButtonsConfirmation);
-}(jQuery));
+}(jQuery, bootbox));

@@ -19,15 +19,11 @@
 			title: 'Vehicle position'
 		});
 
-		var postionInput = $('#vehicle-position');
-
 		var longitude = $('#vehicle-longitude');
 		var latitude = $('#vehicle-latitude');
 
 		longitude.val(markerPosition.A);
 		latitude.val(markerPosition.k);
-
-		postionInput.val(markerPosition);
 
 		google.maps.event.addListener(map, 'click', function (event) {
 			VT.logger.debug('Setting hidden input value:');

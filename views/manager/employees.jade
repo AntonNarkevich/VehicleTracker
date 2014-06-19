@@ -1,10 +1,5 @@
 extends ../layout
 block content
-
-	- var confirmationTitle = 'Confirm firing';
-	- var confirmationBody = 'Are you sure? This action can\'t be undone.';
-	include ../partials/confirmationModal
-
 	.container
 		.row
 			.col-md-12
@@ -24,7 +19,9 @@ block content
 									a(href="/profile/#{employee.Id}") #{employee.Email}
 								td #{employee.Id}
 								td
-									a(href="/m/#{user.Id}/fire/#{employee.Id}").btn-fire.btn-action.action-btn.btn.btn-sm.btn-danger Fire
+									a.btn-fire.btn-action.action-btn.btn.btn-sm.btn-danger(
+									href="/m/#{user.Id}/fire/#{employee.Id}"
+									data-confirm-message="Sure to fire? This action can't be undone.") Fire
 
 block scripts
 	script(src='/js/local/employees.js')

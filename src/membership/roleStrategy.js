@@ -83,6 +83,16 @@ connectRoles.use('driver', function (req) {
 	}
 });
 
+//Employed driver pages
+connectRoles.use('employed', function (req) {
+	var curUser = req.user;
+
+	if (curUser.isEmployed) {
+		return true;
+	}
+});
+
+
 //Manager pages
 connectRoles.use('manager', function (req) {
 	var curUser = req.user;
@@ -130,6 +140,21 @@ connectRoles.use(function (req, action) {
 		return true;
 	}
 });
+
+/**
+ * Access is granted when user at least one role from the array.
+ * @param [arguments] Role names
+ * @returns {Function} Route middleware.
+ */
+connectRoles.isNot = function(role) {
+	return function(req, res, next) {
+		if (!req.userIs(role)) {
+			next();
+		} else {
+			accessDeniedHandler(req, res, 'not-' + role);
+		}
+	};
+};
 
 /**
  * Access is granted when user at least one role from the array.
