@@ -13,6 +13,7 @@ var mime = require('mime');
 var logger = rekuire('logger');
 var repository = rekuire('repository');
 var database = rekuire('database');
+var interpreter = rekuire('dataInterpreter');
 var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');
 
@@ -46,25 +47,27 @@ router.get('/:ownerId/fire/:driverId', role.isAllOf('manager', 'owner'), functio
 	});
 });
 
-
-
-
-router.get('/:ownerId/track', role.is('managerOwner'), function (req, res) {
-	var managerId = req.user.id;
+router.get('/:ownerId/track', role.isAllOf('manager', 'owner'), function (req, res) {
+	var managerId = req.param('ownerId');
 
 	res.render('manager/track', {keys: keys, managerId: managerId});
 });
 
-router.get('/:ownerId/trackData', role.is('managerOwner'), function (req, res) {
-	var managerId = req.user.id;
 
-	repository.getVehicleTrackInfos(managerId, function (err, vehicleTrackInfos) {
+
+router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (req, res) {
+	var managerId = req.param('ownerId');
+
+	database.uspTrackGetVehiclePaths(managerId, function (err, data) {
 		if (err) {
-			res.json(err);
-			return;
+			logger.error(err);
+
+			throw err;
 		}
 
-		res.json(vehicleTrackInfos);
+		var trackInfos = interpreter.interpretTrackInfosData(data);
+
+		res.json(trackInfos);
 	});
 });
 

@@ -367,6 +367,16 @@ module.exports = {
 		);
 	},
 
+	uspTrackGetVehiclePaths: function (managerId,  callback) {
+		invoker.invoke(
+			'usp_Track_GetVehiclePaths',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId}
+			],
+			callback
+		);
+	},
+
 	uspUserDelete: function (Id,  callback) {
 		invoker.invoke(
 			'usp_User_Delete',

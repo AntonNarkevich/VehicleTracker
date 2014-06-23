@@ -53,7 +53,7 @@ module.exports = {
 				})
 				.value();
 
-			user.isEmployed = bossInfo.length !== 0;
+			user.isEmployed = bossInfo !== undefined;
 
 			if (user.isEmployed) {
 				user.BossId = bossInfo.BossId;
@@ -62,5 +62,25 @@ module.exports = {
 		}
 
 		return user;
+	},
+
+	interpretTrackInfosData: function (data) {
+		var vehicleTrackInfos = _.chain(data)
+			.map(function(vehicleTrackInfoRow) {
+				return {
+					vehicleId: vehicleTrackInfoRow.Id,
+					vehicleName: vehicleTrackInfoRow.Name,
+					date: vehicleTrackInfoRow.CheckoutDate,
+					positionInfo: {
+						Longitude: vehicleTrackInfoRow.Longitude,
+						Latitude: vehicleTrackInfoRow.Latitude
+					}
+				};
+			})
+			.groupBy('vehicleId')
+			.values()
+			.value();
+
+		return vehicleTrackInfos;
 	}
 };
