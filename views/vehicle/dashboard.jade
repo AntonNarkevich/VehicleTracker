@@ -1,0 +1,31 @@
+extends ../layout
+block content
+	.container
+		.row
+			.col-md-12
+				if isManagerMode
+					h1 Unemployed drivers
+				else if isDriverMode
+					h1 Managers
+		.row
+			.col-md-12
+				table.table.table-condensed
+					thead
+						tr
+							th Email
+							th Id
+							th Is Assigned
+							th Actions
+					tbody
+						each vehicleInfo, index in vehicleInfos
+							tr
+								td #{vehicleInfo.Id}
+								td
+									a(href="/v/#{vehicleInfo.Id}/view/#{user.Id}") #{vehicleInfo.Name}
+								td
+									if vehicleInfo.IsAssigned
+										span.label.label-success Yes
+									else
+										span.label.label-warning No
+								td
+									a.btn.btn-primary(href="/v/#{vehicleInfo.Id}/view/#{user.Id}") More

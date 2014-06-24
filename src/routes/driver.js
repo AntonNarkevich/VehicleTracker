@@ -20,7 +20,7 @@ router.get('/:ownerId', role.isAllOf('driver', 'owner'), function (req, res) {
 
 		var vehicleInfo = data[0];
 
-		if (!vehicleInfo.VehicleId) {
+		if (!vehicleInfo) {
 			res.render('driver/waitForAVehicle');
 		} else {
 			res.render('driver/drive', {vehicleInfo: vehicleInfo, keys: keys });

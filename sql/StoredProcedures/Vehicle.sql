@@ -132,6 +132,53 @@ GO
 ----------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------
 
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetVehicleAssignmentInfo]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_Vehicle_GetVehicleAssignmentInfo]
+END
+GO
+
+use [VehicleTrackerDb]
+go
+
+CREATE PROC [dbo].[usp_Vehicle_GetVehicleAssignmentInfo]
+    @managerId INT
+AS
+	select Id, Name,
+		case when exists(select *
+					from DriverXVehicle
+					where exists(select * from DriverXVehicle
+							where DriverXVehicle.VehicleId = Vehicles.Id))
+		then cast('TRUE' as bit) else cast('FALSE' as bit) end as IsAssigned
+	from Vehicles
+GO
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetVehicleFullInfo]') IS NOT NULL
+BEGIN
+    DROP PROC [dbo].[usp_Vehicle_GetVehicleFullInfo]
+END
+GO
+
+use [VehicleTrackerDb]
+go
+
+CREATE PROC [dbo].[usp_Vehicle_GetVehicleFullInfo]
+    @vehicleId INT
+AS
+	select Vehicles.Id 'VehicleId', Vehicles.Name, Info, Users.Id 'DriverId' , Email 'DriverEmail'
+	from Vehicles left join DriverXVehicle
+		on Vehicles.Id = DriverXVehicle.VehicleId
+		left join Users
+		on DriverXVehicle.DriverId = Users.Id
+	where Vehicles.Id = @vehicleId
+GO
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
 IF OBJECT_ID('[dbo].[usp_Vehicle_GetPositions]') IS NOT NULL
 BEGIN
     DROP PROC [dbo].[usp_Vehicle_GetPositions]

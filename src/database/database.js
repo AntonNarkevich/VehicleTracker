@@ -491,6 +491,26 @@ module.exports = {
 		);
 	},
 
+	uspVehicleGetVehicleAssignmentInfo: function (managerId,  callback) {
+		invoker.invoke(
+			'usp_Vehicle_GetVehicleAssignmentInfo',
+			[
+				{name: 'managerId', type: TYPES.Int, value: managerId}
+			],
+			callback
+		);
+	},
+
+	uspVehicleGetVehicleFullInfo: function (vehicleId,  callback) {
+		invoker.invoke(
+			'usp_Vehicle_GetVehicleFullInfo',
+			[
+				{name: 'vehicleId', type: TYPES.Int, value: vehicleId}
+			],
+			callback
+		);
+	},
+
 	uspVehicleInsert: function (ManagerId, Name, Info,  callback) {
 		invoker.invoke(
 			'usp_Vehicle_Insert',

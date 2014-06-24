@@ -91,6 +91,7 @@ router.get('/:ownerId/accept/:senderId', role.isOneOf('manager', 'driver'), role
 			throw err;
 		}
 
+		//TODO: Fix a bug here. Different redirect for managers and drivers. Non-employed permission.
 		res.redirect('/jobOffers/' + req.user.Id);
 	});
 });

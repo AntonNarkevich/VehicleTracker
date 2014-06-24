@@ -1,0 +1,37 @@
+extends ../layout
+block content
+	div.container
+		h1 Vehicle "#{vehicleInfo.Name}"
+		table.table.table-bordered
+			tr
+				td Id
+				td #{vehicleInfo.VehicleId}
+			tr
+				td Name
+				td #{vehicleInfo.Name}
+			tr
+				td Info
+				td #{vehicleInfo.Info}
+			if vehicleInfo.DriverId
+				tr
+					td Assidnged to
+					td
+						a(href="/profile/#{vehicleInfo.DriverId}") #{vehicleInfo.DriverEmail}
+
+		if !vehicleInfo.DriverId
+			.row
+				if driversInfo.length
+					form(action="/v/#{vehicleInfo.VehicleId}/assign/#{user.Id}/", method='POST')
+						.form-group
+							label.control-label.col-sm-2(for="email") Assign to
+							.col-sm-8.assign-select-box
+								select(name="driverId").form-control
+									each driver in driversInfo
+										option(value="#{driver.Id}") #{driver.Email}
+							.col-sm-2
+								input.btn.btn-primary.btn-block(type="submit", value="Assign")
+				else
+					label.control-label.col-sm-2(for="email") Assign to
+							span.label.label-warning No vacant employees to assign
+					.col-sm-2
+							a.btn.btn-primary.btn-block(href="/jobOffers/#{user.Id}") Find drivers!
