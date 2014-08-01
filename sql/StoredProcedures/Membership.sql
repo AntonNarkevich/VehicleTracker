@@ -25,7 +25,7 @@ GO
 -------------------------------------------------------------------------------
 
 IF OBJECT_ID('[dbo].[usp_MBSP_User_GetRolesById]') IS NOT NULL
-BEGIN 
+BEGIN
     DROP PROC [dbo].[usp_MBSP_User_GetRolesById] 
 END 
 GO
@@ -195,6 +195,7 @@ AS
             SELECT cast('FALSE' AS BIT)                  AS IsSuccess, 
                    'User with such email already exist.' AS [Message] 
 
+			ROLLBACK
             RETURN 
         END 
       -- other errors 
@@ -204,7 +205,7 @@ AS
         END 
   END CATCH 
 
-    IF @Role IN ( 'manager', 'driver' ) 
+    IF @Role IN ( 'manager', 'driver', 'admin' ) 
       BEGIN 
           EXEC usp_MBSP_User_AddRole 
             @id, 
@@ -214,4 +215,28 @@ AS
     SELECT cast('TRUE' AS BIT)        AS IsSuccess, 
            'Successfully registered.' AS [Message] 
 
+GO 
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+USE VehicleTrackerDb 
+
+GO 
+
+IF OBJECT_ID('[dbo].[usp_MBSP_IsAdminRegistered]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_IsAdminRegistered] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[usp_MBSP_IsAdminRegistered]
+AS 
+   SELECT CASE 
+         WHEN EXISTS (SELECT * 
+                      FROM   VW_UserRoles 
+                      WHERE  RoleName = 'admin') THEN Cast('TRUE' AS BIT) 
+         ELSE Cast('FALSE' AS BIT) 
+       END AS 'IsAdminRegistered' 
 GO 

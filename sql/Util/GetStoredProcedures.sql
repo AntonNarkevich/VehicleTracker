@@ -16,7 +16,7 @@ SELECT SO.name                   AS ProcedureName,
        TYPE_NAME(P.user_type_id) AS [ParameterType] 
 
 FROM   sys.objects AS SO 
-       INNER JOIN sys.parameters AS P 
+       left join sys.parameters AS P 
                ON SO.OBJECT_ID = P.OBJECT_ID 
 WHERE  SO.OBJECT_ID IN (SELECT OBJECT_ID 
                         FROM   sys.objects 

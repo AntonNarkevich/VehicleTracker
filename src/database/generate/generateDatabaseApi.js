@@ -32,15 +32,21 @@ getStoredProcedures(function (err, storedProcedures) {
 
 	var proceduresInfo = _.chain(storedProcedures)
 		.each(function (row) {
-			row.jsName = row.ParameterName.replace('@', '');
-			row.tediousType = sqlToTedious[row.ParameterType];
+			if (row.ParameterName) {
+				row.jsName = row.ParameterName.replace('@', '');
+				row.tediousType = sqlToTedious[row.ParameterType];
+			}
 		})
 		.groupBy('ProcedureName')
 		.map(function (args, procedureName) {
+			//Left join fills ParameterName with null if s.p. has
+			//no arguments.
+			var hasNoArguments = args[0].ParameterName === null;
+
 			return {
 				sqlName: procedureName,
 				jsName: _s.camelize(procedureName),
-				args: args
+				args: hasNoArguments ? [] : args
 			};
 		})
 		.each(function (procInfo) {

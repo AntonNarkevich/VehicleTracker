@@ -7,8 +7,7 @@ var connection = rekuire('connector').connection;
 var invoker = rekuire('storedProcedureInvoker');
 
 module.exports = {
-
-	uspBLDriverGetBoss: function (driverId,  callback) {
+	uspBLDriverGetBoss: function (driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Driver_GetBoss',
 			[
@@ -18,7 +17,7 @@ module.exports = {
 		);
 	},
 
-	uspBLDriverGetPosition: function (driverId,  callback) {
+	uspBLDriverGetPosition: function (driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Driver_GetPosition',
 			[
@@ -28,7 +27,7 @@ module.exports = {
 		);
 	},
 
-	uspBLDriverGetPositions: function (driverId,  callback) {
+	uspBLDriverGetPositions: function (driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Driver_GetPositions',
 			[
@@ -38,7 +37,7 @@ module.exports = {
 		);
 	},
 
-	uspBLDriverRejectPendingJobOffers: function (driverId,  callback) {
+	uspBLDriverRejectPendingJobOffers: function (driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Driver_RejectPendingJobOffers',
 			[
@@ -48,7 +47,7 @@ module.exports = {
 		);
 	},
 
-	uspBLGetOfferableUsers: function (userId, userRole,  callback) {
+	uspBLGetOfferableUsers: function (userId, userRole, callback) {
 		invoker.invoke(
 			'usp_BL_GetOfferableUsers',
 			[
@@ -59,7 +58,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerEmployDriver: function (managerId, driverId,  callback) {
+	uspBLManagerEmployDriver: function (managerId, driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_EmployDriver',
 			[
@@ -70,7 +69,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerFireDriver: function (managerId, driverId,  callback) {
+	uspBLManagerFireDriver: function (managerId, driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_FireDriver',
 			[
@@ -81,7 +80,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerGetDriverIds: function (managerId,  callback) {
+	uspBLManagerGetDriverIds: function (managerId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_GetDriverIds',
 			[
@@ -91,7 +90,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerGetEmployees: function (managerId,  callback) {
+	uspBLManagerGetEmployees: function (managerId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_GetEmployees',
 			[
@@ -101,7 +100,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerGetEmployeesWithoutVehicle: function (managerId,  callback) {
+	uspBLManagerGetEmployeesWithoutVehicle: function (managerId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_GetEmployeesWithoutVehicle',
 			[
@@ -111,7 +110,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerIsBossFor: function (managerId, driverId,  callback) {
+	uspBLManagerIsBossFor: function (managerId, driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_IsBossFor',
 			[
@@ -122,7 +121,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerIsVehicleOwner: function (managerId, vehicleId,  callback) {
+	uspBLManagerIsVehicleOwner: function (managerId, vehicleId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_IsVehicleOwner',
 			[
@@ -133,7 +132,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferAccept: function (SenderId, RecieverId,  callback) {
+	uspJobOfferAccept: function (SenderId, RecieverId, callback) {
 		invoker.invoke(
 			'usp_JobOffer_Accept',
 			[
@@ -144,7 +143,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferDelete: function (Id,  callback) {
+	uspJobOfferDelete: function (Id, callback) {
 		invoker.invoke(
 			'usp_JobOffer_Delete',
 			[
@@ -154,7 +153,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferGetByRecieverId: function (recieverId,  callback) {
+	uspJobOfferGetByRecieverId: function (recieverId, callback) {
 		invoker.invoke(
 			'usp_JobOffer_GetByRecieverId',
 			[
@@ -164,7 +163,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferGetBySenderAndReceiver: function (SenderId, RecieverId,  callback) {
+	uspJobOfferGetBySenderAndReceiver: function (SenderId, RecieverId, callback) {
 		invoker.invoke(
 			'usp_JobOffer_GetBySenderAndReceiver',
 			[
@@ -175,7 +174,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferGetBySenderId: function (senderId,  callback) {
+	uspJobOfferGetBySenderId: function (senderId, callback) {
 		invoker.invoke(
 			'usp_JobOffer_GetBySenderId',
 			[
@@ -185,7 +184,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferInsert: function (SenderId, RecieverId, OfferStatus, OfferDate, DecisionDate,  callback) {
+	uspJobOfferInsert: function (SenderId, RecieverId, OfferStatus, OfferDate, DecisionDate, callback) {
 		invoker.invoke(
 			'usp_JobOffer_Insert',
 			[
@@ -199,7 +198,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferMakeOffer: function (senderId, recieverId,  callback) {
+	uspJobOfferMakeOffer: function (senderId, recieverId, callback) {
 		invoker.invoke(
 			'usp_JobOffer_MakeOffer',
 			[
@@ -210,7 +209,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferReject: function (SenderId, RecieverId,  callback) {
+	uspJobOfferReject: function (SenderId, RecieverId, callback) {
 		invoker.invoke(
 			'usp_JobOffer_Reject',
 			[
@@ -221,7 +220,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferSelect: function (Id,  callback) {
+	uspJobOfferSelect: function (Id, callback) {
 		invoker.invoke(
 			'usp_JobOffer_Select',
 			[
@@ -231,7 +230,7 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferUpdate: function (Id, SenderId, RecieverId, OfferStatus, OfferDate, DecisionDate,  callback) {
+	uspJobOfferUpdate: function (Id, SenderId, RecieverId, OfferStatus, OfferDate, DecisionDate, callback) {
 		invoker.invoke(
 			'usp_JobOffer_Update',
 			[
@@ -246,7 +245,16 @@ module.exports = {
 		);
 	},
 
-	uspMBSPRoleGetIdByName: function (roleName,  callback) {
+	uspMBSPIsAdminRegistered: function (callback) {
+		invoker.invoke(
+			'usp_MBSP_IsAdminRegistered',
+			[
+			],
+			callback
+		);
+	},
+
+	uspMBSPRoleGetIdByName: function (roleName, callback) {
 		invoker.invoke(
 			'usp_MBSP_Role_GetIdByName',
 			[
@@ -256,7 +264,7 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserAddRole: function (userId, roleName,  callback) {
+	uspMBSPUserAddRole: function (userId, roleName, callback) {
 		invoker.invoke(
 			'usp_MBSP_User_AddRole',
 			[
@@ -267,7 +275,7 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserGetByEmail: function (Email,  callback) {
+	uspMBSPUserGetByEmail: function (Email, callback) {
 		invoker.invoke(
 			'usp_MBSP_User_GetByEmail',
 			[
@@ -277,7 +285,7 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserGetProfile: function (Id,  callback) {
+	uspMBSPUserGetProfile: function (Id, callback) {
 		invoker.invoke(
 			'usp_MBSP_User_GetProfile',
 			[
@@ -287,7 +295,7 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserGetRolesById: function (Id,  callback) {
+	uspMBSPUserGetRolesById: function (Id, callback) {
 		invoker.invoke(
 			'usp_MBSP_User_GetRolesById',
 			[
@@ -297,7 +305,7 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserRegister: function (Email, PasswordHash, Role,  callback) {
+	uspMBSPUserRegister: function (Email, PasswordHash, Role, callback) {
 		invoker.invoke(
 			'usp_MBSP_User_Register',
 			[
@@ -309,7 +317,7 @@ module.exports = {
 		);
 	},
 
-	uspMBSPUserRemoveRole: function (userId, roleName,  callback) {
+	uspMBSPUserRemoveRole: function (userId, roleName, callback) {
 		invoker.invoke(
 			'usp_MBSP_User_RemoveRole',
 			[
@@ -320,7 +328,7 @@ module.exports = {
 		);
 	},
 
-	uspMessageDelete: function (Id,  callback) {
+	uspMessageDelete: function (Id, callback) {
 		invoker.invoke(
 			'usp_Message_Delete',
 			[
@@ -330,7 +338,7 @@ module.exports = {
 		);
 	},
 
-	uspMessageInsert: function (SenderId, RecieverId, MessageText, IsRead,  callback) {
+	uspMessageInsert: function (SenderId, RecieverId, MessageText, IsRead, callback) {
 		invoker.invoke(
 			'usp_Message_Insert',
 			[
@@ -343,7 +351,7 @@ module.exports = {
 		);
 	},
 
-	uspMessageSelect: function (Id,  callback) {
+	uspMessageSelect: function (Id, callback) {
 		invoker.invoke(
 			'usp_Message_Select',
 			[
@@ -353,7 +361,7 @@ module.exports = {
 		);
 	},
 
-	uspMessageUpdate: function (Id, SenderId, RecieverId, MessageText, IsRead,  callback) {
+	uspMessageUpdate: function (Id, SenderId, RecieverId, MessageText, IsRead, callback) {
 		invoker.invoke(
 			'usp_Message_Update',
 			[
@@ -367,7 +375,7 @@ module.exports = {
 		);
 	},
 
-	uspTrackGetVehiclePaths: function (managerId,  callback) {
+	uspTrackGetVehiclePaths: function (managerId, callback) {
 		invoker.invoke(
 			'usp_Track_GetVehiclePaths',
 			[
@@ -377,7 +385,7 @@ module.exports = {
 		);
 	},
 
-	uspUserDelete: function (Id,  callback) {
+	uspUserDelete: function (Id, callback) {
 		invoker.invoke(
 			'usp_User_Delete',
 			[
@@ -387,7 +395,7 @@ module.exports = {
 		);
 	},
 
-	uspUserInsert: function (Name, Email, PasswordHash, IsBlocked,  callback) {
+	uspUserInsert: function (Name, Email, PasswordHash, IsBlocked, callback) {
 		invoker.invoke(
 			'usp_User_Insert',
 			[
@@ -400,7 +408,7 @@ module.exports = {
 		);
 	},
 
-	uspUserSelect: function (Id,  callback) {
+	uspUserSelect: function (Id, callback) {
 		invoker.invoke(
 			'usp_User_Select',
 			[
@@ -410,7 +418,7 @@ module.exports = {
 		);
 	},
 
-	uspUserUpdate: function (Id, Name, Email, PasswordHash, IsBlocked,  callback) {
+	uspUserUpdate: function (Id, Name, Email, PasswordHash, IsBlocked, callback) {
 		invoker.invoke(
 			'usp_User_Update',
 			[
@@ -424,7 +432,16 @@ module.exports = {
 		);
 	},
 
-	uspVehicleAssignToDriver: function (managerId, vehicleId, driverId,  callback) {
+	uspUTILGetStoredProcedures: function (callback) {
+		invoker.invoke(
+			'usp_UTIL_GetStoredProcedures',
+			[
+			],
+			callback
+		);
+	},
+
+	uspVehicleAssignToDriver: function (managerId, vehicleId, driverId, callback) {
 		invoker.invoke(
 			'usp_Vehicle_AssignToDriver',
 			[
@@ -436,7 +453,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleCreate: function (managerId, driverId, name, info, longitude, latitude,  callback) {
+	uspVehicleCreate: function (managerId, driverId, name, info, longitude, latitude, callback) {
 		invoker.invoke(
 			'usp_Vehicle_Create',
 			[
@@ -451,7 +468,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleDelete: function (Id,  callback) {
+	uspVehicleDelete: function (Id, callback) {
 		invoker.invoke(
 			'usp_Vehicle_Delete',
 			[
@@ -461,7 +478,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleGetByDriverId: function (driverId,  callback) {
+	uspVehicleGetByDriverId: function (driverId, callback) {
 		invoker.invoke(
 			'usp_Vehicle_GetByDriverId',
 			[
@@ -471,7 +488,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleGetByManagerId: function (managerId,  callback) {
+	uspVehicleGetByManagerId: function (managerId, callback) {
 		invoker.invoke(
 			'usp_Vehicle_GetByManagerId',
 			[
@@ -481,7 +498,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleGetPositions: function (vehicleId,  callback) {
+	uspVehicleGetPositions: function (vehicleId, callback) {
 		invoker.invoke(
 			'usp_Vehicle_GetPositions',
 			[
@@ -491,7 +508,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleGetVehicleAssignmentInfo: function (managerId,  callback) {
+	uspVehicleGetVehicleAssignmentInfo: function (managerId, callback) {
 		invoker.invoke(
 			'usp_Vehicle_GetVehicleAssignmentInfo',
 			[
@@ -501,7 +518,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleGetVehicleFullInfo: function (vehicleId,  callback) {
+	uspVehicleGetVehicleFullInfo: function (vehicleId, callback) {
 		invoker.invoke(
 			'usp_Vehicle_GetVehicleFullInfo',
 			[
@@ -511,7 +528,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleInsert: function (ManagerId, Name, Info,  callback) {
+	uspVehicleInsert: function (ManagerId, Name, Info, callback) {
 		invoker.invoke(
 			'usp_Vehicle_Insert',
 			[
@@ -523,7 +540,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleSelect: function (Id,  callback) {
+	uspVehicleSelect: function (Id, callback) {
 		invoker.invoke(
 			'usp_Vehicle_Select',
 			[
@@ -533,7 +550,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleSetPositions: function (vehicleId, longitude, latitude,  callback) {
+	uspVehicleSetPositions: function (vehicleId, longitude, latitude, callback) {
 		invoker.invoke(
 			'usp_Vehicle_SetPositions',
 			[
@@ -545,7 +562,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleTakeFromDriver: function (managerId, driverId,  callback) {
+	uspVehicleTakeFromDriver: function (managerId, driverId, callback) {
 		invoker.invoke(
 			'usp_Vehicle_TakeFromDriver',
 			[
@@ -556,7 +573,7 @@ module.exports = {
 		);
 	},
 
-	uspVehicleUpdate: function (Id, ManagerId, Name, Info,  callback) {
+	uspVehicleUpdate: function (Id, ManagerId, Name, Info, callback) {
 		invoker.invoke(
 			'usp_Vehicle_Update',
 			[

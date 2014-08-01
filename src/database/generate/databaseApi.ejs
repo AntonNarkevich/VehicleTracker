@@ -7,7 +7,7 @@ var connection = rekuire('connector').connection;
 var invoker = rekuire('storedProcedureInvoker');
 
 module.exports = {<% procedures.forEach(function(procedure, procIndex, procArray) { %>
-	<%= procedure.jsName %>: function (<%= procedure.jsArgsString %> callback) {
+	<%= procedure.jsName %>: function (<%= procedure.jsArgsString %>callback) {
 		invoker.invoke(
 			'<%= procedure.sqlName %>',
 			[<% procedure.args.forEach(function(arg, argIndex, argsArray) { %>

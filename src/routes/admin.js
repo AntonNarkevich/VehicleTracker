@@ -7,22 +7,40 @@ var mime = require('mime');
 var rekuire = require('rekuire');
 var exportDb = rekuire('export');
 var logger = rekuire('logger');
-var repository = rekuire('repository');
+var database = rekuire('database');
 var role = rekuire('roleStrategy');
+var registrationHelper = rekuire('registrationHelper');
 
-router.get('/init', function (req, res) {
-	repository.isAdminRegistered(function (err, isAdminRegistered) {
-		if (isAdminRegistered) {
-			res.render('httpError', {
-					message: 'Init has already happened. Admin is registered.',
-					code: 403
-				}
-			);
-		} else {
-			res.render('init', { registrationFormAction: '/register/admin' });
+router.get('/', function (req, res) {
+	database.uspMBSPIsAdminRegistered(function (err, data) {
+		var isAdminRegistered = data[0].IsAdminRegistered;
+
+		if (!isAdminRegistered) {
+			res.redirect('/register/admin');
+
+			return;
 		}
+
+		if (!req.isAuthenticated()) {
+			res.redirect('/login');
+
+			return;
+		}
+
+		if (req.user.is('admin')) {
+			res.redirect('/');
+
+			return;
+		}
+
+		res.render('httpError', {
+				message: 'You should be admin to view this page.',
+				code: 403
+			}
+		);
 	});
 });
+
 
 router.get('/export', role.is('admin'), function (req, res) {
 	exportDb.getExportArray(function (err, zipBuffer) {
