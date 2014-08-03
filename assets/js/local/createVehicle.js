@@ -22,7 +22,7 @@
 		var longitude = $('#vehicle-longitude');
 		var latitude = $('#vehicle-latitude');
 
-		longitude.val(markerPosition.A);
+		longitude.val(markerPosition.B);
 		latitude.val(markerPosition.k);
 
 		google.maps.event.addListener(map, 'click', function (event) {
@@ -31,7 +31,7 @@
 
 			marker.setPosition(event.latLng);
 
-			longitude.val(event.latLng.A);
+			longitude.val(event.latLng.B);
 			latitude.val(event.latLng.k);
 		});
 	}

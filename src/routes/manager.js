@@ -71,7 +71,7 @@ router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (re
 	});
 });
 
-router.get('/:ownerId/statistics', role.is('managerOwner'), function (req, res) {
+router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.user.id;
 
 	repository.getVehicleIds(managerId, function (err, vehicleIds) {

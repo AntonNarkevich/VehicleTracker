@@ -17,6 +17,7 @@ GO
 :r $(path)\Vehicle.sql
 :r $(path)\BusinessLogic.sql
 :r $(path)\Membership.sql
+:r $(path)\Tracking.sql
 
 GO
 

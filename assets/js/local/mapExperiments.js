@@ -27,7 +27,7 @@
 
 			var mapPointData = {
 				lat: event.latLng.k,
-				lng: event.latLng.A
+				lng: event.latLng.B
 			};
 
 			$.post('/positions', mapPointData, function (data) {

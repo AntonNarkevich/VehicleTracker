@@ -49,7 +49,7 @@
 			$.ajax({
 				type: 'POST',
 				url: '/d/' + vehicleId + '/positions',
-				data: {longitude: event.latLng.A,
+				data: {longitude: event.latLng.B,
 					latitude: event.latLng.k}
 			}).done(function () {
 				var path = movementLine.getPath();
