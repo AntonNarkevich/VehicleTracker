@@ -54,7 +54,6 @@ router.get('/:ownerId/track', role.isAllOf('manager', 'owner'), function (req, r
 });
 
 
-
 router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
@@ -74,7 +73,7 @@ router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (re
 router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	database.uspTrackGetManagerVehiclesStatistics(managerId, function(err, data) {
+	database.uspTrackGetManagerVehiclesStatistics(managerId, function (err, data) {
 		var statistics = interpreter.interpretManagerVehiclesStatistics(data);
 
 		res.render('manager/statistics', {statistics: statistics});
@@ -82,37 +81,17 @@ router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (r
 });
 
 //TODO: Implement pdf export. And remove this pornography.
-router.get('/:ownerId/toJSON', role.is('managerOwner'), function (req, res) {
-	var managerId = req.user.id;
+router.get('/:ownerId/toJSON', role.isAllOf('manager', 'owner'), function (req, res) {
+	var managerId = req.param('ownerId');
 
-	repository.getVehicleIds(managerId, function (err, vehicleIds) {
+	database.uspTrackGetManagerVehiclesStatistics(managerId, function (err, data) {
+		var statistics = interpreter.interpretManagerVehiclesStatistics(data);
 
-		var gatherStatisticsTasks = vehicleIds.map(function (vehicleId) {
-			return function (callback) {
-				repository.getStatistics(vehicleId, function (err, statistics) {
-					if (err) {
-						callback(err, null);
-						return;
-					}
+		res.setHeader('Content-disposition', 'attachment; filename=statistics.json');
+		res.setHeader("Content-Type", mime.lookup('.json'));
 
-					var groupedByDayStatistics = _(statistics).groupBy('EndDate');
-
-					callback(null, {vehicleId: vehicleId, statistics: groupedByDayStatistics});
-				});
-			};
-		});
-
-		async.series(gatherStatisticsTasks, function (err, statistics) {
-			//TODO: Use app.render here. Render a view, get pdf.
-
-			res.setHeader('Content-disposition', 'attachment; filename=statistics.json');
-			res.setHeader("Content-Type", mime.lookup('.json'));
-
-			res.end(JSON.stringify(statistics, null, '\t'));
-		});
+		res.end(JSON.stringify(statistics, null, '\t'));
 	});
-
-
 });
 
 module.exports = router;
