@@ -1,0 +1,8 @@
+bcp VehicleTrackerDB.dbo.[Users] out temp\export\Users.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E
+bcp VehicleTrackerDB.dbo.[UsersXRoles] out temp\export\UsersXRoles.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E
+bcp VehicleTrackerDB.dbo.[JobOffers] out temp\export\JobOffers.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E
+bcp VehicleTrackerDB.dbo.[Messages] out temp\export\Messages.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E
+bcp VehicleTrackerDB.dbo.[ManagerXDrivers] out temp\export\ManagerXDrivers.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E
+bcp VehicleTrackerDB.dbo.[Vehicles] out temp\export\Vehicles.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E
+bcp VehicleTrackerDB.dbo.[Positions] out temp\export\Positions.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E
+bcp VehicleTrackerDB.dbo.[DriverXVehicle] out temp\export\DriverXVehicle.dat -S <%= msSqlServer %>\<%= msSqlInstanceName %> -U <%= msSqlUserName %> -P <%= msSqlPassword %> -n -E

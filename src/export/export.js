@@ -2,54 +2,87 @@
 
 var fs = require('fs');
 var spawn = require('child_process').spawn;
-var jade = require('jade');
+var ejs = require('ejs');
 var path = require('path');
 var Zip = require("adm-zip");
 
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var keys = rekuire('keys.config.json');
+var config = rekuire('app.config.json');
+
+var msSqlConfig = {
+	msSqlServer: config.msSqlServer,
+	msSqlInstanceName: config.msSqlInstanceName,
+	msSqlUserName: keys.msSqlUserName,
+	msSqlPassword: keys.msSqlPassword
+};
+
+var EXPORT_TEMPLATE_FILENAME = './src/export/export.ejs';
+var IMPORT_TEMPLATE_FILENAME = './src/export/import.ejs';
+
 
 //TODO: Analize. When should I execute "done".
-function getExportArray(done) {
+var getExportArray = function(done) {
 	fs.mkdir(path.normalize('./temp/export'), function () {
-		var exportCommand = jade.renderFile('./src/export/export.jade', keys).split('\n').join(' & ');
+		fs.readFile(EXPORT_TEMPLATE_FILENAME, function (err, data) {
+			if (err) {
+				console.error(err);
+			}
 
-		var cp = spawn(process.env.comspec, ['/c', exportCommand]);
+			var exportCommand = ejs.render(data.toString(), msSqlConfig)
+				.split('\n')
+				.join(' & ');
 
-		cp.stdout.on('data', function (data) {
-			//TODO: Use logger instead of console.
-			console.log(data.toString());
-		});
+			logger.trace('Export script is prepared.');
 
-		cp.stderr.on('data', function (data) {
-			console.error(data.toString());
-			done(data, null);
-		});
+			var cp = spawn(process.env.comspec, ['/c', exportCommand]);
 
-		cp.on('close', function (code) {
-			console.log('exit code: ' + code);
+			cp.stdout.on('data', function (data) {
+				logger.trace('Export child process: ' + data.toString());
+			});
 
-			var archive = new Zip();
+			cp.stderr.on('data', function (data) {
+				logger.trace('Export child process: ' + data.toString());
+				done(data, null);
+			});
 
-			//TODO: Is it synchronious? How can I make it async?
-			archive.addLocalFolder(path.normalize("./temp/export"));
-			archive.addLocalFile(path.normalize("./src/export/import.cmd"));
+			cp.on('close', function (code) {
+				logger.trace('Export child process exits. Code: ' + code);
 
-//		archive.writeZip("./temp/export2.zip");
+				var archive = new Zip();
 
-			archive.toBuffer(function (buffer) {
-				logger.info('Made a buffer from zip.');
-				done(null, buffer);
-			}, function (err) {
-				logger.error('Cant make a buffer from zip.');
-				done(err, null);
+				//TODO: Is it synchronious? How can I make it async?
+				archive.addLocalFolder(path.normalize("./temp/export"));
+
+				archive.toBuffer(function (buffer) {
+					logger.info('Made a buffer from zip.');
+					done(null, buffer);
+				}, function (err) {
+					logger.error('Cant make a buffer from zip.');
+					done(err, null);
+				});
 			});
 		});
 	});
-}
+};
+
+var getImportScript = function(done) {
+	fs.readFile(IMPORT_TEMPLATE_FILENAME, function (err, data) {
+		if (err) {
+			done(err, null);
+		}
+
+		var importCommand = ejs.render(data.toString(), msSqlConfig)
+			.split('\n')
+			.join(' & ');
+
+		done(null, importCommand);
+	});
+};
 
 module.exports = {
-	getExportArray: getExportArray
+	getExportArray: getExportArray,
+	getImportScript: getImportScript
 };
 

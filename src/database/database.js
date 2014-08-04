@@ -17,26 +17,6 @@ module.exports = {
 		);
 	},
 
-	uspBLDriverGetPosition: function (driverId, callback) {
-		invoker.invoke(
-			'usp_BL_Driver_GetPosition',
-			[
-				{name: 'driverId', type: TYPES.Int, value: driverId}
-			],
-			callback
-		);
-	},
-
-	uspBLDriverGetPositions: function (driverId, callback) {
-		invoker.invoke(
-			'usp_BL_Driver_GetPositions',
-			[
-				{name: 'driverId', type: TYPES.Int, value: driverId}
-			],
-			callback
-		);
-	},
-
 	uspBLDriverRejectPendingJobOffers: function (driverId, callback) {
 		invoker.invoke(
 			'usp_BL_Driver_RejectPendingJobOffers',
@@ -452,9 +432,18 @@ module.exports = {
 		);
 	},
 
-	uspUTILGetStoredProcedures: function (callback) {
+	uspUtilDeleteAllData: function (callback) {
 		invoker.invoke(
-			'usp_UTIL_GetStoredProcedures',
+			'usp_Util_DeleteAllData',
+			[
+			],
+			callback
+		);
+	},
+
+	uspUtilGetStoredProcedures: function (callback) {
+		invoker.invoke(
+			'usp_Util_GetStoredProcedures',
 			[
 			],
 			callback

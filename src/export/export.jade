@@ -1,9 +1,0 @@
-//- TODO: add -S (server name) here. And actually how should it be done.
-| bcp VehicleTrackerDB.dbo.[Configuration] out temp\export\Configuration.dat -U #{msSqlUserName} -P #{msSqlPassword} -n
-| bcp VehicleTrackerDB.dbo.[DriverVehicle] out temp\export\DriverVehicle.dat -U #{msSqlUserName} -P #{msSqlPassword} -n
-| bcp VehicleTrackerDB.dbo.[Geofences] out temp\export\Geofences.dat -U #{msSqlUserName} -P #{msSqlPassword} -n
-| bcp VehicleTrackerDB.dbo.[ManagerDriver] out temp\export\ManagerDriver.dat -U #{msSqlUserName} -P #{msSqlPassword} -n
-| bcp VehicleTrackerDB.dbo.[Role] out temp\export\Role.dat -U #{msSqlUserName} -P #{msSqlPassword} -n
-| bcp VehicleTrackerDB.dbo.[User] out temp\export\User.dat -U #{msSqlUserName} -P #{msSqlPassword} -n
-| bcp VehicleTrackerDB.dbo.[Vehicle] out temp\export\Vehicle.dat -U #{msSqlUserName} -P #{msSqlPassword} -n
-| bcp VehicleTrackerDB.dbo.[VehiclePosition] out temp\export\VehiclePosition.dat -U #{msSqlUserName} -P #{msSqlPassword} -n

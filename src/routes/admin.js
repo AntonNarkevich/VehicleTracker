@@ -52,4 +52,27 @@ router.get('/export', role.is('admin'), function (req, res) {
 	});
 });
 
+
+router.get('/importScript', role.is('admin'), function (req, res) {
+	exportDb.getImportScript(function (err, importScript) {
+		if (err) {
+			logger.error(err);
+
+			throw err;
+		}
+
+		res.setHeader('Content-disposition', 'attachment; filename=import.cmd');
+		res.setHeader("Content-Type", mime.lookup('.cmd'));
+		res.write(importScript);
+		res.end();
+	});
+});
+
+router.get('/deleteAll', role.is('admin'), function (req, res) {
+	database.uspUtilDeleteAllData(function(err, data) {
+		req.logout();
+		res.redirect('/');
+	});
+});
+
 module.exports = router;

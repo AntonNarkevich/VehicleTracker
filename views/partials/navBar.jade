@@ -14,6 +14,10 @@ nav.navbar.navbar-default(role="navigation")
 				if (user.RoleNames.indexOf('admin') !== -1)
 					p.navbar-text
 						a.navbar-link(href="/admin/export") Export Database
+					p.navbar-text
+						a.navbar-link(href="/admin/importScript") Get Import Script
+					p.navbar-text
+						a.navbar-link(href="/admin/deleteAll") Delete all data
 
 				if (user.RoleNames.indexOf('manager') !== -1)
 					p.navbar-text
