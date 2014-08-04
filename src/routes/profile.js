@@ -14,13 +14,7 @@ var interpreter = rekuire('dataInterpreter');
 router.get('/:ownerId', role.isAuthenticated(), function (req, res) {
 	var ownerId = req.param('ownerId');
 
-	database.uspMBSPUserGetProfile(ownerId, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspMBSPUserGetProfile(ownerId, function (data) {
 		var profile = interpreter.interpretProfileData(data);
 
 		res.render('profile', { profileInfo: profile });

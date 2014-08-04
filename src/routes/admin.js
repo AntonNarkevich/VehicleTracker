@@ -12,7 +12,7 @@ var role = rekuire('roleStrategy');
 var registrationHelper = rekuire('registrationHelper');
 
 router.get('/', function (req, res) {
-	database.uspMBSPIsAdminRegistered(function (err, data) {
+	database.uspMBSPIsAdminRegistered(function(data) {
 		var isAdminRegistered = data[0].IsAdminRegistered;
 
 		if (!isAdminRegistered) {
@@ -69,7 +69,7 @@ router.get('/importScript', role.is('admin'), function (req, res) {
 });
 
 router.get('/deleteAll', role.is('admin'), function (req, res) {
-	database.uspUtilDeleteAllData(function(err, data) {
+	database.uspUtilDeleteAllData(function(data) {
 		req.logout();
 		res.redirect('/');
 	});

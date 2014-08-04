@@ -25,13 +25,7 @@ var passportStrategy = new LocalStrategy(
 	function (email, password, done) {
 		logger.trace('Attempt to login:', email, password);
 
-		database.uspMBSPUserGetByEmail(email, function (err, data) {
-			if (err) {
-				logger.error(err);
-				//TODO: This kind of throws can break the app. Handle them somehow.
-				throw err;
-			}
-
+		database.uspMBSPUserGetByEmail(email, function (data) {
 			if (data.length === 0) {
 				done(null, false, { message: 'Email or password is incorrect.' });
 
@@ -65,13 +59,7 @@ var serializeUser = function (user, done) {
 };
 
 var deserializeUser = function (id, done) {
-	database.uspMBSPUserGetProfile(id, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspMBSPUserGetProfile(id, function (data) {
 		var user = interpreter.interpretProfileData(data);
 
 		done(null, user);

@@ -7,16 +7,10 @@ var database = rekuire('database');
 var logger = rekuire('logger');
 
 var registerInDatabase = function (email, hash, role, callback) {
-	database.uspMBSPUserRegister(email, hash, role, function (err, data) {
+	database.uspMBSPUserRegister(email, hash, role, function (data) {
 		//TODO: Move this to data parser.
 		//Last data element contains info about uspMBSPUserRegister execution
 		var execInfo = data[data.length - 1];
-
-		if (execInfo === undefined && err) {
-			logger.error('Unexpected error at uspMBSPUserRegister: ', err);
-
-			throw err;
-		}
 
 		if (execInfo.IsSuccess) {
 			callback();
@@ -27,7 +21,7 @@ var registerInDatabase = function (email, hash, role, callback) {
 };
 
 var registerAdminInDatabase = function (email, hash, callback) {
-	database.uspMBSPIsAdminRegistered(function (err, data) {
+	database.uspMBSPIsAdminRegistered(function (data) {
 		var isAdminRegistered = data[0].IsAdminRegistered;
 
 		if (isAdminRegistered) {

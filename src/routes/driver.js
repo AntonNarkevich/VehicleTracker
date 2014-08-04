@@ -12,12 +12,7 @@ var keys = rekuire('keys.config');
 router.get('/:ownerId', role.isAllOf('driver', 'owner'), function (req, res) {
 	var driverId = req.param('ownerId');
 
-	database.uspVehicleGetByDriverId(driverId, function (err, data) {
-		if (err) {
-			res.render('error', {error: err});
-			return;
-		}
-
+	database.uspVehicleGetByDriverId(driverId, function (data) {
 		var vehicleInfo = data[0];
 
 		if (!vehicleInfo) {
@@ -32,12 +27,8 @@ router.get('/:ownerId', role.isAllOf('driver', 'owner'), function (req, res) {
 router.get('/:vehicleId/positions', role.isAllOf('driver'), function (req, res) {
 	var vehicleId = req.param('vehicleId');
 
-	database.uspVehicleGetPositions(vehicleId, function (err, vehiclePositions) {
-		if (err) {
-			//TODO: How should I treat the error here. (REST api).
-			res.json(err);
-			return;
-		}
+	database.uspVehicleGetPositions(vehicleId, function (vehiclePositions) {
+		//TODO: How should I treat the error here. (REST api).
 
 		res.json(vehiclePositions);
 	});
@@ -48,12 +39,7 @@ router.post('/:vehicleId/positions', role.is('driver'), function (req, res) {
 	var longitude = req.param('longitude');
 	var latitude = req.param('latitude');
 
-	database.uspVehicleSetPositions(vehicleId, longitude, latitude, function (err, vehiclePositions) {
-		if (err) {
-			res.json(err);
-			return;
-		}
-
+	database.uspVehicleSetPositions(vehicleId, longitude, latitude, function (vehiclePositions) {
 		//TODO: What to answer if it's just OK? just 200?
 		res.json({its:'ok'});
 	});

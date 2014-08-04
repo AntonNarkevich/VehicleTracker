@@ -20,13 +20,12 @@ function getInvoker(procedureName, parameters, callback) {
 	var request = new Request(procedureName, function (err, rowCount) {
 		if (err) {
 			logger.error('Some error occured while executing stored procedure ' + procedureName, err);
-			callback(err, returnedRows);
 
-			return;
+			throw err;
 		}
 
 		logger.trace('Stored procedure ' + procedureName + ' has been executed successfully.');
-		callback(null, returnedRows);
+		callback(returnedRows);
 	});
 
 	parameters.forEach(function (parameter) {
@@ -65,12 +64,12 @@ function invoke(procedureName, parameters, callback) {
 		}
 
 		//Wrapping use defined callback to close the connection.
-		var request = getInvoker(procedureName, parameters, function(err, returnedRows) {
+		var request = getInvoker(procedureName, parameters, function(returnedRows) {
 			//Return connection to the pool.
 			logger.trace('Returing connection to the pool.');
 			connection.close();
 
-			callback(err, returnedRows);
+			callback(returnedRows);
 		});
 
 		connection.on('connect', function(err) {

@@ -21,13 +21,7 @@ var keys = rekuire('keys.config');
 router.get('/:ownerId/employees', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	database.uspBLManagerGetEmployees(managerId, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspBLManagerGetEmployees(managerId, function (data) {
 		res.render('manager/employees', {employeeInfos: data});
 	});
 });
@@ -36,13 +30,7 @@ router.get('/:ownerId/fire/:driverId', role.isAllOf('manager', 'owner'), functio
 	var managerId = req.param('ownerId');
 	var driverId = req.param('driverId');
 
-	database.uspBLManagerFireDriver(managerId, driverId, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspBLManagerFireDriver(managerId, driverId, function (data) {
 		res.redirect('/m/' + managerId + '/employees');
 	});
 });
@@ -57,13 +45,7 @@ router.get('/:ownerId/track', role.isAllOf('manager', 'owner'), function (req, r
 router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	database.uspTrackGetVehiclePaths(managerId, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspTrackGetVehiclePaths(managerId, function (data) {
 		var trackInfos = interpreter.interpretTrackInfosData(data);
 
 		res.json(trackInfos);
@@ -73,7 +55,7 @@ router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (re
 router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	database.uspTrackGetManagerVehiclesStatistics(managerId, function (err, data) {
+	database.uspTrackGetManagerVehiclesStatistics(managerId, function (data) {
 		var statistics = interpreter.interpretManagerVehiclesStatistics(data);
 
 		res.render('manager/statistics', {statistics: statistics});
@@ -84,7 +66,7 @@ router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (r
 router.get('/:ownerId/toJSON', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	database.uspTrackGetManagerVehiclesStatistics(managerId, function (err, data) {
+	database.uspTrackGetManagerVehiclesStatistics(managerId, function (data) {
 		var statistics = interpreter.interpretManagerVehiclesStatistics(data);
 
 		res.setHeader('Content-disposition', 'attachment; filename=statistics.json');

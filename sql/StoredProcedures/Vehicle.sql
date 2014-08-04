@@ -258,5 +258,9 @@ AS
 	declare @vehicleId int = @@IDENTITY
 
 	exec usp_Vehicle_SetPositions @vehicleId, @longitude, @latitude
-	exec usp_Vehicle_AssignToDriver @managerId, @vehicleId, @driverId
+
+	if @driverId is not null
+	begin
+		exec usp_Vehicle_AssignToDriver @managerId, @vehicleId, @driverId
+	end
 GO

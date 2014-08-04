@@ -15,7 +15,6 @@ var interpreter = rekuire('dataInterpreter');
 var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');
 
-//TODO: Create 'unemployed' role
 router.get('/:ownerId', role.isOneOf('manager', 'driver'), role.is('owner'), role.isNot('employed'), function (req, res) {
 	var managerId = parseInt(req.param('ownerId'), 10);
 
@@ -27,13 +26,7 @@ router.get('/:ownerId', role.isOneOf('manager', 'driver'), role.is('owner'), rol
 		isDriverMode: !isManager
 	};
 
-	database.uspBLGetOfferableUsers(managerId, roleName, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspBLGetOfferableUsers(managerId, roleName, function (data) {
 		dataModel.offerableUserInfos = data;
 
 		res.render('jobOffers/dashboard', dataModel);
@@ -44,13 +37,7 @@ router.get('/:ownerId/offer/:receiverId', role.isOneOf('manager', 'driver'), rol
 	var managerId = req.param('ownerId');
 	var receiverId = req.param('receiverId');
 
-	database.uspJobOfferMakeOffer(managerId, receiverId, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspJobOfferMakeOffer(managerId, receiverId, function (data) {
 		res.redirect('/jobOffers/' + managerId);
 	});
 });
@@ -59,13 +46,7 @@ router.get('/:ownerId/reject/:senderId', role.isOneOf('manager', 'driver'), role
 	var receiverId = req.param('ownerId');
 	var senderId = req.param('senderId');
 
-	database.uspJobOfferReject(senderId, receiverId, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
-		}
-
+	database.uspJobOfferReject(senderId, receiverId, function (data) {
 		res.redirect('/jobOffers/' + receiverId);
 	});
 });
@@ -84,15 +65,12 @@ router.get('/:ownerId/accept/:senderId', role.isOneOf('manager', 'driver'), role
 		driverId = req.param('ownerId');
 	}
 
-	database.uspBLManagerEmployDriver(managerId, driverId, function (err, data) {
-		if (err) {
-			logger.error(err);
-
-			throw err;
+	database.uspBLManagerEmployDriver(managerId, driverId, function (data) {
+		if (_(req.user).is('driver')) {
+			res.redirect('/');
+		} else {
+			res.redirect('/jobOffers/' + req.user.Id);
 		}
-
-		//TODO: Fix a bug here. Different redirect for managers and drivers. Non-employed permission.
-		res.redirect('/jobOffers/' + req.user.Id);
 	});
 });
 

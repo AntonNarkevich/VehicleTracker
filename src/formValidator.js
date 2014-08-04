@@ -2,7 +2,7 @@
 
 var validator = require('validator');
 
-function validate(formData) {
+var validate = function (formData) {
 	//Server-side validation
 	var errorMsgs = [];
 
@@ -22,6 +22,6 @@ function validate(formData) {
 		isValid: errorMsgs.length === 0,
 		errorMsgs: errorMsgs
 	};
-}
+};
 
 module.exports = { validate: validate };
