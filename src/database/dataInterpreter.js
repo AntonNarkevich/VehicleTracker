@@ -82,5 +82,18 @@ module.exports = {
 			.value();
 
 		return vehicleTrackInfos;
+	},
+
+	interpretManagerVehiclesStatistics: function (data) {
+		return _.chain(data)
+			.groupBy('VehicleId')
+			.map(function (vehicleStatistics, vehicleId) {
+
+				var groupedByDayStatistics = _(vehicleStatistics).groupBy('EndDate');
+
+				return [vehicleId, groupedByDayStatistics];
+			})
+			.object()
+			.value();
 	}
 };

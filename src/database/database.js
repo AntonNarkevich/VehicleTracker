@@ -375,11 +375,31 @@ module.exports = {
 		);
 	},
 
+	uspTrackGetManagerVehiclesStatistics: function (ManagerId, callback) {
+		invoker.invoke(
+			'usp_Track_GetManagerVehiclesStatistics',
+			[
+				{name: 'ManagerId', type: TYPES.Int, value: ManagerId}
+			],
+			callback
+		);
+	},
+
 	uspTrackGetVehiclePaths: function (managerId, callback) {
 		invoker.invoke(
 			'usp_Track_GetVehiclePaths',
 			[
 				{name: 'managerId', type: TYPES.Int, value: managerId}
+			],
+			callback
+		);
+	},
+
+	uspTrackGetVehicleStatistics: function (VehicleId, callback) {
+		invoker.invoke(
+			'usp_Track_GetVehicleStatistics',
+			[
+				{name: 'VehicleId', type: TYPES.Int, value: VehicleId}
 			],
 			callback
 		);

@@ -72,30 +72,12 @@ router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (re
 });
 
 router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (req, res) {
-	var managerId = req.user.id;
+	var managerId = req.param('ownerId');
 
-	repository.getVehicleIds(managerId, function (err, vehicleIds) {
+	database.uspTrackGetManagerVehiclesStatistics(managerId, function(err, data) {
+		var statistics = interpreter.interpretManagerVehiclesStatistics(data);
 
-		var gatherStatisticsTasks = vehicleIds.map(function (vehicleId) {
-			return function (callback) {
-				repository.getStatistics(vehicleId, function (err, statistics) {
-					if (err) {
-						callback(err, null);
-						return;
-					}
-
-					var groupedByDayStatistics = _(statistics).groupBy('EndDate');
-
-					callback(null, {vehicleId: vehicleId, statistics: groupedByDayStatistics});
-				});
-			};
-		});
-
-		//TODO: Multiple requests per single connection are not supported. Connection pool should be used here.
-		async.series(gatherStatisticsTasks, function (err, statistics) {
-			logger.debug(statistics);
-			res.render('manager/statistics', {statistics: statistics});
-		});
+		res.render('manager/statistics', {statistics: statistics});
 	});
 });
 

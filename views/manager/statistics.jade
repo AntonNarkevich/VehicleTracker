@@ -6,12 +6,12 @@ block content
 				h1 Drive statistics
 		.row
 			.col-md-12
-				each vehicleStatistics in statistics
-					h2 Vehicle #{vehicleStatistics.vehicleId}
-					if vehicleStatistics.statistics.length === 0
+				each vehicleStatistics, vehicleId in statistics
+					h2 Vehicle #{vehicleId}
+					if vehicleStatistics.length === 0
 						p No statistics for now.
 					else
-						for dayStatistics, date in vehicleStatistics.statistics
+						for dayStatistics, date in vehicleStatistics
 							h3 Date: #{date}
 							table.table.table-bordered
 								thead
