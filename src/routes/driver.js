@@ -3,7 +3,6 @@
 var router = require('express').Router();
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
-var repository = rekuire('repository');
 var database = rekuire('database');
 var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');

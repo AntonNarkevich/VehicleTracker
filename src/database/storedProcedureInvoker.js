@@ -2,8 +2,8 @@
 
 var Request = require('tedious').Request;
 var _ = require('underscore');
-var rekuire = require('rekuire');
 
+var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var connector = rekuire('connector');
 

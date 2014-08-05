@@ -1,8 +1,6 @@
 'use strict';
 
 var _ = require('underscore');
-var inflection = require('inflection');
-
 
 module.exports = {
 	/**
@@ -42,6 +40,17 @@ module.exports = {
 			if (driverInfos.length !== 0) {
 				user.DriverInfos = driverInfos;
 			}
+
+			var vehicleInfos = _.chain(data)
+				.tail()
+				.filter(function (dataRow) {
+					return dataRow.VehicleId;
+				})
+				.value();
+
+			if (vehicleInfos.length !== 0) {
+				user.VehicleInfos = vehicleInfos;
+			}
 		}
 
 		//For drivers
@@ -59,13 +68,20 @@ module.exports = {
 				user.BossId = bossInfo.BossId;
 				user.BossEmail = bossInfo.BossEmail;
 			}
+
+			user.VehicleInfo = _.chain(data)
+				.tail()
+				.find(function (dataRow) {
+					return dataRow.VehicleId;
+				})
+				.value();
 		}
 
 		return user;
 	},
 
 	interpretTrackInfosData: function (data) {
-		var vehicleTrackInfos = _.chain(data)
+		return _.chain(data)
 			.map(function(vehicleTrackInfoRow) {
 				return {
 					vehicleId: vehicleTrackInfoRow.Id,
@@ -80,11 +96,9 @@ module.exports = {
 			.groupBy('vehicleId')
 			.values()
 			.value();
-
-		return vehicleTrackInfos;
 	},
 
-	interpretManagerVehiclesStatistics: function (data) {
+	interpretManagerVehiclesStatisticsData: function (data) {
 		return _.chain(data)
 			.groupBy('VehicleId')
 			.map(function (vehicleStatistics, vehicleId) {
@@ -95,5 +109,14 @@ module.exports = {
 			})
 			.object()
 			.value();
+	},
+
+	interpretUserRegisterData: function (data) {
+		//Last data element contains info about uspMBSPUserRegister execution
+		return  data[data.length - 1];
+	},
+
+	interpretIsAdminRegisteredData: function(data) {
+		return data[0].IsAdminRegistered;
 	}
 };

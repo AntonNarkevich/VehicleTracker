@@ -27,7 +27,7 @@ var manager = require('./src/routes/manager');
 var vehicle = require('./src/routes/vehicle');
 var driver = require('./src/routes/driver');
 var jobOffers = require('./src/routes/jobOffers');
-var membershipTest = require('./src/membership/membershipTestRoute');
+var membershipTest = require('./tests/membershipTestRoute');
 
 var app = express();
 

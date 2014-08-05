@@ -80,7 +80,7 @@ module.exports = {
 		);
 	},
 
-	uspBLManagerGetEmployeesWithoutVehicle: function (managerId, callback) {
+	spBLManagerGetEmployeesWithoutVehicle: function (managerId, callback) {
 		invoker.invoke(
 			'usp_BL_Manager_GetEmployeesWithoutVehicle',
 			[

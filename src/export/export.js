@@ -23,11 +23,14 @@ var IMPORT_TEMPLATE_FILENAME = './src/export/import.ejs';
 
 
 //TODO: Analize. When should I execute "done".
-var getExportArray = function(done) {
+var getExportArray = function (done) {
 	fs.mkdir(path.normalize('./temp/export'), function () {
 		fs.readFile(EXPORT_TEMPLATE_FILENAME, function (err, data) {
 			if (err) {
-				console.error(err);
+				logger.error('getExportArray. Reading file: ', err);
+				done(err, null);
+
+				return;
 			}
 
 			var exportCommand = ejs.render(data.toString(), msSqlConfig)
@@ -39,27 +42,26 @@ var getExportArray = function(done) {
 			var cp = spawn(process.env.comspec, ['/c', exportCommand]);
 
 			cp.stdout.on('data', function (data) {
-				logger.trace('Export child process: ' + data.toString());
+				logger.trace('Export child process stdout: ' + data.toString());
 			});
 
 			cp.stderr.on('data', function (data) {
-				logger.trace('Export child process: ' + data.toString());
+				logger.error('Export child process stderr: ' + data.toString());
 				done(data, null);
 			});
 
 			cp.on('close', function (code) {
-				logger.trace('Export child process exits. Code: ' + code);
+				logger.trace('Export child process close. Code: ' + code);
 
 				var archive = new Zip();
 
-				//TODO: Is it synchronious? How can I make it async?
 				archive.addLocalFolder(path.normalize("./temp/export"));
 
 				archive.toBuffer(function (buffer) {
-					logger.info('Made a buffer from zip.');
+					logger.info('Export. Made a buffer from zip.');
 					done(null, buffer);
 				}, function (err) {
-					logger.error('Cant make a buffer from zip.');
+					logger.error('Export. Cant make a buffer from zip.');
 					done(err, null);
 				});
 			});
@@ -67,10 +69,13 @@ var getExportArray = function(done) {
 	});
 };
 
-var getImportScript = function(done) {
+var getImportScript = function (done) {
 	fs.readFile(IMPORT_TEMPLATE_FILENAME, function (err, data) {
 		if (err) {
+			logger.error('getImportScript: ', err);
 			done(err, null);
+
+			return;
 		}
 
 		var importCommand = ejs.render(data.toString(), msSqlConfig)

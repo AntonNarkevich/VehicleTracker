@@ -11,7 +11,6 @@ var mime = require('mime');
 
 
 var logger = rekuire('logger');
-var repository = rekuire('repository');
 var database = rekuire('database');
 var interpreter = rekuire('dataInterpreter');
 var role = rekuire('roleStrategy');
@@ -56,7 +55,7 @@ router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (r
 	var managerId = req.param('ownerId');
 
 	database.uspTrackGetManagerVehiclesStatistics(managerId, function (data) {
-		var statistics = interpreter.interpretManagerVehiclesStatistics(data);
+		var statistics = interpreter.interpretManagerVehiclesStatisticsData(data);
 
 		res.render('manager/statistics', {statistics: statistics});
 	});
@@ -67,7 +66,7 @@ router.get('/:ownerId/toJSON', role.isAllOf('manager', 'owner'), function (req, 
 	var managerId = req.param('ownerId');
 
 	database.uspTrackGetManagerVehiclesStatistics(managerId, function (data) {
-		var statistics = interpreter.interpretManagerVehiclesStatistics(data);
+		var statistics = interpreter.interpretManagerVehiclesStatisticsData(data);
 
 		res.setHeader('Content-disposition', 'attachment; filename=statistics.json');
 		res.setHeader("Content-Type", mime.lookup('.json'));

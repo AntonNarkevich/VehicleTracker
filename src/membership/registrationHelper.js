@@ -1,16 +1,16 @@
 'use strict';
 
 var bcrypt = require('bcrypt');
+
 var rekuire = require('rekuire');
 var formValidator = rekuire('formValidator');
 var database = rekuire('database');
 var logger = rekuire('logger');
+var interpreter = rekuire('dataInterpreter');
 
 var registerInDatabase = function (email, hash, role, callback) {
 	database.uspMBSPUserRegister(email, hash, role, function (data) {
-		//TODO: Move this to data parser.
-		//Last data element contains info about uspMBSPUserRegister execution
-		var execInfo = data[data.length - 1];
+		var execInfo = interpreter.interpretUserRegisterData(data);
 
 		if (execInfo.IsSuccess) {
 			callback();
@@ -22,7 +22,7 @@ var registerInDatabase = function (email, hash, role, callback) {
 
 var registerAdminInDatabase = function (email, hash, callback) {
 	database.uspMBSPIsAdminRegistered(function (data) {
-		var isAdminRegistered = data[0].IsAdminRegistered;
+		var isAdminRegistered = interpreter.interpretIsAdminRegisteredData(data);
 
 		if (isAdminRegistered) {
 			callback({errorMessages: ['Admin is already registered.']});
@@ -52,8 +52,9 @@ var register = function(role, email, password, passwordAgain, callback) {
 	bcrypt.hash(password, 10, function (err, hash) {
 		if (err) {
 			logger.error(err);
+			callback({errorMessages: ['Internal server error.']});
 
-			throw err;
+			return;
 		}
 
 		logger.trace('Registring ' + role + ' with hash: ', hash);

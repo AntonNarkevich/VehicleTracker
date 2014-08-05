@@ -9,7 +9,6 @@ var jade = require('jade');
 var _ = require('underscore');
 
 var logger = rekuire('logger');
-var repository = rekuire('repository');
 var database = rekuire('database');
 var interpreter = rekuire('dataInterpreter');
 var role = rekuire('roleStrategy');
