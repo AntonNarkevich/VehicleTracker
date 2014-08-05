@@ -110,7 +110,7 @@ GO
 CREATE PROC [dbo].[usp_BL_Manager_GetEmployees]
 	@managerId INT
 AS
-	SELECT DriverId as Id, Email, IsBlocked    
+	SELECT DriverId, Email, IsBlocked    
 	FROM ManagerXDrivers INNER JOIN
 	Users ON ManagerXDrivers.DriverId = Users.Id 
 	WHERE ManagerId = @managerId

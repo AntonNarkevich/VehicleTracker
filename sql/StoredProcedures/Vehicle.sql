@@ -33,7 +33,7 @@ go
 CREATE PROC [dbo].[usp_Vehicle_GetByManagerId]
     @managerId INT
 AS
-	select *
+	select Id as VehicleId,	ManagerId, Name, Info
 	from Vehicles
 	where ManagerId = @managerId
 GO

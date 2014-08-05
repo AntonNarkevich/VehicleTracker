@@ -65,6 +65,7 @@ AS
 	BEGIN
 		--Outuput employee ids
 		exec [dbo].[usp_BL_Manager_GetEmployees] @Id
+		exec [dbo].[usp_Vehicle_GetByManagerId] @Id
 	END
 	
 	--If driver
@@ -72,8 +73,8 @@ AS
 	BEGIN
 		--Outuput employee ids
 		exec [dbo].[usp_BL_Driver_GetBoss] @Id
+		exec [dbo].[usp_Vehicle_GetByDriverId] @Id
 	END
-
 
 GO
 
