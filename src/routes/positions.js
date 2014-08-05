@@ -5,7 +5,7 @@ var router = express.Router();
 
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
-var role = rekuire('roleStrategy');
+var role = rekuire('roleConfiguration');
 
 router.get('/', function (req, res) {
 	res.render('index');

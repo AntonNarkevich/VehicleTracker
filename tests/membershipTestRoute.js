@@ -6,7 +6,7 @@ var util = require('util');
 
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
-var role = rekuire('roleStrategy');
+var role = rekuire('roleConfiguration');
 
 router.get('/session', function (req, res) {
 	res.end(util.inspect(req.session));

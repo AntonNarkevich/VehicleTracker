@@ -6,7 +6,7 @@ var router = require('express').Router();
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var database = rekuire('database');
-var role = rekuire('roleStrategy');
+var role = rekuire('roleConfiguration');
 var keys = rekuire('keys.config.json');
 
 router.get('/create/:ownerId', role.isAllOf('manager', 'owner'), function (req, res) {

@@ -11,7 +11,7 @@ var _ = require('underscore');
 var logger = rekuire('logger');
 var database = rekuire('database');
 var interpreter = rekuire('dataInterpreter');
-var role = rekuire('roleStrategy');
+var role = rekuire('roleConfiguration');
 var keys = rekuire('keys.config');
 
 router.get('/:ownerId', role.isOneOf('manager', 'driver'), role.is('owner'), role.isNot('employed'), function (req, res) {

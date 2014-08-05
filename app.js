@@ -13,8 +13,8 @@ var passport = require('passport');
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var keysConfig = rekuire('keys.config');
-var authStrategy = rekuire('authStrategy');
-var roleStrategy = rekuire('roleStrategy');
+var authConfiguration = rekuire('authConfiguration');
+var roleConfiguration = rekuire('roleConfiguration');
 
 var routes = require('./src/routes/index');
 var positions = require('./src/routes/positions');
@@ -44,14 +44,14 @@ app.use(session({
 }));
 app.use(flash());
 
-passport.use(authStrategy.passportStrategy);
+passport.use(authConfiguration.passportStrategy);
 app.use(passport.initialize());
 
-passport.serializeUser(authStrategy.serializeUser);
-passport.deserializeUser(authStrategy.deserializeUser);
+passport.serializeUser(authConfiguration.serializeUser);
+passport.deserializeUser(authConfiguration.deserializeUser);
 app.use(passport.session());
 
-app.use(roleStrategy.middleware());
+app.use(roleConfiguration.middleware());
 
 app.use(less({
 	src: path.join(__dirname, 'public'),

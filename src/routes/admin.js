@@ -8,7 +8,7 @@ var rekuire = require('rekuire');
 var exportDb = rekuire('export');
 var logger = rekuire('logger');
 var database = rekuire('database');
-var role = rekuire('roleStrategy');
+var role = rekuire('roleConfiguration');
 var registrationHelper = rekuire('registrationHelper');
 
 router.get('/', function (req, res) {

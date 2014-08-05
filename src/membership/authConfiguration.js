@@ -71,11 +71,11 @@ var deserializeUser = function (id, done) {
  * @type {{passportStrategy: LocalStrategy, serializeUser: function, deserializeUser: function}}
  *
  * Usage:
- * passport.use(authStrategy.passportStrategy);
+ * passport.use(authConfiguration.passportStrategy);
  * app.use(passport.initialize());
  *
- * passport.serializeUser(authStrategy.serializeUser);
- * passport.deserializeUser(authStrategy.deserializeUser);
+ * passport.serializeUser(authConfiguration.serializeUser);
+ * passport.deserializeUser(authConfiguration.deserializeUser);
  * app.use(passport.session());
  */
 module.exports = {

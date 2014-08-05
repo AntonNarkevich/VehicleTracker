@@ -4,7 +4,7 @@ var router = require('express').Router();
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var database = rekuire('database');
-var role = rekuire('roleStrategy');
+var role = rekuire('roleConfiguration');
 var keys = rekuire('keys.config');
 
 //TODO: Add protection against SQL injection.
