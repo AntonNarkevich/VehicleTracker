@@ -7,7 +7,7 @@ module.exports = {
 	 * Interpretes UspMBSPUserGetProfile data.
 	 * @param data
 	 */
-	interpretProfileData: function (data) {
+	profile: function (data) {
 		//data array:
 		//[0] scalar user properties.
 		//[1..n] other user info
@@ -80,7 +80,7 @@ module.exports = {
 		return user;
 	},
 
-	interpretTrackInfosData: function (data) {
+	trackInfos: function (data) {
 		return _.chain(data)
 			.map(function(vehicleTrackInfoRow) {
 				return {
@@ -98,7 +98,7 @@ module.exports = {
 			.value();
 	},
 
-	interpretManagerVehiclesStatisticsData: function (data) {
+	managerVehiclesStatistics: function (data) {
 		return _.chain(data)
 			.groupBy('VehicleId')
 			.map(function (vehicleStatistics, vehicleId) {
@@ -111,12 +111,12 @@ module.exports = {
 			.value();
 	},
 
-	interpretUserRegisterData: function (data) {
+	interpretUserRegister: function (data) {
 		//Last data element contains info about uspMBSPUserRegister execution
 		return  data[data.length - 1];
 	},
 
-	interpretIsAdminRegisteredData: function(data) {
+	isAdminRegistered: function(data) {
 		return data[0].IsAdminRegistered;
 	}
 };

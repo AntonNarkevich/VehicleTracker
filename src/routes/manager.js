@@ -12,7 +12,7 @@ var mime = require('mime');
 
 var logger = rekuire('logger');
 var database = rekuire('database');
-var interpreter = rekuire('dataInterpreter');
+var interpret = rekuire('dataInterpreter');
 var role = rekuire('roleStrategy');
 var keys = rekuire('keys.config');
 
@@ -45,7 +45,7 @@ router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (re
 	var managerId = req.param('ownerId');
 
 	database.uspTrackGetVehiclePaths(managerId, function (data) {
-		var trackInfos = interpreter.interpretTrackInfosData(data);
+		var trackInfos = interpret.trackInfos(data);
 
 		res.json(trackInfos);
 	});
@@ -55,7 +55,7 @@ router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (r
 	var managerId = req.param('ownerId');
 
 	database.uspTrackGetManagerVehiclesStatistics(managerId, function (data) {
-		var statistics = interpreter.interpretManagerVehiclesStatisticsData(data);
+		var statistics = interpret.managerVehiclesStatistics(data);
 
 		res.render('manager/statistics', {statistics: statistics});
 	});
@@ -66,7 +66,7 @@ router.get('/:ownerId/toJSON', role.isAllOf('manager', 'owner'), function (req, 
 	var managerId = req.param('ownerId');
 
 	database.uspTrackGetManagerVehiclesStatistics(managerId, function (data) {
-		var statistics = interpreter.interpretManagerVehiclesStatisticsData(data);
+		var statistics = interpret.managerVehiclesStatistics(data);
 
 		res.setHeader('Content-disposition', 'attachment; filename=statistics.json');
 		res.setHeader("Content-Type", mime.lookup('.json'));

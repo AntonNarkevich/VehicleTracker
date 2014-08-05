@@ -11,7 +11,7 @@ var _ = require('underscore');
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var database = rekuire('database');
-var interpreter = rekuire('dataInterpreter');
+var interpret = rekuire('dataInterpreter');
 var bcrypt = require('bcrypt');
 var formValidator = rekuire('formValidator');
 
@@ -60,7 +60,7 @@ var serializeUser = function (user, done) {
 
 var deserializeUser = function (id, done) {
 	database.uspMBSPUserGetProfile(id, function (data) {
-		var user = interpreter.interpretProfileData(data);
+		var user = interpret.profile(data);
 		done(null, user);
 		logger.trace('Deserializing user: ', user);
 	});

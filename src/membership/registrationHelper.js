@@ -6,11 +6,11 @@ var rekuire = require('rekuire');
 var formValidator = rekuire('formValidator');
 var database = rekuire('database');
 var logger = rekuire('logger');
-var interpreter = rekuire('dataInterpreter');
+var interpret = rekuire('dataInterpreter');
 
 var registerInDatabase = function (email, hash, role, callback) {
 	database.uspMBSPUserRegister(email, hash, role, function (data) {
-		var execInfo = interpreter.interpretUserRegisterData(data);
+		var execInfo = interpret.userRegister(data);
 
 		if (execInfo.IsSuccess) {
 			callback();
@@ -22,7 +22,7 @@ var registerInDatabase = function (email, hash, role, callback) {
 
 var registerAdminInDatabase = function (email, hash, callback) {
 	database.uspMBSPIsAdminRegistered(function (data) {
-		var isAdminRegistered = interpreter.interpretIsAdminRegisteredData(data);
+		var isAdminRegistered = interpret.isAdminRegistered(data);
 
 		if (isAdminRegistered) {
 			callback({errorMessages: ['Admin is already registered.']});
