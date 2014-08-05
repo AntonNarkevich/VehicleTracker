@@ -1,18 +1,13 @@
 'use strict';
 
-var fs = require('fs');
-
 var router = require('express').Router();
-var rekuire = require('rekuire');
-var async = require('async');
-var jade = require('jade');
 var _ = require('underscore');
 
+var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var database = rekuire('database');
-var interpreter = rekuire('dataInterpreter');
 var role = rekuire('roleConfiguration');
-var keys = rekuire('keys.config');
+var keys = rekuire('keys.config.json');
 
 router.get('/:ownerId', role.isOneOf('manager', 'driver'), role.is('owner'), role.isNot('employed'), function (req, res) {
 	var managerId = parseInt(req.param('ownerId'), 10);

@@ -111,7 +111,7 @@ module.exports = {
 			.value();
 	},
 
-	interpretUserRegister: function (data) {
+	userRegister: function (data) {
 		//Last data element contains info about uspMBSPUserRegister execution
 		return  data[data.length - 1];
 	},

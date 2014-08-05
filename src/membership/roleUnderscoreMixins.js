@@ -23,7 +23,11 @@ _.mixin({
 	 * @returns {*} - True is the manager is a boss for the driver.
 	 */
 	isBossFor: function (manager, driverId) {
-		return _.contains(manager.DriverIds, driverId);
+		var driverInfo =  _.find(manager.DriverInfos, function (driverInfo) {
+			return driverInfo.DriverId === driverId;
+		});
+
+		return !!driverInfo;
 	}
 });
 
@@ -38,7 +42,7 @@ _.mixin({
 _.mixin({
 	isVehicleOwner: function (manager, vehicleId) {
 		var vehicleInfo = _.find(manager.VehicleInfos, function (vehicleInfo, index) {
-			return vehicleInfo === vehicleId;
+			return vehicleInfo.VehicleId === vehicleId;
 		});
 
 		return !!vehicleInfo;

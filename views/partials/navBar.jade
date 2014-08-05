@@ -37,7 +37,7 @@ nav.navbar.navbar-default(role="navigation")
 
 				if (user.RoleNames.indexOf('driver') !== -1)
 					p.navbar-text
-						a.navbar-link(href="/d/#{user.Id}") Drive
+						a.navbar-link(href="/d/#{user.Id}/drive") Drive
 					if !user.isEmployed
 						p.navbar-text
 							a.navbar-link(href="/jobOffers/#{user.Id}") Find Job!

@@ -1,19 +1,18 @@
 'use strict';
 
-var Request = require('tedious').Request;
 var router = require('express').Router();
 var mime = require('mime');
 
 var rekuire = require('rekuire');
-var exportDb = rekuire('export');
+var dbExport = rekuire('dbExport');
 var logger = rekuire('logger');
 var database = rekuire('database');
 var role = rekuire('roleConfiguration');
-var registrationHelper = rekuire('registrationHelper');
+var interpret = rekuire('dataInterpreter');
 
 router.get('/', function (req, res) {
 	database.uspMBSPIsAdminRegistered(function(data) {
-		var isAdminRegistered = data[0].IsAdminRegistered;
+		var isAdminRegistered = interpret.isAdminRegistered(data);
 
 		if (!isAdminRegistered) {
 			res.redirect('/register/admin');
@@ -41,10 +40,8 @@ router.get('/', function (req, res) {
 	});
 });
 
-
 router.get('/export', role.is('admin'), function (req, res) {
-	exportDb.getExportArray(function (err, zipBuffer) {
-		//TODO: Wht is mime abbreviation?
+	dbExport.getExportArray(function (err, zipBuffer) {
 		res.setHeader('Content-disposition', 'attachment; filename=vehicleTrackerDatabase.zip');
 		res.setHeader("Content-Type", mime.lookup('.zip'));
 		res.write(zipBuffer);
@@ -54,7 +51,7 @@ router.get('/export', role.is('admin'), function (req, res) {
 
 
 router.get('/importScript', role.is('admin'), function (req, res) {
-	exportDb.getImportScript(function (err, importScript) {
+	dbExport.getImportScript(function (err, importScript) {
 		if (err) {
 			logger.error(err);
 
