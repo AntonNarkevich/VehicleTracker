@@ -26,7 +26,6 @@ CREATE TABLE Users
      Name         NVARCHAR(20),
      Email        VARCHAR(320) UNIQUE NOT NULL,
      PasswordHash VARCHAR(60) NOT NULL,
-     --TODO: Set porper types for PasswordHash and Salt
      IsBlocked    BIT DEFAULT 'false' NOT NULL
   )
 

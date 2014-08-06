@@ -12,10 +12,8 @@ go
 
 CREATE PROCEDURE ut_AddRole AS
 BEGIN
-	exec usp_User_Insert 'Tesdt Uddfser', 'wddha223st@is.love', 'asdf', 'asdf', 'false'
+	exec usp_User_Insert 'Tesdt Uddfser', 'wddha25243st@is.love', 'asdf', 'false'
 	declare @id int = IDENT_CURRENT('Users')
-
-	print 'The id is' + cast(@id as varchar (20))
 
 	exec usp_MBSP_User_AddRole @id, 'admin'
 	exec usp_MBSP_User_AddRole @id, 'driver'
@@ -71,7 +69,7 @@ go
 
 CREATE PROCEDURE ut_RemoveRole AS
 BEGIN
-	exec usp_User_Insert 'Tesdt Uddfser', 'wddha223st@is.love', 'asdf', 'asdf', 'false'
+	exec usp_User_Insert 'Tesdt Uddfser', 'wddha624235st@is.love', 'asdf', 'false'
 	declare @id int = IDENT_CURRENT('Users')
 
 	exec usp_MBSP_User_AddRole @id, 'admin'
@@ -97,6 +95,12 @@ BEGIN
 	exec usp_MBSP_User_RemoveRole @id, 'admin'
 	exec usp_MBSP_User_RemoveRole @id, 'driver'
 	exec usp_MBSP_User_RemoveRole @id, 'manager'
+
+	delete from @userRoles
+	insert into @userRoles exec usp_MBSP_User_GetRolesById @id
+
+	select @roleCount = count(*)
+	from @userRoles
 
 	if @roleCount <> 0
 	begin

@@ -1,7 +1,7 @@
 USE VehicleTrackerDb
 GO
 
-:setvar path "D:\Projects\VehicleTracker\sqlCleaning\FakeData"
+:setvar path "D:\Projects\VehicleTracker\sql\FakeData"
 
 :r $(path)\Users.datanamic.sql
 :r $(path)\UsersXRoles.datanamic.sql

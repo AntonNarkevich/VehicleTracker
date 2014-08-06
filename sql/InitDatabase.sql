@@ -23,5 +23,5 @@ GO
 
 :setvar path "D:\Projects\VehicleTracker\sql\Util"
 
-:r $(path)\GetStoredProcedures.sql
+:r $(path)\Util.sql
 GO

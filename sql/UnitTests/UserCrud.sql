@@ -1,52 +1,6 @@
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-if object_id('ut_RolesExist') is not null
-begin
-	drop procedure ut_RolesExist
-end
-go
-
-CREATE PROCEDURE ut_RolesExist AS 
-BEGIN 
-	declare @roleCount int
-
-	select @roleCount = Count(*) from Roles
-
-	if @roleCount <> 3
-	begin
-		exec tsu_failure 'Roles table is not initialized. It should contain 3 role (admin, manage, driver).'
-	end
-END        
-go
-
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
-if object_id('ut_AdminIsRegistered') is not null
-begin
-	drop procedure ut_AdminIsRegistered
-end
-go
-
-CREATE PROCEDURE ut_AdminIsRegistered AS 
-BEGIN 
-	declare @adminCount int
-
-	select @adminCount = count(*)
-	from VW_UserRoles
-	where RoleName = 'admin'
-
-	if @adminCount < 1
-	begin
-		exec tsu_failure 'Admin is not registered.'
-	end
-END        
-go
-
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
 if object_id('ut_User_Create') is not null
 begin
 	drop procedure ut_User_Create
@@ -62,7 +16,7 @@ BEGIN
 	declare @email varchar(320)
 	set @email = 'what@mail.ru'
 
-	exec usp_User_Insert @name, @email, 'what', 'what', 'false'
+	exec usp_User_Insert @name, @email, 'what', 'false'
 
 	declare @insertedName varchar(20)
 
@@ -90,15 +44,14 @@ CREATE PROCEDURE ut_User_Select AS
 BEGIN
 	declare @email varchar(320) = 'new@test.email'
 
-	exec usp_User_Insert 'TestUser', @email, 'what', 'what', 'false'
+	exec usp_User_Insert 'TestUser', @email, 'what', 'false'
 	declare @insertedId int = SCOPE_IDENTITY()
 			
 	declare @InsertedUser table (
 		Id           INT, 
 		Name         NVARCHAR(20), 
 		Email        VARCHAR(320), 
-		PasswordHash VARCHAR(20), 
-		Salt         VARCHAR(20), 
+		PasswordHash VARCHAR(20),
 		IsBlocked    BIT
 	)
 
@@ -130,12 +83,12 @@ go
 CREATE PROCEDURE ut_User_Update AS 
 BEGIN
 	
-	exec usp_User_Insert 'TestUser', 'what@is.love', 'what', 'what', 'false'
+	exec usp_User_Insert 'TestUser', 'what@is.love', 'what', 'false'
 	declare @insertedId int = SCOPE_IDENTITY()
 			
 
 	declare @emailToUpdate varchar(320) = 'new@test.email'
-	exec usp_User_Update 1, 'TestUser', @emailToUpdate, 'what', 'what', 'false'
+	exec usp_User_Update 1, 'TestUser', @emailToUpdate, 'what', 'false'
 	
 
 	declare @actualEmail varchar(320)
@@ -164,7 +117,7 @@ go
 CREATE PROCEDURE ut_User_Delete AS 
 BEGIN
 	
-	exec usp_User_Insert 'TestUser', 'what@is.love', 'what', 'what', 'false'
+	exec usp_User_Insert 'TestUser', 'what@is.love', 'what', 'false'
 	declare @insertedId int = SCOPE_IDENTITY()
 			
 
