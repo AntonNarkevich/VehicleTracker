@@ -1,108 +1,119 @@
-USE [VehicleTrackerDb];
-GO
+USE [VehicleTrackerDb]; 
 
-IF OBJECT_ID('[dbo].[usp_JobOffer_GetBySenderAndReceiver]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_JobOffer_GetBySenderAndReceiver]
-END
-GO
-CREATE PROC [dbo].[usp_JobOffer_GetBySenderAndReceiver]
-    @SenderId INT,
-    @RecieverId INT
-AS
-	SELECT *
-	FROM   [dbo].[JobOffers]
-	WHERE  ([SenderId] = @SenderId)
-	       AND ([RecieverId] = @RecieverId)
-GO
+GO 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+IF Object_id('[dbo].[usp_JobOffer_GetBySenderAndReceiver]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_JobOffer_GetBySenderAndReceiver] 
+  END 
 
-IF OBJECT_ID('[dbo].[usp_JobOffer_MakeOffer]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_JobOffer_MakeOffer] 
-END 
-GO
-CREATE PROC [dbo].[usp_JobOffer_MakeOffer] 
-    @senderId INT,
-	@recieverId INT
-AS 		
-	declare @offerDate datetime = GETDATE()
-	--TODO: Am I allowed to get current time this way?
-	exec [dbo].[usp_JobOffer_Insert] @senderId, @recieverId, 'Pending', @offerDate, null
-GO
+GO 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
-IF OBJECT_ID('[dbo].[usp_JobOffer_GetBySenderId]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_JobOffer_GetBySenderId] 
-END 
-GO
-CREATE PROC [dbo].[usp_JobOffer_GetBySenderId] 
-    @senderId INT
+CREATE PROC [dbo].[Usp_joboffer_getbysenderandreceiver] @SenderId   INT, 
+                                                        @RecieverId INT 
 AS 
-	select * 
-	from JobOffers
-	where SenderId = @senderId
-GO
+    SELECT * 
+    FROM   [dbo].[JobOffers] 
+    WHERE  ( [SenderId] = @SenderId ) 
+           AND ( [RecieverId] = @RecieverId ) 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+GO 
 
-IF OBJECT_ID('[dbo].[usp_JobOffer_GetByRecieverId]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_JobOffer_GetByRecieverId] 
-END 
-GO
-CREATE PROC [dbo].[usp_JobOffer_GetByRecieverId] 
-    @recieverId INT
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF Object_id('[dbo].[usp_JobOffer_MakeOffer]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_JobOffer_MakeOffer] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[Usp_joboffer_makeoffer] @senderId   INT, 
+                                           @recieverId INT 
 AS 
-	select * 
-	from JobOffers
-	where RecieverId = @recieverId
-GO
+    DECLARE @offerDate DATETIME = GETDATE() 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+    EXEC [dbo].[Usp_joboffer_insert] 
+      @senderId, 
+      @recieverId, 
+      'Pending', 
+      @offerDate, 
+      NULL 
 
-IF OBJECT_ID('[dbo].[usp_JobOffer_Accept]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_JobOffer_Accept]
-END 
-GO
-CREATE PROC [dbo].[usp_JobOffer_Accept]
-    @SenderId INT,
-    @RecieverId INT
+GO 
+
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF Object_id('[dbo].[usp_JobOffer_GetBySenderId]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_JobOffer_GetBySenderId] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[Usp_joboffer_getbysenderid] @senderId INT 
 AS 
-	UPDATE [dbo].[JobOffers]
-	SET    [OfferStatus] = 'Accepted',
-			--TODO: Am I allowed to get current time this way?
-		   [DecisionDate] = GETDATE()
-	WHERE  [SenderId] = @SenderId
-	       AND [RecieverId] = @RecieverId
-		   AND [OfferStatus] = 'Pending'
-GO
+    SELECT * 
+    FROM   JobOffers 
+    WHERE  SenderId = @senderId 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+GO 
 
-IF OBJECT_ID('[dbo].[usp_JobOffer_Reject]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_JobOffer_Reject]
-END 
-GO
-CREATE PROC [dbo].[usp_JobOffer_Reject]
-    @SenderId INT,
-    @RecieverId INT
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF Object_id('[dbo].[usp_JobOffer_GetByRecieverId]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_JobOffer_GetByRecieverId] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[Usp_joboffer_getbyrecieverid] @recieverId INT 
 AS 
-	UPDATE [dbo].[JobOffers]
-	SET    [OfferStatus] = 'Rejected',
-			--TODO: Am I allowed to get current time this way?
-		   [DecisionDate] = GETDATE()
-	WHERE  [SenderId] = @SenderId
-	       AND [RecieverId] = @RecieverId
-		   AND [OfferStatus] = 'Pending'
-GO
+    SELECT * 
+    FROM   JobOffers 
+    WHERE  RecieverId = @recieverId 
+
+GO 
+
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF Object_id('[dbo].[usp_JobOffer_Accept]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_JobOffer_Accept] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[Usp_joboffer_accept] @SenderId   INT, 
+                                        @RecieverId INT 
+AS 
+    UPDATE [dbo].[JobOffers] 
+    SET    [OfferStatus] = 'Accepted', 
+           [DecisionDate] = GETDATE() 
+    WHERE  [SenderId] = @SenderId 
+           AND [RecieverId] = @RecieverId 
+           AND [OfferStatus] = 'Pending' 
+
+GO 
+
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF Object_id('[dbo].[usp_JobOffer_Reject]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_JobOffer_Reject] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[Usp_joboffer_reject] @SenderId   INT, 
+                                        @RecieverId INT 
+AS 
+    UPDATE [dbo].[JobOffers] 
+    SET    [OfferStatus] = 'Rejected', 
+           [DecisionDate] = GETDATE() 
+    WHERE  [SenderId] = @SenderId 
+           AND [RecieverId] = @RecieverId 
+           AND [OfferStatus] = 'Pending' 
+
+GO 

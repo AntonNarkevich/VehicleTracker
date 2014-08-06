@@ -1,160 +1,164 @@
---Special stored procedures to manipulate membership model
--------------------------------------------------------------------------------
+--Stored procedures to manipulate membership model 
+------------------------------------------------------------------------------- 
+IF OBJECT_ID('[dbo].[usp_MBSP_User_GetByEmail]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_User_GetByEmail] 
+  END 
 
-IF OBJECT_ID('[dbo].[usp_MBSP_User_GetByEmail]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_MBSP_User_GetByEmail] 
-END 
-GO
-CREATE PROC [dbo].[usp_MBSP_User_GetByEmail]
-    @Email VARCHAR(320)
+GO 
+
+CREATE PROC [dbo].[usp_MBSP_User_GetByEmail] @Email VARCHAR(320) 
 AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
+    SELECT * 
+    FROM   [dbo].[Users] 
+    WHERE  ( [Email] = @Email ) 
 
-	BEGIN TRAN
+GO 
 
-	SELECT *
-	FROM   [dbo].[Users] 
-	WHERE  ([Email] = @Email) 
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF OBJECT_ID('[dbo].[usp_MBSP_User_GetRolesById]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_User_GetRolesById] 
+  END 
 
-	COMMIT
-GO
+GO 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
-IF OBJECT_ID('[dbo].[usp_MBSP_User_GetRolesById]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_MBSP_User_GetRolesById] 
-END 
-GO
-
-CREATE PROC [dbo].[usp_MBSP_User_GetRolesById] 
-	@Id INT
-AS
-SELECT RoleName
-  FROM VW_UserRoles
-  WHERE
-	UserId = @Id
-GO
-
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
-IF OBJECT_ID('[dbo].[usp_MBSP_User_GetProfile]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_MBSP_User_GetProfile] 
-END 
-GO
-
-CREATE PROC [dbo].[usp_MBSP_User_GetProfile] 
-	@Id INT
-AS
-	--Output scalar user properties
-	exec usp_User_Select @Id
-
-	--Output roles 
-	declare @roles table(RoleName varchar(20))
-	insert into @roles
-	exec usp_MBSP_User_GetRolesById @Id
-	select * from @roles
-
-	--If manager
-	IF (exists (select RoleName from @roles where RoleName = 'manager'))
-	BEGIN
-		--Outuput employee ids
-		exec [dbo].[usp_BL_Manager_GetEmployees] @Id
-		exec [dbo].[usp_Vehicle_GetByManagerId] @Id
-	END
-	
-	--If driver
-	IF (exists (select RoleName from @roles where RoleName = 'driver'))
-	BEGIN
-		--Outuput employee ids
-		exec [dbo].[usp_BL_Driver_GetBoss] @Id
-		exec [dbo].[usp_Vehicle_GetByDriverId] @Id
-	END
-
-GO
-
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
-IF OBJECT_ID('[dbo].[usp_MBSP_Role_GetIdByName]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_MBSP_Role_GetIdByName] 
-END 
-GO
-CREATE PROC [dbo].[usp_MBSP_Role_GetIdByName]
-    @roleName VARCHAR(20)
+CREATE PROC [dbo].[usp_MBSP_User_GetRolesById] @Id INT 
 AS 
-	DECLARE @roleId INT
+    SELECT RoleName 
+    FROM   VW_UserRoles 
+    WHERE  UserId = @Id 
 
-	SELECT @roleId = Id
-	FROM Roles
-	WHERE Name = @roleName
+GO 
 
-	RETURN @roleId
-GO
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF OBJECT_ID('[dbo].[usp_MBSP_User_GetProfile]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_User_GetProfile] 
+  END 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+GO 
 
-IF OBJECT_ID('[dbo].[usp_MBSP_User_AddRole]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_MBSP_User_AddRole] 
-END 
-GO
+CREATE PROC [dbo].[usp_MBSP_User_GetProfile] @Id INT 
+AS 
+    --Output scalar user properties 
+    EXEC usp_User_Select 
+      @Id 
 
-CREATE PROC [dbo].[usp_MBSP_User_AddRole] 
-	@userId INT,
-	@roleName VARCHAR(20)
-AS
+    --Output roles  
+    DECLARE @roles TABLE 
+      ( 
+         RoleName VARCHAR(20) 
+      ) 
 
-BEGIN TRAN
+    INSERT INTO @roles 
+    EXEC usp_MBSP_User_GetRolesById 
+      @Id 
 
-	DECLARE @roleId INT
+    SELECT * 
+    FROM   @roles 
 
-	EXEC @roleId = usp_MBSP_Role_GetIdByName @roleName
+    --If manager 
+    IF ( EXISTS (SELECT RoleName 
+                 FROM   @roles 
+                 WHERE  RoleName = 'manager') ) 
+      BEGIN 
+          --Outuput employee ids 
+          EXEC [dbo].[usp_BL_Manager_GetEmployees] 
+            @Id 
 
-	INSERT INTO UsersXRoles (UserId, RoleId)
-	VALUES (@userId, @roleId)
+          EXEC [dbo].[usp_Vehicle_GetByManagerId] 
+            @Id 
+      END 
 
-COMMIT
+    --If driver 
+    IF ( EXISTS (SELECT RoleName 
+                 FROM   @roles 
+                 WHERE  RoleName = 'driver') ) 
+      BEGIN 
+          --Outuput employee ids 
+          EXEC [dbo].[usp_BL_Driver_GetBoss] 
+            @Id 
 
-GO
+          EXEC [dbo].[usp_Vehicle_GetByDriverId] 
+            @Id 
+      END 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+GO 
 
-IF OBJECT_ID('[dbo].[usp_MBSP_User_RemoveRole]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_MBSP_User_RemoveRole] 
-END 
-GO
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF OBJECT_ID('[dbo].[usp_MBSP_Role_GetIdByName]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_Role_GetIdByName] 
+  END 
 
-CREATE PROC [dbo].[usp_MBSP_User_RemoveRole] 
-	@userId INT,
-	@roleName VARCHAR(20)
-AS
+GO 
 
-BEGIN TRAN
+CREATE PROC [dbo].[usp_MBSP_Role_GetIdByName] @roleName VARCHAR(20) 
+AS 
+    DECLARE @roleId INT 
 
-	DECLARE @roleId INT
+    SELECT @roleId = Id 
+    FROM   Roles 
+    WHERE  Name = @roleName 
 
-	EXEC @roleId = usp_MBSP_Role_GetIdByName @roleName
+    RETURN @roleId 
 
-	DELETE FROM UsersXRoles
-	WHERE UserId = @userId AND RoleId = @roleId
+GO 
 
-COMMIT
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF OBJECT_ID('[dbo].[usp_MBSP_User_AddRole]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_User_AddRole] 
+  END 
 
-GO
+GO 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+CREATE PROC [dbo].[usp_MBSP_User_AddRole] @userId   INT, 
+                                          @roleName VARCHAR(20) 
+AS 
+    DECLARE @roleId INT 
 
+    EXEC @roleId = usp_MBSP_Role_GetIdByName 
+      @roleName 
+
+    INSERT INTO UsersXRoles 
+                (UserId, 
+                 RoleId) 
+    VALUES      (@userId, 
+                 @roleId) 
+
+GO 
+
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
+IF OBJECT_ID('[dbo].[usp_MBSP_User_RemoveRole]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_User_RemoveRole] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[usp_MBSP_User_RemoveRole] @userId   INT, 
+                                             @roleName VARCHAR(20) 
+AS 
+    DECLARE @roleId INT 
+
+    EXEC @roleId = usp_MBSP_Role_GetIdByName 
+      @roleName 
+
+    DELETE FROM UsersXRoles 
+    WHERE  UserId = @userId 
+           AND RoleId = @roleId 
+
+GO 
+
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
 USE VehicleTrackerDb 
 
 GO 
@@ -182,7 +186,7 @@ AS
         @PasswordHash, 
         'FALSE' 
 
-      SET @id = @@IDENTITY
+      SET @id = @@IDENTITY 
   END TRY 
 
   BEGIN CATCH 
@@ -190,19 +194,20 @@ AS
              @error_severity = ERROR_SEVERITY(), 
              @error_state = ERROR_STATE() 
 
-      -- check unique key violation (Email is duplicated)     
+      -- check unique key violation (Email is duplicated)      
       IF @error_number = 2627 
         BEGIN 
             SELECT cast('FALSE' AS BIT)                  AS IsSuccess, 
                    'User with such email already exist.' AS [Message] 
 
-			ROLLBACK
+            ROLLBACK 
+
             RETURN 
         END 
-      -- other errors 
+      -- other errors  
       ELSE 
         BEGIN 
-            RAISERROR(@error_number,@error_severity,@error_state) 
+            RAISERROR(@error_number, @error_severity, @error_state) 
         END 
   END CATCH 
 
@@ -218,9 +223,8 @@ AS
 
 GO 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
 USE VehicleTrackerDb 
 
 GO 
@@ -232,12 +236,13 @@ IF OBJECT_ID('[dbo].[usp_MBSP_IsAdminRegistered]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[usp_MBSP_IsAdminRegistered]
+CREATE PROC [dbo].[usp_MBSP_IsAdminRegistered] 
 AS 
-   SELECT CASE 
-         WHEN EXISTS (SELECT * 
-                      FROM   VW_UserRoles 
-                      WHERE  RoleName = 'admin') THEN Cast('TRUE' AS BIT) 
-         ELSE Cast('FALSE' AS BIT) 
-       END AS 'IsAdminRegistered' 
+    SELECT CASE 
+             WHEN EXISTS (SELECT * 
+                          FROM   VW_UserRoles 
+                          WHERE  RoleName = 'admin') THEN Cast('TRUE' AS BIT) 
+             ELSE Cast('FALSE' AS BIT) 
+           END AS 'IsAdminRegistered' 
+
 GO 

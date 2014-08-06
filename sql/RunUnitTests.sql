@@ -5,7 +5,7 @@ GO
 
 :r $(path)\UserCrud.sql
 :r $(path)\Membership.sql
---:r $(path)\InitCorrectness.sql
+:r $(path)\InitCorrectness.sql
 GO
 
 exec tsu_runTests

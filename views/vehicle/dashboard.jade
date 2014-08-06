@@ -19,7 +19,7 @@ block content
 					tbody
 						each vehicleInfo, index in vehicleInfos
 							tr
-								td #{vehicleInfo.Id}
+								td #{vehicleInfo.VehicleId}
 								td
 									a(href="/v/#{vehicleInfo.Id}/view/#{user.Id}") #{vehicleInfo.Name}
 								td

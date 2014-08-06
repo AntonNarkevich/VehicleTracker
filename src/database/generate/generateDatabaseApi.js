@@ -22,7 +22,7 @@ var getStoredProcedures = function (callback) {
 	invoker.invoke('usp_UTIL_GetStoredProcedures', [], callback);
 };
 
-getStoredProcedures(function (err, storedProcedures) {
+getStoredProcedures(function (storedProcedures) {
 	var sqlToTedious = {
 		'int': 'TYPES.Int',
 		'nvarchar': 'TYPES.NVarChar',

@@ -1,266 +1,334 @@
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetByDriverId]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_GetByDriverId] 
+  END 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_GetByDriverId]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_GetByDriverId]
-END
-GO
+GO 
 
-use [VehicleTrackerDb]
-go
+USE [VehicleTrackerDb] 
 
-CREATE PROC [dbo].[usp_Vehicle_GetByDriverId]
-    @driverId INT
-AS
-	select *
-	from VW_DriverVehicle
-	where DriverId = @driverId
-GO
+GO 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+CREATE PROC [dbo].[usp_Vehicle_GetByDriverId] @driverId INT 
+AS 
+    SELECT * 
+    FROM   VW_DriverVehicle 
+    WHERE  DriverId = @driverId 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_GetByManagerId]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_GetByManagerId]
-END
-GO
+GO 
 
-use [VehicleTrackerDb]
-go
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetByManagerId]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_GetByManagerId] 
+  END 
 
-CREATE PROC [dbo].[usp_Vehicle_GetByManagerId]
-    @managerId INT
-AS
-	select Id as VehicleId,	ManagerId, Name, Info
-	from Vehicles
-	where ManagerId = @managerId
-GO
+GO 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+USE [VehicleTrackerDb] 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_AssignToDriver]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_AssignToDriver]
-END
-GO
+GO 
 
-use [VehicleTrackerDb]
-go
+CREATE PROC [dbo].[usp_Vehicle_GetByManagerId] @managerId INT 
+AS 
+    SELECT Id AS VehicleId, 
+           ManagerId, 
+           Name, 
+           Info 
+    FROM   Vehicles 
+    WHERE  ManagerId = @managerId 
 
-CREATE PROC [dbo].[usp_Vehicle_AssignToDriver]
-	@managerId int,
-    @vehicleId INT,
-	@driverId INT
-	--TODO: Inconsitency can occure. A vehicle may be assgned to driver that is not employed.
-AS
-	begin transaction
+GO 
 
-	declare @EmploymentInfo table (ManagerId int, DriverId int, IsBoss bit)
-	insert into @EmploymentInfo
-	exec usp_BL_Manager_IsBossFor @managerId, @driverId
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_AssignToDriver]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_AssignToDriver] 
+  END 
 
-	declare @isBoss bit
-	select @isBoss = IsBoss
-	from @EmploymentInfo
+GO 
 
-	
-	declare @ownershipInfo table(ManagerId int, DriverId int, IsOwner bit)
-	insert into @ownershipInfo
-	exec usp_BL_Manager_IsVehicleOwner @managerId, @vehicleId
+USE [VehicleTrackerDb] 
 
-	declare @isVehicleOwner bit
-	select @isVehicleOwner = IsOwner
-	from @ownershipInfo
+go 
 
+CREATE PROC [dbo].[usp_Vehicle_AssignToDriver] @managerId INT, 
+                                               @vehicleId INT, 
+                                               @driverId  INT
+AS 
+    BEGIN TRANSACTION 
 
-	if (@isBoss = 1 and @isVehicleOwner = 1)
-	begin
-		insert into DriverXVehicle (DriverId, VehicleId)
-		values (@driverId, @vehicleId)	
-	end
-	else begin
-		--TODO: Remove this. Throw proper error.
-		RAISERROR (15600,-1,-1, 'Inconsitency. Manager manipulates a vehicle he doesnt own. Or driver he is not a boss for.');
-	end
+		DECLARE @EmploymentInfo TABLE 
+		  ( 
+			 ManagerId INT, 
+			 DriverId  INT, 
+			 IsBoss    BIT 
+		  ) 
 
-	commit
-GO
+		INSERT INTO @EmploymentInfo 
+		EXEC usp_BL_Manager_IsBossFor 
+		  @managerId, 
+		  @driverId 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+		DECLARE @isBoss BIT 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_TakeFromDriver]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_TakeFromDriver]
-END
-GO
+		SELECT @isBoss = IsBoss 
+		FROM   @EmploymentInfo 
 
-use [VehicleTrackerDb]
-go
+		DECLARE @ownershipInfo TABLE 
+		  ( 
+			 ManagerId INT, 
+			 DriverId  INT, 
+			 IsOwner   BIT 
+		  ) 
 
---Only one vehicle can be assigned to a driver. So VehicleId parameter is not required.
-CREATE PROC [dbo].[usp_Vehicle_TakeFromDriver]
-	@managerId int,
-    @driverId INT
-AS
-	begin transaction
+		INSERT INTO @ownershipInfo 
+		EXEC usp_BL_Manager_IsVehicleOwner 
+		  @managerId, 
+		  @vehicleId 
 
-	declare @EmploymentInfo table (ManagerId int, DriverId int, IsBoss bit)
-	insert into @EmploymentInfo
-	exec usp_BL_Manager_IsBossFor @managerId, @driverId
+		DECLARE @isVehicleOwner BIT 
 
-	declare @isBoss bit
-	select @isBoss = IsBoss
-	from @EmploymentInfo
+		SELECT @isVehicleOwner = IsOwner 
+		FROM   @ownershipInfo 
 
-	if (@isBoss = 1)
-	begin
-		delete from DriverXVehicle
-		where DriverId = @driverId
-	end
-	else begin
-		--TODO: Remove this. Throw proper error.
-		RAISERROR (15600,-1,-1, 'Inconsitency. Manager manipulates a driver he is not a boss for.');
-	end
+		IF ( @isBoss = 1 
+			 AND @isVehicleOwner = 1 ) 
+		  BEGIN 
+			  INSERT INTO DriverXVehicle 
+						  (DriverId, 
+						   VehicleId) 
+			  VALUES      (@driverId, 
+						   @vehicleId) 
 
-	commit
-GO
+			  SELECT cast('TRUE' AS BIT)        AS IsSuccess, 
+					 'Successfully assigned.' AS [Message] 
+		  END 
+		ELSE 
+		  BEGIN 
+			  SELECT cast('FALSE' AS BIT) AS IsSuccess,
+			  'Inconsitency. Manager manipulates a vehicle he doesnt own. Or a driver he is not a boss for.' AS [Message] 
+		  END 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+    COMMIT
+GO 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_GetVehicleAssignmentInfo]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_GetVehicleAssignmentInfo]
-END
-GO
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_TakeFromDriver]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_TakeFromDriver] 
+  END 
 
-use [VehicleTrackerDb]
-go
+GO 
 
-CREATE PROC [dbo].[usp_Vehicle_GetVehicleAssignmentInfo]
-    @managerId INT
-AS
-	select Id, Name,
-		case when exists(select *
-					from DriverXVehicle
-					where exists(select * from DriverXVehicle
-							where DriverXVehicle.VehicleId = Vehicles.Id))
-		then cast('TRUE' as bit) else cast('FALSE' as bit) end as IsAssigned
-	from Vehicles
-GO
+USE [VehicleTrackerDb] 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+go 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_GetVehicleFullInfo]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_GetVehicleFullInfo]
-END
-GO
+--Only one vehicle can be assigned to a driver. So VehicleId parameter is not required.   
+CREATE PROC [dbo].[usp_Vehicle_TakeFromDriver] @managerId INT, 
+                                               @driverId  INT 
+AS 
+    BEGIN TRANSACTION 
 
-use [VehicleTrackerDb]
-go
+    DECLARE @EmploymentInfo TABLE 
+      ( 
+         ManagerId INT, 
+         DriverId  INT, 
+         IsBoss    BIT 
+      ) 
 
-CREATE PROC [dbo].[usp_Vehicle_GetVehicleFullInfo]
-    @vehicleId INT
-AS
-	select Vehicles.Id 'VehicleId', Vehicles.Name, Info, Users.Id 'DriverId' , Email 'DriverEmail'
-	from Vehicles left join DriverXVehicle
-		on Vehicles.Id = DriverXVehicle.VehicleId
-		left join Users
-		on DriverXVehicle.DriverId = Users.Id
-	where Vehicles.Id = @vehicleId
-GO
+    INSERT INTO @EmploymentInfo 
+    EXEC usp_BL_Manager_IsBossFor 
+      @managerId, 
+      @driverId 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+    DECLARE @isBoss BIT 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_GetPositions]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_GetPositions]
-END
-GO
+    SELECT @isBoss = IsBoss 
+    FROM   @EmploymentInfo 
 
-use [VehicleTrackerDb]
-go
+    IF ( @isBoss = 1 ) 
+      BEGIN 
+          DELETE FROM DriverXVehicle 
+          WHERE  DriverId = @driverId 
 
-CREATE PROC [dbo].[usp_Vehicle_GetPositions]
-	@vehicleId int
-AS
-	select VehicleId, Position.Long as 'Longitude', Position.Lat 'Latitude'
-	from Positions
-	where VehicleId = @vehicleId
-	order by CheckoutDate
-GO
+		  SELECT cast('TRUE' AS BIT)        AS IsSuccess, 
+		 'Successfully taken from.'         AS [Message]
+      END 
+    ELSE 
+      BEGIN 
+		  SELECT cast('FALSE' AS BIT) AS IsSuccess,
+		  'Inconsitency. Manager manipulates a vehicle he doesnt own.' AS [Message] 
+      END 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+    COMMIT 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_SetPositions]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_SetPositions]
-END
-GO
+GO 
 
-use [VehicleTrackerDb]
-go
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetVehicleAssignmentInfo]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_GetVehicleAssignmentInfo] 
+  END 
 
-CREATE PROC [dbo].[usp_Vehicle_SetPositions]
-								    @vehicleId int, 
-                                    @longitude NVARCHAR(20), 
-                                    @latitude  NVARCHAR(20)
-AS
-	  declare @SRID      INT = 4326 
-      DECLARE @vehiclePositionWKT NVARCHAR(50) 
+GO 
 
-      SET @vehiclePositionWKT = 'POINT(' + @longitude + ' ' + @latitude + ')' 
+USE [VehicleTrackerDb] 
 
-      DECLARE @vehiclePosition GEOGRAPHY 
+go 
 
-      SET @vehiclePosition = geography::STGeomFromText(@vehiclePositionWKT, 
-                             @SRID) 
+CREATE PROC [dbo].[usp_Vehicle_GetVehicleAssignmentInfo] @managerId INT 
+AS 
+    SELECT Id as 'VehicleId', 
+           Name, 
+           CASE 
+             WHEN EXISTS(SELECT * 
+                         FROM   DriverXVehicle 
+                         WHERE  EXISTS(SELECT * 
+                                       FROM   DriverXVehicle 
+                                       WHERE  DriverXVehicle.VehicleId = 
+                                      Vehicles.Id)) THEN 
+             cast('TRUE' AS BIT) 
+             ELSE cast('FALSE' AS BIT) 
+           END AS IsAssigned 
+    FROM   Vehicles 
 
-      INSERT INTO [dbo].[Positions] 
-                  ([Position], 
-                   [VehicleId], 
-                   [CheckoutDate]) 
-      VALUES      (@vehiclePosition, 
-                   @vehicleId, 
-                   GETDATE()) 
-GO
+GO 
 
-----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetVehicleFullInfo]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_GetVehicleFullInfo] 
+  END 
 
+GO 
 
-IF OBJECT_ID('[dbo].[usp_Vehicle_Create]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_Vehicle_Create]
-END
-GO
+USE [VehicleTrackerDb] 
 
-use [VehicleTrackerDb]
-go
+go 
 
-CREATE PROC [dbo].[usp_Vehicle_Create]
-							   @managerId    int, 
-                               @driverId     int, 
-                               @name NVARCHAR(30), 
-							   @info nvarchar(600),
-                               @longitude    NVARCHAR(20), 
-                               @latitude     NVARCHAR(20)
-AS
-	exec usp_Vehicle_Insert @managerId, @name, @info
-	declare @vehicleId int = @@IDENTITY
+CREATE PROC [dbo].[usp_Vehicle_GetVehicleFullInfo] @vehicleId INT 
+AS 
+    SELECT Vehicles.Id 'VehicleId', 
+           Vehicles.Name, 
+           Info, 
+           Users.Id    'DriverId', 
+           Email       'DriverEmail' 
+    FROM   Vehicles 
+           LEFT JOIN DriverXVehicle 
+                  ON Vehicles.Id = DriverXVehicle.VehicleId 
+           LEFT JOIN Users 
+                  ON DriverXVehicle.DriverId = Users.Id 
+    WHERE  Vehicles.Id = @vehicleId 
 
-	exec usp_Vehicle_SetPositions @vehicleId, @longitude, @latitude
+GO 
 
-	if @driverId is not null
-	begin
-		exec usp_Vehicle_AssignToDriver @managerId, @vehicleId, @driverId
-	end
-GO
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_GetPositions]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_GetPositions] 
+  END 
+
+GO 
+
+USE [VehicleTrackerDb] 
+
+go 
+
+CREATE PROC [dbo].[usp_Vehicle_GetPositions] @vehicleId INT 
+AS 
+    SELECT VehicleId, 
+           Position.Long AS 'Longitude', 
+           Position.Lat  'Latitude' 
+    FROM   Positions 
+    WHERE  VehicleId = @vehicleId 
+    ORDER  BY CheckoutDate 
+
+GO 
+
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_SetPositions]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_SetPositions] 
+  END 
+
+GO 
+
+USE [VehicleTrackerDb] 
+
+go 
+
+CREATE PROC [dbo].[usp_Vehicle_SetPositions] @vehicleId INT, 
+                                             @longitude NVARCHAR(20), 
+                                             @latitude  NVARCHAR(20) 
+AS 
+    DECLARE @SRID INT = 4326 
+    DECLARE @vehiclePositionWKT NVARCHAR(50) 
+
+    SET @vehiclePositionWKT = 'POINT(' + @longitude + ' ' + @latitude + ')' 
+
+    DECLARE @vehiclePosition GEOGRAPHY 
+
+    SET @vehiclePosition = geography::STGeomFromText(@vehiclePositionWKT, @SRID) 
+
+    INSERT INTO [dbo].[Positions] 
+                ([Position], 
+                 [VehicleId], 
+                 [CheckoutDate]) 
+    VALUES      (@vehiclePosition, 
+                 @vehicleId, 
+                 GETDATE()) 
+
+GO 
+
+----------------------------------------------------------------------------------------------   
+----------------------------------------------------------------------------------------------   
+IF OBJECT_ID('[dbo].[usp_Vehicle_Create]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_Vehicle_Create] 
+  END 
+
+GO 
+
+USE [VehicleTrackerDb] 
+
+go 
+
+CREATE PROC [dbo].[usp_Vehicle_Create] @managerId INT, 
+                                       @driverId  INT, 
+                                       @name      NVARCHAR(30), 
+                                       @info      NVARCHAR(600), 
+                                       @longitude NVARCHAR(20), 
+                                       @latitude  NVARCHAR(20) 
+AS 
+    EXEC usp_Vehicle_Insert 
+      @managerId, 
+      @name, 
+      @info 
+
+    DECLARE @vehicleId INT = @@IDENTITY 
+
+    EXEC usp_Vehicle_SetPositions 
+      @vehicleId, 
+      @longitude, 
+      @latitude 
+
+    IF @driverId IS NOT NULL 
+      BEGIN 
+          EXEC usp_Vehicle_AssignToDriver 
+            @managerId, 
+            @vehicleId, 
+            @driverId 
+      END 
+
+GO 

@@ -1,228 +1,261 @@
-USE VehicleTrackerDb
-GO
+USE VehicleTrackerDb 
 
---Rejects all pending job offers for the driver.
---Sets DecisionDate equal to current date and time.
-IF OBJECT_ID('[dbo].[usp_BL_Driver_RejectPendingJobOffers]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Driver_RejectPendingJobOffers]
-END
-GO
-CREATE PROC [dbo].[usp_BL_Driver_RejectPendingJobOffers]
-    @driverId INT
-AS
-	UPDATE [dbo].[JobOffers]
-	SET    [OfferStatus] = 'Rejected',
-			[DecisionDate] = GETDATE()
-	WHERE  ([SenderId] = @driverId
-	       OR [RecieverId] = @driverId)
-		   AND [OfferStatus] = 'Pending'
-GO
+GO 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+--Rejects all pending job offers for the driver.  
+--Sets DecisionDate equal to current date and time.  
+IF OBJECT_ID('[dbo].[usp_BL_Driver_RejectPendingJobOffers]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Driver_RejectPendingJobOffers] 
+  END 
 
-IF OBJECT_ID('[dbo].[usp_BL_Manager_GetDriverIds]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_GetDriverIds]
-END
-GO
+GO 
 
-CREATE PROC [dbo].[usp_BL_Manager_GetDriverIds]
-	@managerId INT
-AS
+CREATE PROC [dbo].[usp_BL_Driver_RejectPendingJobOffers] @driverId INT 
+AS 
+    UPDATE [dbo].[JobOffers] 
+    SET    [OfferStatus] = 'Rejected', 
+           [DecisionDate] = GETDATE() 
+    WHERE  ( [SenderId] = @driverId 
+              OR [RecieverId] = @driverId ) 
+           AND [OfferStatus] = 'Pending' 
 
-SELECT DriverId
-FROM VW_ManagerDrivers
-WHERE ManagerId = @managerId
+GO 
 
-GO
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+IF OBJECT_ID('[dbo].[usp_BL_Manager_GetDriverIds]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_GetDriverIds] 
+  END 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+GO 
 
---Accepts job offer between manager and driver
---Rejects all offers between the driver and all other managers
---Adds the driver to the manager employee list
-IF OBJECT_ID('[dbo].[usp_BL_Manager_EmployDriver]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_EmployDriver]
-END
-GO
+CREATE PROC [dbo].[usp_BL_Manager_GetDriverIds] @managerId INT 
+AS 
+    SELECT DriverId 
+    FROM   VW_ManagerDrivers 
+    WHERE  ManagerId = @managerId 
 
-CREATE PROC [dbo].[usp_BL_Manager_EmployDriver]
-	@managerId INT,
-	@driverId INT
-AS
+GO 
 
-BEGIN TRAN
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+--Accepts job offer between manager and driver  
+--Rejects all offers between the driver and all other managers  
+--Adds the driver to the manager employee list  
+IF OBJECT_ID('[dbo].[usp_BL_Manager_EmployDriver]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_EmployDriver] 
+  END 
 
-EXEC usp_JobOffer_Accept @managerId, @driverId
-EXEC usp_JobOffer_Accept @driverId, @managerId
+GO 
 
-EXEC usp_BL_Driver_RejectPendingJobOffers @driverId
+CREATE PROC [dbo].[usp_BL_Manager_EmployDriver] @managerId INT, 
+                                                @driverId  INT 
+AS 
+    BEGIN TRAN 
 
-INSERT INTO ManagerXDrivers (ManagerId, DriverId)
-VALUES (@managerId, @driverId)
+    EXEC usp_JobOffer_Accept 
+      @managerId, 
+      @driverId 
 
-COMMIT
+    EXEC usp_JobOffer_Accept 
+      @driverId, 
+      @managerId 
 
-GO
+    EXEC usp_BL_Driver_RejectPendingJobOffers 
+      @driverId 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+    INSERT INTO ManagerXDrivers 
+                (ManagerId, 
+                 DriverId) 
+    VALUES      (@managerId, 
+                 @driverId) 
 
---Takes a car from driver.
---Removes from employee list.
-IF OBJECT_ID('[dbo].[usp_BL_Manager_FireDriver]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_FireDriver]
-END
-GO
+    COMMIT 
 
-CREATE PROC [dbo].[usp_BL_Manager_FireDriver]
-	@managerId INT,
-	@driverId INT
-AS
+GO 
 
-BEGIN TRAN
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+--Takes a car from driver.  
+--Removes from employee list.  
+IF OBJECT_ID('[dbo].[usp_BL_Manager_FireDriver]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_FireDriver] 
+  END 
 
-	exec usp_Vehicle_TakeFromDriver @managerId, @driverId
+GO 
 
-	delete from ManagerXDrivers
-	where DriverId = @driverId
-	and ManagerId = @managerId
+CREATE PROC [dbo].[usp_BL_Manager_FireDriver] @managerId INT, 
+                                              @driverId  INT 
+AS 
+    BEGIN TRAN 
 
-COMMIT
+    EXEC usp_Vehicle_TakeFromDriver 
+      @managerId, 
+      @driverId 
 
-GO
+    DELETE FROM ManagerXDrivers 
+    WHERE  DriverId = @driverId 
+           AND ManagerId = @managerId 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+    COMMIT 
 
---Gets employees for particular manager
-IF OBJECT_ID('[dbo].[usp_BL_Manager_GetEmployees]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_GetEmployees]
-END
-GO
+GO 
 
-CREATE PROC [dbo].[usp_BL_Manager_GetEmployees]
-	@managerId INT
-AS
-	SELECT DriverId, Email, IsBlocked    
-	FROM ManagerXDrivers INNER JOIN
-	Users ON ManagerXDrivers.DriverId = Users.Id 
-	WHERE ManagerId = @managerId
-GO
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+--Gets employees for particular manager  
+IF OBJECT_ID('[dbo].[usp_BL_Manager_GetEmployees]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_GetEmployees] 
+  END 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+GO 
 
---Gets employees for particular manager
-IF OBJECT_ID('[dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle]
-END
-GO
+CREATE PROC [dbo].[usp_BL_Manager_GetEmployees] @managerId INT 
+AS 
+    SELECT DriverId, 
+           Email, 
+           IsBlocked 
+    FROM   ManagerXDrivers 
+           INNER JOIN Users 
+                   ON ManagerXDrivers.DriverId = Users.Id 
+    WHERE  ManagerId = @managerId 
 
-CREATE PROC [dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle]
-	@managerId INT
-AS
-	SELECT Id, Email, IsBlocked
-	FROM (ManagerXDrivers INNER JOIN
-	Users ON ManagerXDrivers.DriverId = Users.Id)
-	WHERE ManagerId = @managerId
-	and not exists (select * from DriverXVehicle
-						where DriverId = Users.Id)
+GO 
 
-GO
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+--Gets employees for particular manager  
+IF OBJECT_ID('[dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle] 
+  END 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+GO 
 
---Gets employees for particular manager
-IF OBJECT_ID('[dbo].[usp_BL_Driver_GetBoss]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Driver_GetBoss]
-END
-GO
+CREATE PROC [dbo].[usp_BL_Manager_GetEmployeesWithoutVehicle] @managerId INT 
+AS 
+    SELECT Id, 
+           Email, 
+           IsBlocked 
+    FROM   (ManagerXDrivers 
+            INNER JOIN Users 
+                    ON ManagerXDrivers.DriverId = Users.Id) 
+    WHERE  ManagerId = @managerId 
+           AND NOT EXISTS (SELECT * 
+                           FROM   DriverXVehicle 
+                           WHERE  DriverId = Users.Id) 
 
-CREATE PROC [dbo].[usp_BL_Driver_GetBoss]
-	@driverId INT
-AS
-	SELECT ManagerId as BossId, Email as BossEmail
-	FROM ManagerXDrivers INNER JOIN
-	Users ON ManagerXDrivers.ManagerId = Users.Id 
-	WHERE DriverId = @driverId
-GO
+GO 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+--Gets employees for particular manager  
+IF OBJECT_ID('[dbo].[usp_BL_Driver_GetBoss]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Driver_GetBoss] 
+  END 
 
---Checks whether the manager is employer for the driver
-IF OBJECT_ID('[dbo].[usp_BL_Manager_IsBossFor]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_IsBossFor]
-END
-GO
+GO 
 
-CREATE PROC [dbo].[usp_BL_Manager_IsBossFor]
-	@managerId INT,
-	@driverId INT
-AS
-	declare @ownershipInfo table (ManagerId int, DriverId int, IsBoss bit)
+CREATE PROC [dbo].[usp_BL_Driver_GetBoss] @driverId INT 
+AS 
+    SELECT ManagerId AS BossId, 
+           Email     AS BossEmail 
+    FROM   ManagerXDrivers 
+           INNER JOIN Users 
+                   ON ManagerXDrivers.ManagerId = Users.Id 
+    WHERE  DriverId = @driverId 
 
-	insert into @ownershipInfo
-	select ManagerId, DriverId, cast(1 as bit)
-	from ManagerXDrivers
-	where ManagerId = @managerId
-		and DriverId = @driverId
+GO 
 
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+--Checks whether the manager is employer for the driver  
+IF OBJECT_ID('[dbo].[usp_BL_Manager_IsBossFor]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_IsBossFor] 
+  END 
 
-	if (@@ROWCOUNT = 0)
-	begin
-		insert into @ownershipInfo
-		values (@managerId, @managerId, cast(0 as bit))
-	end
+GO 
 
-	select * from @ownershipInfo
-GO
+CREATE PROC [dbo].[usp_BL_Manager_IsBossFor] @managerId INT, 
+                                             @driverId  INT 
+AS 
+    DECLARE @employmentInfo TABLE 
+      ( 
+         ManagerId INT, 
+         DriverId  INT, 
+         IsBoss    BIT 
+      ) 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+    INSERT INTO @employmentInfo 
+    SELECT ManagerId, 
+           DriverId, 
+           cast(1 AS BIT) 
+    FROM   ManagerXDrivers 
+    WHERE  ManagerId = @managerId 
+           AND DriverId = @driverId 
 
-IF OBJECT_ID('[dbo].[usp_BL_Manager_IsVehicleOwner]') IS NOT NULL
-BEGIN
-    DROP PROC [dbo].[usp_BL_Manager_IsVehicleOwner]
-END
-GO
+    IF ( @@ROWCOUNT = 0 ) 
+      BEGIN 
+          INSERT INTO @employmentInfo 
+          VALUES      (@managerId, 
+                       @managerId, 
+                       cast(0 AS BIT)) 
+      END 
 
-CREATE PROC [dbo].[usp_BL_Manager_IsVehicleOwner]
-	@managerId INT,
-	@vehicleId INT
-AS
-	declare @ownershipInfo table(ManagerId int, DriverId int, IsOwner bit)
+    SELECT * 
+    FROM   @employmentInfo 
 
-	insert into @ownershipInfo
-	select @managerId ManagerId, @vehicleId DriverId, cast(1 as bit) IsOwner
-	from Vehicles
-	where Vehicles.ManagerId = @managerId
-			and Vehicles.Id = @vehicleId
+GO 
 
-	if (@@ROWCOUNT = 0)
-	begin
-		insert into @ownershipInfo
-		values (@managerId, @vehicleId, cast(0 as bit))
-	end
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
+IF OBJECT_ID('[dbo].[usp_BL_Manager_IsVehicleOwner]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_BL_Manager_IsVehicleOwner] 
+  END 
 
-	select * from @ownershipInfo
+GO 
 
-GO
+CREATE PROC [dbo].[usp_BL_Manager_IsVehicleOwner] @managerId INT, 
+                                                  @vehicleId INT 
+AS 
+    DECLARE @ownershipInfo TABLE 
+      ( 
+         ManagerId INT, 
+         DriverId  INT, 
+         IsOwner   BIT 
+      ) 
 
--------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------
+    INSERT INTO @ownershipInfo 
+    SELECT @managerId     ManagerId, 
+           @vehicleId     DriverId, 
+           cast(1 AS BIT) IsOwner 
+    FROM   Vehicles 
+    WHERE  Vehicles.ManagerId = @managerId 
+           AND Vehicles.Id = @vehicleId 
 
+    IF ( @@ROWCOUNT = 0 ) 
+      BEGIN 
+          INSERT INTO @ownershipInfo 
+          VALUES      (@managerId, 
+                       @vehicleId, 
+                       cast(0 AS BIT)) 
+      END 
+
+    SELECT * 
+    FROM   @ownershipInfo 
+
+GO 
+
+-------------------------------------------------------------------------------------------------------  
+-------------------------------------------------------------------------------------------------------  
 IF Object_id('[dbo].[usp_BL_GetOfferableUsers]') IS NOT NULL 
   BEGIN 
       DROP PROC [dbo].[usp_BL_GetOfferableUsers] 
@@ -230,9 +263,8 @@ IF Object_id('[dbo].[usp_BL_GetOfferableUsers]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[usp_BL_GetOfferableUsers]
-	@userId INT,
-	@userRole varchar(20)
+CREATE PROC [dbo].[usp_BL_GetOfferableUsers] @userId   INT, 
+                                             @userRole VARCHAR(20) 
 AS 
     BEGIN TRAN 
 
@@ -240,15 +272,14 @@ AS
       ( 
          Id INT 
       ) 
+    --Who user can employ.  
+    --Driver for managers and vica versa  
+    DECLARE @targerRole VARCHAR(20) = 'driver' 
 
-	--Who user can employ.
-	--Driver for managers and vica versa
-	DECLARE @targerRole varchar(20) = 'driver' 
-
-	IF @userRole = 'driver'
-	BEGIN
-		SET @targerRole = 'manager'
-	END
+    IF @userRole = 'driver' 
+      BEGIN 
+          SET @targerRole = 'manager' 
+      END 
 
     INSERT INTO @offerableIUserIds 
     SELECT * 
@@ -263,15 +294,27 @@ AS
             (SELECT DriverId 
              FROM   ManagerXDrivers)) AS UnemployedIds 
 
-    SELECT offerableUserIds.Id as Id,
-		Name, Email, IsBlocked, JobOffers.Id as OfferId,
-	case when RecieverId = @userId then cast(1 as bit) else cast(0 as bit) end as IncommingOffer,
-	case when SenderId = @userId then cast(1 as bit) else cast(0 as bit) end as OutgoingOffer,
-	case when OfferDate is null then cast(1 as bit) else cast(0 as bit) end as HasNoOffers
+    SELECT offerableUserIds.Id AS Id, 
+           Name, 
+           Email, 
+           IsBlocked, 
+           JobOffers.Id        AS OfferId, 
+           CASE 
+             WHEN RecieverId = @userId THEN cast(1 AS BIT) 
+             ELSE cast(0 AS BIT) 
+           END                 AS IncommingOffer, 
+           CASE 
+             WHEN SenderId = @userId THEN cast(1 AS BIT) 
+             ELSE cast(0 AS BIT) 
+           END                 AS OutgoingOffer, 
+           CASE 
+             WHEN OfferDate IS NULL THEN cast(1 AS BIT) 
+             ELSE cast(0 AS BIT) 
+           END                 AS HasNoOffers 
     FROM   (SELECT * 
             FROM   Users 
             WHERE  Id IN (SELECT * 
-                          FROM   @offerableIUserIds)) offerableUserIds
+                          FROM   @offerableIUserIds)) offerableUserIds 
            LEFT JOIN JobOffers 
                   ON ( ( offerableUserIds.Id = JobOffers.RecieverId 
                          AND JobOffers.SenderId = @userId ) 
@@ -281,4 +324,4 @@ AS
 
     COMMIT 
 
-GO
+GO 

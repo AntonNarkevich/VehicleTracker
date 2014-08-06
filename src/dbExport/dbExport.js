@@ -18,8 +18,8 @@ var msSqlConfig = {
 	msSqlPassword: keys.msSqlPassword
 };
 
-var EXPORT_TEMPLATE_FILENAME = './src/export/export.ejs';
-var IMPORT_TEMPLATE_FILENAME = './src/export/import.ejs';
+var EXPORT_TEMPLATE_FILENAME = './src/dbExport/export.ejs';
+var IMPORT_TEMPLATE_FILENAME = './src/dbExport/import.ejs';
 
 
 //TODO: Analize. When should I execute "done".
