@@ -7,7 +7,8 @@ block content
 		.row
 			.col-md-12
 				each vehicleStatistics, vehicleId in statistics
-					h2 Vehicle #{vehicleId}
+					h2
+						a(href="/v/#{vehicleId}/view/#{user.Id}") Vehicle #{vehicleId}
 					if vehicleStatistics.length === 0
 						p No statistics for now.
 					else

@@ -9,16 +9,17 @@ block content
 				table.table.table-condensed
 					thead
 						tr
-							th Email
 							th Id
+							th Email
 							th Actions
 					tbody
 						each employee in employeeInfos
 							tr
-								td
-									a(href="/profile/#{employee.DriverId}") #{employee.Email}
 								td #{employee.DriverId}
 								td
-									a.anchor-confirm.btn-action.action-btn.btn.btn-sm.btn-danger(
+									a(href="/profile/#{employee.DriverId}") #{employee.Email}
+								td
+									a.btn-action.anchor-confirm.btn-action.action-btn.btn.btn-sm.btn-danger(
 									href="/m/#{user.Id}/fire/#{employee.DriverId}"
 									data-confirm-message="Sure to fire? This action can't be undone.") Fire
+									a.btn-action.btn.btn-default(href="/d/#{employee.DriverId}/drive") Help driving

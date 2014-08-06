@@ -9,6 +9,8 @@ var keys = rekuire('keys.config.json');
 /* GET home page. */
 router.get('/', function (req, res) {
 	res.render('index', { title: 'Express', keys: keys });
+
+	throw new Error('what is love');
 });
 
 module.exports = router;

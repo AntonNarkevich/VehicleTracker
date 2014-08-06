@@ -4,8 +4,12 @@ block content
 		.row
 			.col-md-12
 				h1 Drive!
-				p Your vehicle is "#{vehicleInfo.Name}". (Id #{vehicleInfo.Id}).
+				p Your vehicle is #{' '}
+					a(href="/v/#{vehicleInfo.Id}/view/#{user.Id}") "#{vehicleInfo.Name}"
+					|.
+
 				input(type="hidden", id="vehicle-id", value="#{vehicleInfo.Id}")
+
 				p Click the map to drive. Be careful! You are tracked and#{" "}
 					span.label.label-warning it can't be undone.
 
