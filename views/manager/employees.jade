@@ -19,9 +19,6 @@ block content
 									a(href="/profile/#{employee.DriverId}") #{employee.Email}
 								td #{employee.DriverId}
 								td
-									a.btn-fire.btn-action.action-btn.btn.btn-sm.btn-danger(
+									a.anchor-confirm.btn-action.action-btn.btn.btn-sm.btn-danger(
 									href="/m/#{user.Id}/fire/#{employee.DriverId}"
 									data-confirm-message="Sure to fire? This action can't be undone.") Fire
-
-block scripts
-	script(src='/js/local/employees.js')

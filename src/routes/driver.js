@@ -15,7 +15,11 @@ router.get('/:ownerId/drive', role.isOneOf('driver', 'boss'), function (req, res
 		var vehicleInfo = data[0];
 
 		if (!vehicleInfo) {
-			res.render('driver/waitForAVehicle');
+			res.render('message', {
+				messageHeading: ':( You have to wait.',
+				messageText: 'Currently your manager haven\'t assigned a vehicle to you.',
+				messageNotice: '*it shouldn\'t take a lot of time'
+			});
 		} else {
 			res.render('driver/drive', {vehicleInfo: vehicleInfo, keys: keys });
 		}

@@ -46,7 +46,11 @@ router.post('/create/:ownerId', role.isAllOf('manager', 'owner'), function (req,
 		renderCreateVehicle(res, managerId, validationResult.errorMsgs);
 	} else {
 		database.uspVehicleCreate(managerId, driverId, name, info, longitude, latitude, function (data) {
-			res.render('manager/createVehicleSuccess');
+			res.render('message', {
+				messageHeading: 'Vehicle has been created!',
+				messageText: 'And successfully assigned to the driver.',
+				messageNotice: '*it can be tracked'
+			});
 		});
 	}
 });

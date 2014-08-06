@@ -21,7 +21,7 @@ block content
 							tr
 								td #{vehicleInfo.VehicleId}
 								td
-									a(href="/v/#{vehicleInfo.Id}/view/#{user.Id}") #{vehicleInfo.Name}
+									a(href="/v/#{vehicleInfo.VehicleId}/view/#{user.Id}") #{vehicleInfo.Name}
 								td
 									if vehicleInfo.IsAssigned
 										span.label.label-success Yes

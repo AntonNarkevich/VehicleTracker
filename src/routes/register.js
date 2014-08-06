@@ -34,7 +34,11 @@ router.post('/:role(manager|driver|admin)', function (req, res) {
 				validationErrors: err.errorMessages
 			});
 		} else {
-			res.render('registration/success');
+			res.render('message', {
+				messageHeading: 'Registerd successfully!',
+				messageText: 'Now you can login with your credentials.',
+				messageNotice: '*have a lot of fun'
+			});
 		}
 	});
 });
