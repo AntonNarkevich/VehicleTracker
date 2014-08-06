@@ -2,12 +2,11 @@
 
 var router = require('express').Router();
 
-var _ = require('underscore');
 var rekuire = require('rekuire');
 var role = rekuire('roleConfiguration');
 var logger = rekuire('logger');
 
-//TODO: Write to WebStorm about aout-requring/rekuiring.
+//TODO: Write to WebStorm about auto-requiring/rekuiring.
 var database = rekuire('database');
 var interpret = rekuire('dataInterpreter');
 

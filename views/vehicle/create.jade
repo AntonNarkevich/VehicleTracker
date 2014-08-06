@@ -19,16 +19,22 @@ block content
 						label.control-label.col-sm-3(for="license-plate") Name
 						.col-sm-9
 							input#license-plate.form-control(
-							name="name",
-							type="text",
-							placeholder="Batmobile",
-							data-parsley-required,
-							data-parsley-required-message="Vehicle name is required",
-							data-parsley-maxlength="20")
+								name="name",
+								type="text",
+								placeholder="Batmobile",
+								data-parsley-required,
+								data-parsley-required-message="Vehicle name is required",
+								data-parsley-minlength="5"
+								data-parsley-maxlength="30"
+							)
 					.form-group
 						label.control-label.col-sm-3(for="info") Info
 						.col-sm-9
-							textarea#info.textarea-vertical.form-control(name="info", placeholder="Batman's car was created to...", data-parsley-maxlength="600")
+							textarea#info.textarea-vertical.form-control(
+								name="info",
+								placeholder="Batman's car was created to...",
+								data-parsley-maxlength="600"
+							)
 					if driversInfo && driversInfo.length !== 0
 						.form-group
 							label.control-label.col-sm-3(for="email") Assign to
@@ -36,6 +42,15 @@ block content
 								select(name="driverId").form-control
 									each driver in driversInfo
 										option(value="#{driver.Id}") #{driver.Email}
+
+					if (validationErrors)
+						div.form-group
+							div.col-sm-9.col-sm-offset-3
+								.server-error-message.col-xs-12.alert.alert-danger
+									if validationErrors
+										each err in validationErrors
+											p #{err}
+
 					.form-group
 						.col-sm-offset-3.col-sm-9
 							button.btn.btn-default.btn-primary(type="submit") Create

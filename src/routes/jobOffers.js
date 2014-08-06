@@ -7,7 +7,6 @@ var rekuire = require('rekuire');
 var logger = rekuire('logger');
 var database = rekuire('database');
 var role = rekuire('roleConfiguration');
-var keys = rekuire('keys.config.json');
 
 router.get('/:ownerId', role.isOneOf('manager', 'driver'), role.is('owner'), role.isNot('employed'), function (req, res) {
 	var managerId = parseInt(req.param('ownerId'), 10);

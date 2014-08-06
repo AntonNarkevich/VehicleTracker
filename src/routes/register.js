@@ -1,13 +1,10 @@
 'use strict';
 
 var router = require('express').Router();
-var bcrypt = require('bcrypt');
 var validator = require('validator');
 
 var rekuire = require('rekuire');
-var database = rekuire('database');
 var logger = rekuire('logger');
-var formValidator = rekuire('formValidator');
 var registrationHelper = rekuire('registrationHelper');
 
 router.get('/', function (req, res) {

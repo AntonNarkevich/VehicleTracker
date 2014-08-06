@@ -20,7 +20,7 @@ block content
 
 		if !vehicleInfo.DriverId
 			.row
-				if driversInfo.length
+				if driversInfo && driversInfo.length
 					form(action="/v/#{vehicleInfo.VehicleId}/assign/#{user.Id}/", method='POST')
 						.form-group
 							label.control-label.col-sm-2(for="email") Assign to

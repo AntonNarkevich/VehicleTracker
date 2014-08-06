@@ -3,7 +3,7 @@
 var bcrypt = require('bcrypt');
 
 var rekuire = require('rekuire');
-var formValidator = rekuire('formValidator');
+var validate = rekuire('dataValidator');
 var database = rekuire('database');
 var logger = rekuire('logger');
 var interpret = rekuire('dataInterpreter');
@@ -36,7 +36,7 @@ var registerAdminInDatabase = function (email, hash, callback) {
 
 var register = function(role, email, password, passwordAgain, callback) {
 	//Validation
-	var validationResult = formValidator.validate({
+	var validationResult = validate.registerData({
 		email: email,
 		password: password,
 		passwordAgain: passwordAgain

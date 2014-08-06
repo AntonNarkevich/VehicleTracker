@@ -8,13 +8,23 @@ var logger = rekuire('logger');
 var database = rekuire('database');
 var role = rekuire('roleConfiguration');
 var keys = rekuire('keys.config.json');
+var validate = rekuire('dataValidator');
+
+//Extracted rendering because it's used in 2 roots (get and post).
+var renderCreateVehicle = function (res, managerId, validationErrors) {
+	database.uspBLManagerGetEmployeesWithoutVehicle(managerId, function (data) {
+		res.render('vehicle/create', {
+			keys: keys,
+			driversInfo: data,
+			validationErrors: validationErrors
+		});
+	});
+};
 
 router.get('/create/:ownerId', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
-	database.uspBLManagerGetEmployeesWithoutVehicle(managerId, function (data) {
-		res.render('vehicle/create', {keys: keys, driversInfo: data});
-	});
+	renderCreateVehicle(res, managerId);
 });
 
 router.post('/create/:ownerId', role.isAllOf('manager', 'owner'), function (req, res) {
@@ -25,10 +35,20 @@ router.post('/create/:ownerId', role.isAllOf('manager', 'owner'), function (req,
 	var longitude = req.param('longitude');
 	var latitude = req.param('latitude');
 
-	//TODO: Server-side validation should be performed here.
-	database.uspVehicleCreate(managerId, driverId, name, info, longitude, latitude, function (data) {
-		res.render('manager/createVehicleSuccess');
+	var validationResult = validate.vehicleData({
+		name: name,
+		info: info,
+		longitude: longitude,
+		latitude: latitude
 	});
+
+	if (!validationResult.isValid) {
+		renderCreateVehicle(res, managerId, validationResult.errorMsgs);
+	} else {
+		database.uspVehicleCreate(managerId, driverId, name, info, longitude, latitude, function (data) {
+			res.render('manager/createVehicleSuccess');
+		});
+	}
 });
 
 router.get('/dashboard/:ownerId', role.isAllOf('manager', 'owner'), function (req, res) {
@@ -39,8 +59,7 @@ router.get('/dashboard/:ownerId', role.isAllOf('manager', 'owner'), function (re
 	});
 });
 
-//TODO: Probably new role should be added here. 'vehicleOwner' or something.
-router.get('/:vehicleId/view/:ownerId', role.isAllOf('manager', 'owner'), function (req, res) {
+router.get('/:vehicleId/view/:ownerId', role.isAuthenticated(), function (req, res) {
 	var vehicleId = req.param('vehicleId');
 	var managerId = req.param('ownerId');
 
@@ -51,20 +70,13 @@ router.get('/:vehicleId/view/:ownerId', role.isAllOf('manager', 'owner'), functi
 			res.render('vehicle/view', {keys: keys, vehicleInfo: vehicleInfo});
 		} else {
 			database.uspBLManagerGetEmployeesWithoutVehicle(managerId, function (err, driversInfo) {
-				if (err) {
-					logger.log(err);
-
-					throw err;
-				}
-
 				res.render('vehicle/view', {keys: keys, vehicleInfo: vehicleInfo, driversInfo: driversInfo});
 			});
 		}
 	});
 });
 
-//TODO: Probably new role should be added here. 'vehicleOwner' or something.
-router.post('/:vehicleId/assign/:ownerId', role.isAllOf('manager', 'owner'), function (req, res) {
+router.post('/:vehicleId/assign/:ownerId', role.is('vehicleOwner'), function (req, res) {
 	var vehicleId = req.param('vehicleId');
 	var managerId = req.param('ownerId');
 	var driverId = req.param('driverId');
@@ -73,6 +85,5 @@ router.post('/:vehicleId/assign/:ownerId', role.isAllOf('manager', 'owner'), fun
 		res.redirect('/v/' + vehicleId + '/view/' + managerId);
 	});
 });
-
 
 module.exports = router;

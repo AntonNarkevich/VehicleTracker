@@ -9,14 +9,12 @@ var jade = require('jade');
 var _ = require('underscore');
 var mime = require('mime');
 
-
 var logger = rekuire('logger');
 var database = rekuire('database');
 var interpret = rekuire('dataInterpreter');
 var role = rekuire('roleConfiguration');
 var keys = rekuire('keys.config');
 
-//TODO: Add protection against SQL injection.
 router.get('/:ownerId/employees', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 
@@ -25,6 +23,7 @@ router.get('/:ownerId/employees', role.isAllOf('manager', 'owner'), function (re
 	});
 });
 
+//TODO: The driver should be able to quit. Currently only manager can fire.
 router.get('/:ownerId/fire/:driverId', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 	var driverId = req.param('driverId');
@@ -39,7 +38,6 @@ router.get('/:ownerId/track', role.isAllOf('manager', 'owner'), function (req, r
 
 	res.render('manager/track', {keys: keys, managerId: managerId});
 });
-
 
 router.get('/:ownerId/trackData', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
@@ -61,7 +59,7 @@ router.get('/:ownerId/statistics', role.isAllOf('manager', 'owner'), function (r
 	});
 });
 
-//TODO: Implement pdf export. And remove this pornography.
+//TODO: Implement pdf export.
 router.get('/:ownerId/toJSON', role.isAllOf('manager', 'owner'), function (req, res) {
 	var managerId = req.param('ownerId');
 

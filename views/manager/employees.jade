@@ -16,11 +16,11 @@ block content
 						each employee in employeeInfos
 							tr
 								td
-									a(href="/profile/#{employee.Id}") #{employee.Email}
-								td #{employee.Id}
+									a(href="/profile/#{employee.DriverId}") #{employee.Email}
+								td #{employee.DriverId}
 								td
 									a.btn-fire.btn-action.action-btn.btn.btn-sm.btn-danger(
-									href="/m/#{user.Id}/fire/#{employee.Id}"
+									href="/m/#{user.Id}/fire/#{employee.DriverId}"
 									data-confirm-message="Sure to fire? This action can't be undone.") Fire
 
 block scripts

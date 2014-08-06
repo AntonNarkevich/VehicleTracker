@@ -13,7 +13,6 @@ var logger = rekuire('logger');
 var database = rekuire('database');
 var interpret = rekuire('dataInterpreter');
 var bcrypt = require('bcrypt');
-var formValidator = rekuire('formValidator');
 
 var INVALID_CREDENTIALS_MESSAGE = 'Email or password is incorrect.';
 

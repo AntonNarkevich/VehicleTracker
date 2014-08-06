@@ -17,7 +17,6 @@ var authConfiguration = rekuire('authConfiguration');
 var roleConfiguration = rekuire('roleConfiguration');
 
 var routes = require('./src/routes/index');
-var positions = require('./src/routes/positions');
 var admin = require('./src/routes/admin');
 var register = require('./src/routes/register');
 var login = require('./src/routes/login');
@@ -61,7 +60,6 @@ app.use(less({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/positions', positions);
 app.use('/admin', admin);
 app.use('/register', register);
 app.use('/login', login);

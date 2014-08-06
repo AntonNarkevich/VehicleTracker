@@ -5,7 +5,7 @@ var router = require('express').Router();
 
 var rekuire = require('rekuire');
 var logger = rekuire('logger');
-var formValidator = rekuire('formValidator');
+var validate = rekuire('dataValidator');
 
 router.get('/', function (req, res) {
 	var params = { loginFormAction: '/login', message: req.flash('error') };
@@ -18,7 +18,7 @@ router.post('/',
 		var email = req.param('email');
 		var password = req.param('password');
 
-		var validationResult = formValidator.validate({
+		var validationResult = validate.loginData({
 			email: email,
 			password: password
 		});
