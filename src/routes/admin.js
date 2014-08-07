@@ -32,9 +32,11 @@ router.get('/', function (req, res) {
 			return;
 		}
 
-		res.render('httpError', {
-				message: 'You should be admin to view this page.',
-				code: 403
+		res.render('error', {
+				error: {
+					status: 403
+				},
+				message: 'You should be admin to view this page.'
 			}
 		);
 	});

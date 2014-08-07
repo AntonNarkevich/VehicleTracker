@@ -25,9 +25,11 @@ var accessDeniedHandler = function (req, res, role) {
 		res.redirect('/login');
 	} else {
 		res.status(403);
-		res.render('httpError', {
-				message: 'Access Denied: You don\'t have ' + role + ' permissions.',
-				code: 403
+		res.render('error', {
+				error: {
+					status: 403
+				},
+				message: 'Access Denied: You don\'t have ' + role + ' permissions.'
 			}
 		);
 	}
