@@ -63,7 +63,7 @@ router.get('/dashboard/:ownerId', role.isAllOf('manager', 'owner'), function (re
 	});
 });
 
-router.get('/:vehicleId/view/:ownerId', role.isAuthenticated(), function (req, res) {
+router.get('/:vehicleId/view/:ownerId', role.isOneOf('vehicleOwner', 'driverOfVehicle'), function (req, res) {
 	var vehicleId = req.param('vehicleId');
 	var managerId = req.param('ownerId');
 
@@ -73,7 +73,7 @@ router.get('/:vehicleId/view/:ownerId', role.isAuthenticated(), function (req, r
 		if (vehicleInfo.DriverId) {
 			res.render('vehicle/view', {keys: keys, vehicleInfo: vehicleInfo});
 		} else {
-			database.uspBLManagerGetEmployeesWithoutVehicle(managerId, function (err, driversInfo) {
+			database.uspBLManagerGetEmployeesWithoutVehicle(managerId, function (driversInfo) {
 				res.render('vehicle/view', {keys: keys, vehicleInfo: vehicleInfo, driversInfo: driversInfo});
 			});
 		}
