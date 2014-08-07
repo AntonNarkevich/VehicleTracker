@@ -13,6 +13,8 @@ nav.navbar.navbar-default(role="navigation")
 			if isAuthenticated()
 				if (user.RoleNames.indexOf('admin') !== -1)
 					p.navbar-text
+						a.navbar-link(href="/admin/users") Users
+					p.navbar-text
 						a.navbar-link(href="/admin/export") Export Database
 					p.navbar-text
 						a.navbar-link(href="/admin/importScript") Get Import Script

@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+	.container
+		.row
+			.col-md-12
+				h1 Users
+		.row
+			.col-md-12
+				table.table.table-condensed
+					thead
+						tr
+							th Id
+							th Email
+							th Role
+							th Actions
+					tbody
+						each userInfo in userInfos
+							tr
+								td #{userInfo.UserId}
+								td
+									a(href="/profile/#{userInfo.Id}") #{userInfo.Email}
+								td #{userInfo.RoleName}
+								td
+									if userInfo.RoleName === 'driver'
+										a.btn-action.btn.btn-default(href="/d/#{userInfo.UserId}/drive") Help driving
+
+									if userInfo.RoleName === 'manager'
+										a.btn-action.btn.btn-default(href="/m/#{userInfo.UserId}/track") Tracking
+										a.btn-action.btn.btn-default(href="/m/#{userInfo.UserId}/Statistics") Statistics
+										a.btn-action.btn.btn-default(href="/v/dashboard/#{userInfo.UserId}") Vehicles

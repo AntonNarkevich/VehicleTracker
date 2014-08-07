@@ -11,7 +11,7 @@ USE [VehicleTrackerDb]
 
 go 
 
-CREATE PROC [dbo].[Usp_track_getvehiclepaths] @managerId INT 
+CREATE PROC [dbo].[usp_Track_GetVehiclePaths] @managerId INT 
 AS 
     SELECT Vehicles.Id, 
            Vehicles.Name, 
@@ -38,7 +38,7 @@ IF Object_id('usp_Track_GetVehicleStatistics', 'P') IS NOT NULL
 
 go 
 
-CREATE PROCEDURE Usp_track_getvehiclestatistics(@VehicleId INT) 
+CREATE PROCEDURE usp_Track_GetVehicleStatistics(@VehicleId INT) 
 AS 
   BEGIN 
       SELECT *, 
@@ -77,7 +77,7 @@ IF Object_id('usp_Track_GetManagerVehiclesStatistics', 'P') IS NOT NULL
 
 go 
 
-CREATE PROCEDURE Usp_track_getmanagervehiclesstatistics(@ManagerId INT) 
+CREATE PROCEDURE usp_Track_GetManagerVehiclesStatistics(@ManagerId INT) 
 AS 
   BEGIN 
       SELECT Id 

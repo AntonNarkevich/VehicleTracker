@@ -72,4 +72,10 @@ router.get('/deleteAll', role.is('admin'), function (req, res) {
 	});
 });
 
+router.get('/users', role.is('admin'), function (req, res) {
+	database.uspMBSPUserGetUsersWithRoles(function(data) {
+		res.render('admin/users', { userInfos: data});
+	});
+});
+
 module.exports = router;

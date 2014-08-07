@@ -112,9 +112,9 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferAccept: function (SenderId, RecieverId, callback) {
+	UspJobofferAccept: function (SenderId, RecieverId, callback) {
 		invoker.invoke(
-			'usp_JobOffer_Accept',
+			'Usp_joboffer_accept',
 			[
 				{name: 'SenderId', type: TYPES.Int, value: SenderId},
 				{name: 'RecieverId', type: TYPES.Int, value: RecieverId}
@@ -133,9 +133,9 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferGetByRecieverId: function (recieverId, callback) {
+	UspJobofferGetbyrecieverid: function (recieverId, callback) {
 		invoker.invoke(
-			'usp_JobOffer_GetByRecieverId',
+			'Usp_joboffer_getbyrecieverid',
 			[
 				{name: 'recieverId', type: TYPES.Int, value: recieverId}
 			],
@@ -143,9 +143,9 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferGetBySenderAndReceiver: function (SenderId, RecieverId, callback) {
+	UspJobofferGetbysenderandreceiver: function (SenderId, RecieverId, callback) {
 		invoker.invoke(
-			'usp_JobOffer_GetBySenderAndReceiver',
+			'Usp_joboffer_getbysenderandreceiver',
 			[
 				{name: 'SenderId', type: TYPES.Int, value: SenderId},
 				{name: 'RecieverId', type: TYPES.Int, value: RecieverId}
@@ -154,9 +154,9 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferGetBySenderId: function (senderId, callback) {
+	UspJobofferGetbysenderid: function (senderId, callback) {
 		invoker.invoke(
-			'usp_JobOffer_GetBySenderId',
+			'Usp_joboffer_getbysenderid',
 			[
 				{name: 'senderId', type: TYPES.Int, value: senderId}
 			],
@@ -178,9 +178,9 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferMakeOffer: function (senderId, recieverId, callback) {
+	UspJobofferMakeoffer: function (senderId, recieverId, callback) {
 		invoker.invoke(
-			'usp_JobOffer_MakeOffer',
+			'Usp_joboffer_makeoffer',
 			[
 				{name: 'senderId', type: TYPES.Int, value: senderId},
 				{name: 'recieverId', type: TYPES.Int, value: recieverId}
@@ -189,9 +189,9 @@ module.exports = {
 		);
 	},
 
-	uspJobOfferReject: function (SenderId, RecieverId, callback) {
+	UspJobofferReject: function (SenderId, RecieverId, callback) {
 		invoker.invoke(
-			'usp_JobOffer_Reject',
+			'Usp_joboffer_reject',
 			[
 				{name: 'SenderId', type: TYPES.Int, value: SenderId},
 				{name: 'RecieverId', type: TYPES.Int, value: RecieverId}
@@ -280,6 +280,15 @@ module.exports = {
 			'usp_MBSP_User_GetRolesById',
 			[
 				{name: 'Id', type: TYPES.Int, value: Id}
+			],
+			callback
+		);
+	},
+
+	uspMBSPUserGetUsersWithRoles: function (callback) {
+		invoker.invoke(
+			'usp_MBSP_User_GetUsersWithRoles',
+			[
 			],
 			callback
 		);
@@ -432,18 +441,18 @@ module.exports = {
 		);
 	},
 
-	uspUtilDeleteAllData: function (callback) {
+	UspUtilDeletealldata: function (callback) {
 		invoker.invoke(
-			'usp_Util_DeleteAllData',
+			'Usp_util_deletealldata',
 			[
 			],
 			callback
 		);
 	},
 
-	uspUtilGetStoredProcedures: function (callback) {
+	UspUtilGetstoredprocedures: function (callback) {
 		invoker.invoke(
-			'usp_Util_GetStoredProcedures',
+			'Usp_util_getstoredprocedures',
 			[
 			],
 			callback

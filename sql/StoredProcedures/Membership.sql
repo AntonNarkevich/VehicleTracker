@@ -17,6 +17,21 @@ GO
 
 ------------------------------------------------------------------------------- 
 ------------------------------------------------------------------------------- 
+IF OBJECT_ID('[dbo].[usp_MBSP_User_GetUsersWithRoles]') IS NOT NULL 
+  BEGIN 
+      DROP PROC [dbo].[usp_MBSP_User_GetUsersWithRoles] 
+  END 
+
+GO 
+
+CREATE PROC [dbo].[usp_MBSP_User_GetUsersWithRoles]
+AS 
+    SELECT * 
+    FROM   VW_UserRoles
+GO 
+
+------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------- 
 IF OBJECT_ID('[dbo].[usp_MBSP_User_GetRolesById]') IS NOT NULL 
   BEGIN 
       DROP PROC [dbo].[usp_MBSP_User_GetRolesById] 
