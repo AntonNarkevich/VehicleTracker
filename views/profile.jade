@@ -1,4 +1,5 @@
 extends layout
+
 block content
 	div.container
 		h1 Profile #{profileInfo.Email}
@@ -26,4 +27,16 @@ block content
 					td Drivers
 					td
 						each driverProfile in profileInfo.DriverInfos
-							a(href="/profile/#{driverProfile.DriverId}") #{driverProfile.Email}
+							a(href="/profile/#{driverProfile.DriverId}") #{driverProfile.Email}#{' '}
+			if profileInfo.BossId
+				tr
+					td His boss
+					td
+						a(href="/profile/#{profileInfo.BossId}") #{profileInfo.BossEmail}
+			if profileInfo.VehicleInfo
+				tr
+					td Assigned vehicle
+					td
+						a(href="/v/#{profileInfo.VehicleInfo.VehicleId}/view/#{user.Id}") #{profileInfo.VehicleInfo.Name}
+
+

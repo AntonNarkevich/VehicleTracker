@@ -1,6 +1,16 @@
 extends layout
 
 block content
-	h1= message
-	h2= error.status
-	pre #{error.stack}
+	.error.container.centrized-vertically
+		.row
+			.col-lg-8.col-lg-offset-2
+				h1.error-heading Oops! Error #{error.status} occured!
+				.error-reason
+					h2.error-sedative Don't panic. It's because:
+					p.error-message #{message}
+		.row
+			.error-buttons.col-lg-8.col-lg-offset-2
+				pre.error-stack #{error.stack}
+		.row
+			.error-buttons.col-lg-8.col-lg-offset-2
+				a(href="/").btn.btn-primary.btn-lg.error-home-button Home
