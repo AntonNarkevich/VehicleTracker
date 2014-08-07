@@ -9,7 +9,7 @@ IF Object_id('usp_Util_GetStoredProcedures') IS NOT NULL
 
 GO 
 
-CREATE PROCEDURE Usp_util_getstoredprocedures 
+CREATE PROCEDURE usp_Util_GetStoredProcedures 
 AS 
     SELECT SO.name                   AS ProcedureName, 
            P.parameter_id            AS [ParameterID], 
@@ -39,7 +39,7 @@ IF Object_id('usp_Util_DeleteAllData') IS NOT NULL
 
 GO 
 
-CREATE PROCEDURE Usp_util_deletealldata 
+CREATE PROCEDURE usp_Util_DeleteAllData 
 AS 
     DELETE FROM [DriverXVehicle] 
 

@@ -9,7 +9,7 @@ IF Object_id('[dbo].[usp_JobOffer_GetBySenderAndReceiver]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[Usp_joboffer_getbysenderandreceiver] @SenderId   INT, 
+CREATE PROC [dbo].[usp_JobOffer_GetBySenderAndReceiver] @SenderId   INT, 
                                                         @RecieverId INT 
 AS 
     SELECT * 
@@ -28,7 +28,7 @@ IF Object_id('[dbo].[usp_JobOffer_MakeOffer]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[Usp_joboffer_makeoffer] @senderId   INT, 
+CREATE PROC [dbo].[usp_JobOffer_MakeOffer] @senderId   INT, 
                                            @recieverId INT 
 AS 
     DECLARE @offerDate DATETIME = GETDATE() 
@@ -51,7 +51,7 @@ IF Object_id('[dbo].[usp_JobOffer_GetBySenderId]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[Usp_joboffer_getbysenderid] @senderId INT 
+CREATE PROC [dbo].[usp_JobOffer_GetBySenderId] @senderId INT 
 AS 
     SELECT * 
     FROM   JobOffers 
@@ -68,7 +68,7 @@ IF Object_id('[dbo].[usp_JobOffer_GetByRecieverId]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[Usp_joboffer_getbyrecieverid] @recieverId INT 
+CREATE PROC [dbo].[usp_JobOffer_GetByRecieverId] @recieverId INT 
 AS 
     SELECT * 
     FROM   JobOffers 
@@ -85,7 +85,7 @@ IF Object_id('[dbo].[usp_JobOffer_Accept]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[Usp_joboffer_accept] @SenderId   INT, 
+CREATE PROC [dbo].[usp_JobOffer_Accept] @SenderId   INT, 
                                         @RecieverId INT 
 AS 
     UPDATE [dbo].[JobOffers] 
@@ -106,7 +106,7 @@ IF Object_id('[dbo].[usp_JobOffer_Reject]') IS NOT NULL
 
 GO 
 
-CREATE PROC [dbo].[Usp_joboffer_reject] @SenderId   INT, 
+CREATE PROC [dbo].[usp_JobOffer_Reject] @SenderId   INT, 
                                         @RecieverId INT 
 AS 
     UPDATE [dbo].[JobOffers] 

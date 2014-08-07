@@ -16,7 +16,11 @@
 		var marker = new google.maps.Marker({
 			position: markerPosition,
 			map: map,
-			title: 'Vehicle position'
+			title: 'Vehicle position',
+			icon: {
+				url: '/images/marker2.png',
+				anchor: new google.maps.Point(25, 9)
+			}
 		});
 
 		var longitude = $('#vehicle-longitude');
