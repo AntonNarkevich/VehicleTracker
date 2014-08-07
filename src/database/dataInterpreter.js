@@ -82,19 +82,25 @@ module.exports = {
 
 	trackInfos: function (data) {
 		return _.chain(data)
-			.map(function(vehicleTrackInfoRow) {
+			.groupBy('Id')
+			.map(function (vehiclePositionInfos, vehicleId){
+				var positions = _(vehiclePositionInfos).map(function (vehiclePositionInfo) {
+					return {
+						longitude: vehiclePositionInfo.Longitude,
+						latitude: vehiclePositionInfo.Latitude,
+						date: vehiclePositionInfo.CheckoutDate
+					};
+				});
+
+				var vehicleName = vehiclePositionInfos[0].Name;
+
 				return {
-					vehicleId: vehicleTrackInfoRow.Id,
-					vehicleName: vehicleTrackInfoRow.Name,
-					date: vehicleTrackInfoRow.CheckoutDate,
-					positionInfo: {
-						Longitude: vehicleTrackInfoRow.Longitude,
-						Latitude: vehicleTrackInfoRow.Latitude
-					}
+					vehicleName: vehicleName,
+					vehicleId: vehicleId,
+					positions: positions
+
 				};
 			})
-			.groupBy('vehicleId')
-			.values()
 			.value();
 	},
 

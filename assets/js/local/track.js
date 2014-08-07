@@ -1,4 +1,4 @@
-/*global google, jQuery, VT, _*/
+/*global google, jQuery, VT, _, MarkerWithLabel*/
 (function ($, google) {
 	'use strict';
 
@@ -11,36 +11,74 @@
 
 	$.ajax({
 		url: '/m/' + managerId + '/trackData'
-	}).done(function (vehicleTrackInfos) {
-		VT.logger.debug('AJAX get to /trackData has been tracked.');
-		VT.logger.debug(vehicleTrackInfos);
+	}).done(function (trackInfos) {
+		VT.logger.debug('Got positions.', trackInfos);
 
-		//TODO: Write to WebStorm about Win+Right with debugger window as in Chrome.
-		var lastVehicleTrackInfo = _(vehicleTrackInfos).last();
-		var lastVehicleLastPositionInfo = _(lastVehicleTrackInfo).last().positionInfo;
-		var lastVehicleLastPosition = new google.maps.LatLng(lastVehicleLastPositionInfo.Latitude, lastVehicleLastPositionInfo.Longitude);
-
-		var mapOptions = {
-			center: lastVehicleLastPosition,
+		//Initializing google map
+		var map = new google.maps.Map($('.vt-google-map')[0], {
 			zoom: 13,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
-		};
+		});
 
-		var map = new google.maps.Map($('.vt-google-map')[0], mapOptions);
-
-		vehicleTrackInfos.forEach(function(vehicleTrackInfos) {
-			var lastPositionInfo = _(vehicleTrackInfos).last().positionInfo;
-			var lastPosition = new google.maps.LatLng(lastPositionInfo.Latitude, lastPositionInfo.Longitude);
-
-			//TODO: Add marker title with driver info and vehicle info.
-			var marker = new google.maps.Marker({
-				position: lastPosition
+		var viewVehicle = function (vehicleId) {
+			var selectedTrackInfo = _(trackInfos).find(function (trackInfo) {
+				return trackInfo.vehicleId === vehicleId;
 			});
 
-			marker.setMap(map);
+			var centerPositionInfo = _(selectedTrackInfo.positions).last();
+			var mapCenter = new google.maps.LatLng(centerPositionInfo.latitude, centerPositionInfo.longitude);
 
-			var traversedPath = _(vehicleTrackInfos).map(function (position) {
-				return new google.maps.LatLng(position.positionInfo.Latitude, position.positionInfo.Longitude);
+			map.panTo(mapCenter);
+		};
+
+		//Setting initial map position
+		var lastVehicleId = _(trackInfos).last().vehicleId;
+		viewVehicle(lastVehicleId);
+
+		//Configure view vehicle controls
+		var $viewVehicleButton = $('.view-vehicle-button');
+		var $viewVehicleSelect = $('.view-vehicle-select');
+
+		_(trackInfos).each(function (trackInfo) {
+			$viewVehicleSelect.append(new Option(trackInfo.vehicleName, trackInfo.vehicleId));
+		});
+
+		$viewVehicleButton.click(function () {
+			var vehicleId = $viewVehicleSelect.val();
+
+			viewVehicle(vehicleId);
+		});
+
+		//Adding movement lines
+		trackInfos.forEach(function(trackInfo) {
+			var lastPositionInfo = _(trackInfo.positions).last();
+			var lastPosition = new google.maps.LatLng(lastPositionInfo.latitude, lastPositionInfo.longitude);
+
+			var getRandomInt = function getRandomInt(min, max) {
+				return Math.floor(Math.random() * (max - min + 1)) + min;
+			};
+
+			var iconNumber = getRandomInt(1, 3);
+
+			var marker = new MarkerWithLabel({
+				position: lastPosition,
+				map: map,
+				icon: {
+					url: '/images/marker' + iconNumber + '.png',
+					anchor: new google.maps.Point(42, 15)
+				},
+				labelContent: trackInfo.vehicleName,
+				labelAnchor: new google.maps.Point(-10, 20),
+				labelClass: 'label-vehicle-name'
+			});
+
+			google.maps.event.addListener(marker, "click", function () {
+				//TODO: Remove owner id from here.
+				window.open('/v/' + trackInfo.vehicleId + '/view/' + managerId,'_blank');
+			});
+
+			var traversedPath = _(trackInfo.positions).map(function (position) {
+				return new google.maps.LatLng(position.latitude, position.longitude);
 			});
 
 			var movementLine = new google.maps.Polyline({

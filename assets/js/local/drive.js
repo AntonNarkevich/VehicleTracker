@@ -1,4 +1,4 @@
-/*global google, jQuery, VT, _*/
+/*global google, jQuery, VT, _, MarkerWithLabel*/
 (function ($, google) {
 	'use strict';
 
@@ -26,10 +26,13 @@
 
 		var map = new google.maps.Map($('.vt-google-map')[0], mapOptions);
 
-		var marker = new google.maps.Marker({
+		var marker = new MarkerWithLabel({
 			position: lastPosition,
 			map: map,
-			title: 'You are here.'
+			icon: {
+				url: '/images/marker2.png',
+				anchor: new google.maps.Point(25, 9)
+			}
 		});
 
 		var traversedPath = _(data).map(function (position) {

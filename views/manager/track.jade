@@ -9,6 +9,12 @@ block content
 		.row
 			.col-md-12
 				.vt-google-map
+		.row
+			.col-md-4
+				select.view-vehicle-select.form-control
+			.col-md-8
+				button.view-vehicle-button.btn.btn-primary View
 block scripts
 	script(src='http://maps.googleapis.com/maps/api/js?key=#{keys.googleMapsKey}&sensor=false')
+	script(src='/js/lib/markerwithlabel.js')
 	script(src='/js/local/track.js')

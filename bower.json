@@ -1,6 +1,6 @@
 {
   "name": "VehicleTracker",
-  "version": "0.9.26-0",
+  "version": "0.10.51-0",
   "authors": [
     "AntonNarkevich <17140th@gmail.com>"
   ],
@@ -27,6 +27,7 @@
     "log4javascript": "~1.4.6",
     "underscore": "~1.6.0",
     "parsleyjs": "~2.0.0",
-    "bootbox": "~4.2.0"
+    "bootbox": "~4.2.0",
+    "google-maps-utility-library-v3": "*"
   }
 }

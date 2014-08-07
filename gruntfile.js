@@ -67,6 +67,22 @@ module.exports = function (grunt) {
 						dest: 'public/js/local'
 					}
 				]
+			},
+			devLocalLibs: {
+				files: [
+					{
+					dest: 'public/js/lib/markerwithlabel.js',
+					src: 'bower_components/google-maps-utility-library-v3/markerwithlabel/src/markerwithlabel.js'
+				}
+				]
+			},
+			prodLocalLibs: {
+				files: [
+					{
+						dest: 'public/js/lib/markerwithlabel.js',
+						src: 'bower_components/google-maps-utility-library-v3/markerwithlabel/src/markerwithlabel_packed.js'
+					}
+				]
 			}
 		},
 		csscomb: {
@@ -214,13 +230,13 @@ module.exports = function (grunt) {
 	 * Compiles less. Concatenates all css files without minification to public/css/styles.css.
 	 * v0.0.0-0 => 0.0.1-0
 	 */
-	grunt.registerTask('dev', ['lint', 'clean', 'concat:devGlobalScripts', 'copy:localScripts', 'less:dev', 'concat:devCss', 'bump:patch']);
+	grunt.registerTask('dev', ['lint', 'clean', 'concat:devGlobalScripts', 'copy:localScripts', 'copy:devLocalLibs', 'less:dev', 'concat:devCss', 'bump:patch']);
 
 	/**
 	 * Same as 'dev' + js uglification, css minification.
 	 * v0.0.0-0 => 0.1.0-0
 	 */
-	grunt.registerTask('prod', ['lint', 'clean', 'uglify', 'concat:prodGlobalScripts', 'less:prod', 'concat:prodCss', 'bump:minor']);
+	grunt.registerTask('prod', ['lint', 'clean', 'uglify', 'concat:prodGlobalScripts', 'copy:prodLocalLibs', 'less:prod', 'concat:prodCss', 'bump:minor']);
 
 	grunt.registerTask('default', 'watch');
 };
