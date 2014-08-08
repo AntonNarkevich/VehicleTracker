@@ -51,7 +51,7 @@ BEGIN
 		Id           INT, 
 		Name         NVARCHAR(20), 
 		Email        VARCHAR(320), 
-		PasswordHash VARCHAR(20),
+		PasswordHash VARCHAR(60),
 		IsBlocked    BIT
 	)
 
