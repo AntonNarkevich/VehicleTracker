@@ -198,7 +198,8 @@ AS
              cast('TRUE' AS BIT) 
              ELSE cast('FALSE' AS BIT) 
            END AS IsAssigned 
-    FROM   Vehicles 
+    FROM   Vehicles
+	WHERE Vehicles.ManagerId = @managerId 
 
 GO 
 
